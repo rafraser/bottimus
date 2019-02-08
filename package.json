@@ -1,0 +1,8 @@
+{
+    "name": "fluffy-bottimus",
+    "version": "0.0.1",
+    "dependencies": {
+        "discord.js": "^11.4.2",
+        "dotenv": "^6.2.0"
+    }
+}
