@@ -4,6 +4,7 @@
     "dependencies": {
         "discord.js": "^11.4.2",
         "dotenv": "^6.2.0",
+        "gamedig": "^2.0.12",
         "mysql": "^2.16.0"
     }
 }
