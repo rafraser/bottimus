@@ -75,3 +75,8 @@ client.on('message', function(message) {
 
 // Login to the bot with the key in .env
 client.login(process.env.DISCORD);
+
+// Permission checking command
+client.isAdministrator = function(user) {
+    return (user.roles.has('309952512331612160') || user.roles.has('309956347309326336'))
+}
