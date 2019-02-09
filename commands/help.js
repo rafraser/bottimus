@@ -9,4 +9,4 @@ module.exports = {
         codestring += '```'
         message.channel.send(codestring)
     },
-};
+}

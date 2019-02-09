@@ -1,5 +1,5 @@
 // Wrapper function to connection to the database
-var mysql = require('mysql');
+var mysql = require('mysql')
 require('dotenv').config()
 
 // Credentials are stored in .env
@@ -15,7 +15,7 @@ var pool = mysql.createPool({
 // This function is what is found when this file is imported
 var getConnection = function(callback) {
     pool.getConnection(function(err, connection) {
-        callback(err, connection);
-    });
-};
-module.exports = getConnection;
+        callback(err, connection)
+    })
+}
+module.exports = getConnection

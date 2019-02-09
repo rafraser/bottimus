@@ -2,7 +2,7 @@ const discord = require('discord.js')
 const path = require('path')
 
 function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
+    return Math.floor(Math.random() * (max - min)) + min
 }
 
 module.exports = {
@@ -14,4 +14,4 @@ module.exports = {
         var img = new discord.Attachment(path.join(__dirname, '../img/8ball/' + result + '.png'))
         message.channel.send(img)
     },
-};
+}

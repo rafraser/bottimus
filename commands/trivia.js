@@ -1,5 +1,5 @@
-const discord = require('discord.js');
-const https = require('https');
+const discord = require('discord.js')
+const https = require('https')
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = {'🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3}
 
@@ -8,9 +8,9 @@ module.exports = {
     description: 'Play a trivia question',
     execute(message, args, client) {
         https.get('https://opentdb.com/api.php?amount=1&type=multiple', function(resp) {
-            data = '';
+            data = ''
             resp.on('data', function(chunk) {
-                data += chunk;
+                data += chunk
             })
             resp.on('end', function() {
                 var info = JSON.parse(data).results[0]
@@ -79,4 +79,4 @@ module.exports = {
             })
         })
     },
-};
+}

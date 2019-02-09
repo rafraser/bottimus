@@ -21,4 +21,4 @@ module.exports = {
             message.channel.send('Something went wrong. Is the server down?')
         })
     },
-};
+}
