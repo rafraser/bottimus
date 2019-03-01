@@ -67,8 +67,7 @@ module.exports = {
                                 winners.push(player)
                             }
                         }
-                        console.log(winners)
-                        
+						
                         // Message if there is any winners
                         if (winners.length > 0) {
                             message.channel.send('Congratulations to: ' + winners.join(', '))
