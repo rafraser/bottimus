@@ -3,6 +3,14 @@ const https = require('https')
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = {'🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3}
 
+function removeHTMLCharacters(str) {
+    str = str.replace(new RegExp('&quot;', 'g'), '"')
+    str = str.replace(new RegExp('&amp;', 'g'), '&')
+    str = str.replace(new RegExp('&#039;', 'g'), "'")
+    str = str.replace(new RegExp('&rsquo;', 'g'), "'")
+	return str
+}
+
 module.exports = {
     name: 'trivia',
     description: 'Play a trivia question',
@@ -25,12 +33,12 @@ module.exports = {
                 answers.splice(correct, 0, info.correct_answer)
                 
                 // Format the question
-                var question = info.question
-                question = question.replace(new RegExp('&quot;', 'g'), '"')
-                question = question.replace(new RegExp('&amp;', 'g'), '&')
-                question = question.replace(new RegExp('&#039;', 'g'), "'")
-                question = question.replace(new RegExp('&rsquo;', 'g'), "'")
-                
+                var question = removeHTMLCharacters(info.question)
+				// Format the answers
+				for(var i=0; i<4; i++) {
+					answers[i] = removeHTMLCharacters(answers[i])
+				}
+				
                 // Build the embed
                 var embed = new discord.RichEmbed()
                 .setColor(5034295)
