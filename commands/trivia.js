@@ -13,7 +13,13 @@ module.exports = {
                 data += chunk
             })
             resp.on('end', function() {
-                var info = JSON.parse(data).results[0]
+				var info
+				try {
+					info = JSON.parse(data).results[0]
+				} catch(error) {
+					message.channel.send('Error in question data')
+					return
+				}
                 var answers = info.incorrect_answers
                 var correct = Math.floor(Math.random() * Math.floor(4))
                 answers.splice(correct, 0, info.correct_answer)
@@ -24,7 +30,6 @@ module.exports = {
                 question = question.replace(new RegExp('&amp;', 'g'), '&')
                 question = question.replace(new RegExp('&#039;', 'g'), "'")
                 question = question.replace(new RegExp('&rsquo;', 'g'), "'")
-                
                 
                 // Build the embed
                 var embed = new discord.RichEmbed()
