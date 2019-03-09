@@ -50,7 +50,8 @@ client.on('message', function(message) {
     // Don't ask what the regex does because I've forgotten
     if (!message.content.startsWith(prefix)) return
     var args = message.content.slice(prefix.length)
-    args = args.match(/\w+|"[^"]+"/g), i = args.length
+    args = args.match(/\w+|"[^"]+"/g)
+	var i = args.length
     while(i--){
         args[i] = args[i].replace(/"/g,"")
     }
