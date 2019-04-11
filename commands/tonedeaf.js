@@ -2,7 +2,7 @@ const discord = require('discord.js')
 
 module.exports = {
     name: 'tonedeaf',
-    description: '🛡 Block a user from using #music',
+    description: '🛡️ Block a user from using #music',
     execute(message, args, client) {
         if(message.guild.id != '309951255575265280') return;
         
