@@ -81,3 +81,7 @@ client.login(process.env.DISCORD)
 client.isAdministrator = function(user) {
     return (user.roles.has('309952512331612160') || user.roles.has('309956347309326336'))
 }
+
+client.isModerator = function(user) {
+    return (user.roles.has('309956593498456065') || user.roles.has('374893614515486721'))
+}
