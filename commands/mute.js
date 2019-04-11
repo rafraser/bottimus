@@ -21,11 +21,11 @@ module.exports = {
                 // Toggle the role
                 var role_id = '495945521408770049'
                 var role = message.guild.roles.get(role_id)
-                if(user.roles.has(role_id)) {
-                    user.removeRole(role)
+                if(target.roles.has(role_id)) {
+                    target.removeRole(role)
                     message.channel.send('Succesfully unmuted ' + target.displayName)
                 } else {
-                    user.addRole(role)
+                    target.addRole(role)
                     message.channel.send('Succesfully muted ' + target.displayName + ' 👋')
                 }
             } catch(error) {
