@@ -2,7 +2,7 @@ const discord = require('discord.js')
 
 module.exports = {
     name: 'mute',
-    description: '[🛡️]',
+    description: '🛡️ Mute a specified user',
     execute(message, args, client) {
         if(message.guild.id != '309951255575265280') return;
         

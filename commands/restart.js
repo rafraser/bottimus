@@ -1,6 +1,6 @@
 module.exports = {
     name: 'restart',
-    description: 'Restarts Bottimus',
+    description: '🛡️ Restarts Bottimus',
     execute(message, args, client) {
         var user = message.member
         if(client.isAdministrator(user)) {
