@@ -11,7 +11,7 @@ module.exports = {
         if(client.isAdministrator(user)) {
             try {
                 if(!args.length || args.length < 1) { args = ['50'] }
-                var num = Math.max(parseInt(args[0], 10) + 1, 100)
+                var num = Math.min(parseInt(args[0], 10) + 1, 100)
                 if (isNaN(num)) {
                     message.channel.send('Please use a valid number')
                     return
