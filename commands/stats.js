@@ -7,6 +7,11 @@ module.exports = {
     execute(message, args) {
         if(!args.length || args.length < 1) { return }
         
+        // Friendly join multiple arguments
+        if(args.length > 1) {
+            args[0] = args.join(" ")
+        }
+        
         // Determine argument type
         var id = args[0]
         var query_type = 'username'
