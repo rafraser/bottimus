@@ -4,7 +4,7 @@ require('dotenv').config()
 
 // Credentials are stored in .env
 var pool = mysql.createPool({
-    connectLimit: 10,
+    connectionLimit: 10,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -18,4 +18,4 @@ var getConnection = function(callback) {
         callback(err, connection)
     })
 }
-module.exports = getConnection
+module.exports = pool
