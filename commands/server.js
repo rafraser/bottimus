@@ -5,6 +5,7 @@ const ip = '108.61.169.175'
 module.exports = {
     name: 'murder',
     description: 'Fetchs current server state from Simply Murder',
+    cooldown: 3600,
     execute(message, args) {
         // Query the server using gamedig
         gamedig.query({type:'garrysmod', host:ip}).then(function(result) {
