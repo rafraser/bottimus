@@ -25,7 +25,7 @@ for (var file of files) {
 
 // Create a collection of cooldowns
 // is this actually used
-client.cooldowns = new discord.Collection()
+client.cooldowns = new Map()
 
 // Cool console logging when the bot connects
 client.on('ready', function() {
@@ -62,6 +62,20 @@ client.on('message', function(message) {
         //message.reply('Command not recognized')
         console.log(`Tried to use non-existent command, ${cmd}`)
         return
+    }
+    
+    // Verify cooldowns for certain commands
+    // Remember: Date.now uses milliseconds
+    if (client.commands.get(cmd).cooldown) {
+        var next_usage = client.cooldowns.get(cmd);
+        if (next_usage) {
+            // Check that we're within the cooldown
+            if (next_usage > Date.now()) {
+                message.channel.send(`Cooldown! Try again in ${Math.floor((next_usage - Date.now()) / 1000)} seconds.`)
+                return
+            }
+        }
+        client.cooldowns.set(cmd, Date.now() + client.commands.get(cmd).cooldown*1000)
     }
     
     // Execute the command
