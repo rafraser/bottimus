@@ -1,6 +1,7 @@
 const fs = require('fs')
 const discord = require('discord.js')
 const client = new discord.Client()
+const gamedig = require('gamedig')
 const prefix = '!'
 
 // Load configuration from .env
@@ -30,6 +31,10 @@ client.cooldowns = new Map()
 // Cool console logging when the bot connects
 client.on('ready', function() {
     console.log('Logged into Discord successfully')
+    
+    // Start the status update loop
+    client.updateServers()
+    setInterval(client.updateServers, 60 * 1000)
 })
 
 // Process each message
@@ -98,4 +103,51 @@ client.isAdministrator = function(user) {
 
 client.isModerator = function(user) {
     return (user.roles.has('309956593498456065') || user.roles.has('374893614515486721'))
+}
+
+client.updateServers = function() {
+    console.log('Updating servers')
+    var channel = client.channels.get('583635933585342466')
+    var murderID = '584973556908294177'
+    var minigamesID = '584973565774921731'
+    
+    // Update Murder
+    channel.fetchMessage(murderID)
+    .then(message => client.updateGameMurder(message))
+    // Update Minigames
+    channel.fetchMessage(minigamesID)
+    .then(message => client.updateGameMinigames(message))
+}
+
+// Commands to update game server status
+client.updateGameMurder = function(message) {
+    const ip = '108.61.169.175'
+    gamedig.query({type:'garrysmod', host:ip}).then(function(result) {
+        // Generate a nice looking embed
+        var embed = new discord.RichEmbed()
+        .setColor('#e84118')
+        .setTitle(`🕹️ Murder`)
+        .setDescription(`Click: steam://connect/${ip} to join`)
+        .addField('Players', `${result.players.length||0}/${result.maxplayers||0}`, true)
+        .addField('Map', `${result.map}`, true)
+        .setThumbnail(`https://fluffyservers.com/mapicons/${result.map}.jpg`)
+        .setTimestamp()
+        message.edit(embed)
+    })
+}
+
+client.updateGameMinigames = function(message) {
+    const ip = '207.148.86.197'
+    gamedig.query({type:'garrysmod', host:ip}).then(function(result) {
+        // Generate a nice looking embed
+        var embed = new discord.RichEmbed()
+        .setColor('#fbc531')
+        .setTitle(`🕹️ Minigames`)
+        .setDescription(`Click: steam://connect/${ip} to join`)
+        .addField('Players', `${result.players.length||0}/${result.maxplayers||0}`, true)
+        .addField('Playing', `${result.raw.game} on ${result.map}`, true)
+        .setThumbnail(`https://fluffyservers.com/mg/maps/${result.map}.jpg`)
+        .setTimestamp()
+        message.edit(embed)
+    })    
 }
