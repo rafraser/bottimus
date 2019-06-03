@@ -34,7 +34,7 @@ client.on('ready', function() {
     
     // Start the status update loop
     client.updateServers()
-    setInterval(client.updateServers, 60 * 1000)
+    setInterval(client.updateServers, 60 * 5 * 1000)
 })
 
 // Process each message
@@ -107,9 +107,9 @@ client.isModerator = function(user) {
 
 client.updateServers = function() {
     console.log('Updating servers')
-    var channel = client.channels.get('583635933585342466')
-    var murderID = '584973556908294177'
-    var minigamesID = '584973565774921731'
+    var channel = client.channels.get('528849382196379650')
+    var murderID = '584979182459813889'
+    var minigamesID = '584979191121051659'
     
     // Update Murder
     channel.fetchMessage(murderID)
