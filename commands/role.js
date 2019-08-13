@@ -6,6 +6,7 @@ module.exports = {
     execute(message, args) {
         if(message.guild.id != '309951255575265280') return;
         
+        // Handle no arguments with some help text
         if(!args.length || args.length < 1) {
             message.channel.send('Please select a role:```event \nmapping```')
             return
@@ -14,6 +15,7 @@ module.exports = {
         var user = message.member
         
         if(args[0].includes('event')) {
+            // Assign the events related role
             var role_id = '535346825423749120'
             var role = message.guild.roles.get(role_id)
             if(user.roles.has(role_id)) {
@@ -24,6 +26,7 @@ module.exports = {
                 message.channel.send('Thanks for signing up for events!')
             }
         } else if(args[0].includes('map')) {
+            // Assign the mapping related role
             var role_id = '514727746006679552'
             var role = message.guild.roles.get(role_id)
             if(user.roles.has(role_id)) {

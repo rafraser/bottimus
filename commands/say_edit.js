@@ -9,8 +9,11 @@ module.exports = {
             
 			var string = args.join(' ')
 			message.delete()
-            message.channel.fetchMessage(id)
-            .then(message => message.edit(string))
+            
+            // Replace the message content with the arguments given
+            message.channel.fetchMessage(id).then(function(message) {
+                message.edit(string)
+            })
         }
     },
 }

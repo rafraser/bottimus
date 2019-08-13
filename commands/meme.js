@@ -7,6 +7,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
+// These subreddits are all meme related
 var subreddits = ['adviceanimals', 'funny', 'memes', 'surrealmemes']
 
 module.exports = {
@@ -16,6 +17,8 @@ module.exports = {
         var page = getRandomInt(1, 50)
         var subreddit = subreddits[getRandomInt(0, subreddits.length)]
         
+        // Prepare a request to the imgur API
+        // This requires the key to be defined in the .env file
         var options = {
             host: 'api.imgur.com',
             path: '/3/gallery/r/' + subreddit + '/time/' + page,
@@ -23,7 +26,8 @@ module.exports = {
                 'Authorization': 'Client-ID ' + process.env.IMGUR
             }
         }
-
+        
+        // Perform the request
         https.get(options, function(resp) {
             data = '';
             resp.on('data', function(chunk) {
@@ -32,6 +36,9 @@ module.exports = {
             resp.on('end', function() {
                 var info = JSON.parse(data)
                 var attempts = 0
+                
+                // Some hacky stuff to get a random image from the page?
+                // Todo: fix this so it doesn't overshoot pages (only an issue on smaller subreddits)
                 try {
                     while (attempts < 10) {
                         attempts += 1
