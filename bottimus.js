@@ -102,7 +102,7 @@ client.isAdministrator = function(user) {
 }
 
 client.isModerator = function(user) {
-    return (user.roles.has('309956593498456065') || user.roles.has('374893614515486721'))
+    return user.roles.has('374893960729985035')
 }
 
 client.updateServers = function() {
