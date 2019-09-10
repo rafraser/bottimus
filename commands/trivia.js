@@ -3,13 +3,13 @@ const https = require('https')
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = {'ðŸ‡¦': 0, 'ðŸ‡§': 1, 'ðŸ‡¨': 2, 'ðŸ‡©': 3}
 const pool = require('../database')
+const htmlReplacements = {'&quot;': '"', '&amp;': '&', '&#039;': "'", '&rsquo;': "'", '&eacute;': 'é', '&pound;': '£', '&deg;': '°'}
 
 function removeHTMLCharacters(str) {
-    str = str.replace(new RegExp('&quot;', 'g'), '"')
-    str = str.replace(new RegExp('&amp;', 'g'), '&')
-    str = str.replace(new RegExp('&#039;', 'g'), "'")
-    str = str.replace(new RegExp('&rsquo;', 'g'), "'")
-	return str
+    for(var rep in htmlReplacements) {
+        str = str.replace(new RegExp(rep, 'g'), htmlReplacements[rep]) 
+    }
+    return str
 }
 
 function incrementStatScore(userid, category, correct) {
