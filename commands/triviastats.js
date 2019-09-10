@@ -41,9 +41,9 @@ module.exports = {
                     message.channel.send(embed).then(function() {
                         // Generate a not so fancy looking breakdown of the trivia categories
                         // Wait until the first embed is sent
-                        var codestring = '```python\nCategory Scores:\n'
+                        var codestring = '```python\n\n'
                         for(result of results) {
-                            codestring += result['category'].padEnd(28, ' ') + (result['correct'] + '/' + result['attempted']).padStart(11, ' ') + '  (' + Math.floor(result['percent']*100) + '%)' + '\n'
+                            codestring += result['category'].padEnd(40, ' ') + (result['correct'] + '/' + result['attempted']).padStart(8, ' ') + ' (' + Math.floor(result['percent']*100) + '%)' + '\n'
                         }
                         codestring += '```'
                         message.channel.send(codestring)
