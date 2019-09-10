@@ -57,7 +57,7 @@ module.exports = {
 				
                 // Build the embed
                 var embed = new discord.RichEmbed()
-                .setColor(5034295)
+                .setColor('#4cd137')
                 .setTitle(info.category)
                 .setDescription(question)
                 .addField('A', answers[0])
