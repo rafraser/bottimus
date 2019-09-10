@@ -2,6 +2,7 @@ const discord = require('discord.js')
 const https = require('https')
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = {'🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3}
+const pool = require('../database')
 
 function removeHTMLCharacters(str) {
     str = str.replace(new RegExp('&quot;', 'g'), '"')
@@ -9,6 +10,21 @@ function removeHTMLCharacters(str) {
     str = str.replace(new RegExp('&#039;', 'g'), "'")
     str = str.replace(new RegExp('&rsquo;', 'g'), "'")
 	return str
+}
+
+function incrementStatScore(userid, category, correct) {
+    var query_string;
+    if(correct) {
+        query_string = "INSERT INTO trivia_stats VALUES(?, ?, 1, 1) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + 1"
+    } else {
+        query_string = "INSERT INTO trivia_stats VALUES(?, ?, 1, 0) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct"
+    }
+    
+    pool.query(query_string, [userid, category],function(err, results) {
+        if (err) {
+            console.log(err)
+        }
+    })
 }
 
 module.exports = {
@@ -57,19 +73,24 @@ module.exports = {
                         var n = reaction.emoji.name 
                         return (n == '🇦' || n == '🇧' || n == '🇨' || n == '🇩')
                     }
+                    
                     msg.awaitReactions(filter, {time: 15000}).then(function(collected) {
                         message.channel.send('The correct answer: ' + arrayOfLetters[correct])
                         
                         // Collect all the guesses from all the players
                         // Disqualify any players that guessed multiple times
                         var guesses = {}
+                        var usernames = {}
                         collected.forEach(function(reaction) {
                             reaction.users.forEach(function(user) {
-                                if (guesses[user.username]) {
-                                    guesses[user.username] = 'DQ'
+                                if(user.bot) return;
+                                
+                                if (guesses[user.id]) {
+                                    guesses[user.id] = 'DQ'
                                 } else {
-                                    guesses[user.username] = emojiToNum[reaction._emoji.name]
-                                }  
+                                    guesses[user.id] = emojiToNum[reaction._emoji.name]
+                                }
+                                usernames[user.id] = user.username
                             })
                         })
                         
@@ -77,7 +98,10 @@ module.exports = {
                         var winners = []
                         for (var player in guesses) {
                             if (guesses[player] == correct) {
-                                winners.push(player)
+                                winners.push(usernames[player])
+                                incrementStatScore(player, info.category, true)
+                            } else {
+                                incrementStatScore(player, info.category, false)
                             }
                         }
 						
