@@ -48,7 +48,7 @@ module.exports = {
                     var stats_table = JSON.parse(result.stats)
                     // Generate a fancy looking embed with the user statistics
                     var embed = new discord.RichEmbed()
-                        .setColor('')
+                        .setColor('#fbc531')
                         .setTitle(`Stats for ${result.username} playing ${nice_gamemode}`)
                         .addField(`Level ${result.level}`, `${result.xp}/${GetMaxExperience(result.level)}XP`, false)
                     

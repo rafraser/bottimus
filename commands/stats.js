@@ -37,7 +37,7 @@ module.exports = {
                     var result = results[0]
                     // Generate a fancy looking embed with the user statistics
                     var embed = new discord.RichEmbed()
-                        .setColor('')
+                        .setColor('#e84118')
                         .setTitle(`Stats for ${result.username}`)
                         .addField('Hours Played', `${Math.floor(result.playtime/3600)||0}`, true)
                         .addField('Loot Collected', `${result.loot||0}`, true)
