@@ -5,8 +5,6 @@ module.exports = {
     name: 'numberfact',
     description: 'Get a random number fact',
     execute(message, args) {
-        // Specifically this fetchs a random image tagged meme off flickr
-        // It's extremely unpredictable at best, hence the wacky nature!
         var url
         if(Math.random() < 0.2) {
             url = 'http://numbersapi.com/random/trivia'
