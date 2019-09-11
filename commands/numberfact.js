@@ -8,7 +8,7 @@ module.exports = {
         var url
         
         // Get the url to search
-        if(args.length >= 1) {
+        if(args.length >= 1 && !isNaN(args[0])) {
             if(Math.random() < 0.8) {
                 url = 'http://numbersapi.com/' + args[0] + '/trivia'
             } else {
@@ -34,6 +34,7 @@ module.exports = {
                 var number = data.shift()
                 if(isNaN(number)) {
                     message.channel.send('Something went wrong fetching a number fact.')
+                    return
                 }
                 var description = data.join(' ')
                 
