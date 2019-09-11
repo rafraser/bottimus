@@ -6,10 +6,20 @@ module.exports = {
     description: 'Get a random number fact',
     execute(message, args) {
         var url
-        if(Math.random() < 0.2) {
-            url = 'http://numbersapi.com/random/trivia'
+        
+        // Get the url to search
+        if(args.length >= 1) {
+            if(Math.random() < 0.8) {
+                url = 'http://numbersapi.com/' + args[0] + '/trivia'
+            } else {
+                url = 'http://numbersapi.com/' + args[0] + '/math'
+            }
         } else {
-            url = 'http://numbersapi.com/random/math'
+            if(Math.random() < 0.8) {
+                url = 'http://numbersapi.com/random/trivia'
+            } else {
+                url = 'http://numbersapi.com/random/math'
+            }
         }
         
         http.get(url, function(resp) {
@@ -22,6 +32,9 @@ module.exports = {
             resp.on('end', function() {
                 data = data.split(' ')
                 var number = data.shift()
+                if(isNaN(number)) {
+                    message.channel.send('Something went wrong fetching a number fact.')
+                }
                 var description = data.join(' ')
                 
                 var embed = new discord.RichEmbed()
