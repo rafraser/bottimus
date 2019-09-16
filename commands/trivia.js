@@ -54,12 +54,15 @@ module.exports = {
 				for(var i=0; i<4; i++) {
 					answers[i] = removeHTMLCharacters(answers[i])
 				}
+                
+                var difficulty = info.difficulty.charAt(0).toUpperCase() + info.difficulty.slice(1)
 				
                 // Build the embed
                 var embed = new discord.RichEmbed()
                 .setColor('#4cd137')
                 .setTitle(info.category)
                 .setDescription(question)
+                .setFooter('Difficulty: ' + difficulty)
                 .addField('A', answers[0])
                 .addField('B', answers[1])
                 .addField('C', answers[2])
