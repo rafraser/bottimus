@@ -110,6 +110,7 @@ client.updateServers = function() {
     var channel = client.channels.get('528849382196379650')
     var murderID = '584979182459813889'
     var minigamesID = '584979191121051659'
+    var minecraftID = '621400728321392641'
     
     // Update Murder
     channel.fetchMessage(murderID)
@@ -117,6 +118,9 @@ client.updateServers = function() {
     // Update Minigames
     channel.fetchMessage(minigamesID)
     .then(message => client.updateGameMinigames(message))
+    // Update Minecraft
+    channel.fetchMessage(minecraftID)
+    .then(message => client.updateGameMinecraft(message))
 }
 
 // Commands to update game server status
@@ -137,7 +141,7 @@ client.updateGameMurder = function(message) {
 }
 
 client.updateGameMinigames = function(message) {
-    const ip = '207.148.86.197'
+    const ip = '139.180.168.161'
     gamedig.query({type:'garrysmod', host:ip}).then(function(result) {
         // Generate a nice looking embed
         var embed = new discord.RichEmbed()
@@ -147,6 +151,22 @@ client.updateGameMinigames = function(message) {
         .addField('Players', `${result.players.length||0}/${result.maxplayers||0}`, true)
         .addField('Playing', `${result.raw.game} on ${result.map}`, true)
         .setThumbnail(`https://fluffyservers.com/mg/maps/${result.map}.jpg`)
+        .setTimestamp()
+        message.edit(embed)
+    })    
+}
+
+client.updateGameMinecraft = function(message) {
+    const ip = '139.180.168.161'
+    gamedig.query({type:'minecraft', host:ip}).then(function(result) {
+        // Generate a nice looking embed
+        var embed = new discord.RichEmbed()
+        .setColor('#44bd32')
+        .setTitle(`🕹️ Minecraft`)
+        .setDescription(`Map: http://139.180.168.161:8123`)
+        .addField('Players', `${result.players.length||0}/${result.maxplayers||0}`, true)
+        .addField('IP', '139.180.168.161', true)
+        .setThumbnail(`https://fluffyservers.com/img/minecraft.png`)
         .setTimestamp()
         message.edit(embed)
     })    
