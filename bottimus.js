@@ -9,19 +9,25 @@ const prefix = '!'
 require('dotenv').config()
 
 // Load commands from file
-client.commands = new discord.Collection()
-var files = fs.readdirSync('./commands')
-for (var file of files) {
-    var command = require('./commands/' + file)
-    client.commands.set(command.name, command)
+client.loadCommands = function() {
+    client.commands = new discord.Collection()
+    
+    var files = fs.readdirSync('./commands')
+    for (var file of files) {
+        var command = require('./commands/' + file)
+        client.commands.set(command.name, command)
+    }
 }
 
 // Load scanners from file
-client.scanners = []
-var files = fs.readdirSync('./scanners')
-for (var file of files) {
-    var scanner = require('./scanners/' + file)
-    client.scanners.push(scanner)
+client.loadScanners = function() {
+    client.scanners = []
+    
+    var files = fs.readdirSync('./scanners')
+    for (var file of files) {
+        var scanner = require('./scanners/' + file)
+        client.scanners.push(scanner)
+    }
 }
 
 // Create a collection of cooldowns
@@ -31,6 +37,12 @@ client.cooldowns = new Map()
 // Cool console logging when the bot connects
 client.on('ready', function() {
     console.log('Logged into Discord successfully')
+    
+    // Load in the commands and scanners
+    client.loadCommands()
+    console.log('Loaded commands!')
+    client.loadScanners()
+    console.log('Loaded scanners!')
     
     // Start the status update loop
     client.updateServers()
@@ -46,7 +58,12 @@ client.on('message', function(message) {
     // This is for stuff like word detection or reacting to a certain user etc.
     for(var scanner of client.scanners) {
         try {
-            scanner.execute(message, client)
+            var scan_result = scanner.execute(message, client)
+            
+            // If the scanner returns false, stop processing for this message
+            if(scan_result == false) {
+                return
+            }
         } catch (error) { }
     }
     
@@ -76,7 +93,7 @@ client.on('message', function(message) {
         if (next_usage) {
             // Check that we're within the cooldown
             if (next_usage > Date.now()) {
-                message.channel.send(`Cooldown! Try again in ${Math.floor((next_usage - Date.now()) / 1000)} seconds.`)
+                //message.channel.send(`Cooldown! Try again in ${Math.floor((next_usage - Date.now()) / 1000)} seconds.`)
                 return
             }
         }
