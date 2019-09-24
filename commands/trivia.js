@@ -30,6 +30,7 @@ function incrementStatScore(userid, category, correct) {
 module.exports = {
     name: 'trivia',
     description: 'Play a trivia question',
+    cooldown: 5,
     execute(message, args, client) {
         https.get('https://opentdb.com/api.php?amount=1&type=multiple', function(resp) {
             data = ''
