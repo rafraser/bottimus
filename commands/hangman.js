@@ -11,7 +11,7 @@ function generateEmbed(attempts, guesses, fails) {
     //var diagram = hangmans[fails]
     var embed = new discord.RichEmbed()
     .setTitle('Hangman')
-    .setDescription((6-fails) + " mistakes left!")
+    .setDescription((8-fails) + " mistakes left!")
     .setFooter(attempts.join(' '))
     .addField(guesses.join(' '), "\u200b")
     return embed
@@ -74,8 +74,8 @@ module.exports = {
                     collector.stop('win')
                 }
                 
-                // End the game if there have been 6 failures
-                if(fails == 6) {
+                // End the game if there have been 8 failures
+                if(fails == 8) {
                     collector.stop('lose')
                 }
             })
