@@ -34,8 +34,11 @@ module.exports = {
                     var codestring = '```yaml\nNum  Username            Score\n------------------------------\n'
                     var i = 1
                     for(result of results) {
-                        var username = client.users.get(result['discordid']).username
-                        codestring += String('#' + i + '.').padEnd(5, ' ') + username.padEnd(20, ' ') + String(result['score']).padStart(5, ' ') + '\n'
+                        var u = client.users.get(result['discordid'])
+                        var display = result['discordid']
+                        if(u) { display = u.username }
+                        
+                        codestring += String('#' + i + '.').padEnd(5, ' ') + display.padEnd(24, ' ') + String(result['score']).padStart(5, ' ') + '\n'
                         i++
                     }
                     
