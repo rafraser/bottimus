@@ -110,6 +110,13 @@ client.on('message', function(message) {
     }
 })
 
+// Welcome new users
+const welcomeChannel = '309951255575265280'
+client.on('guildMemberAdd', function(member) {
+    var chan = client.channels.get(welcomeChannel)
+    chan.send('Welcome to Fluffy Servers, ' + member.username + '! Please check out #welcome')
+})
+
 // Login to the bot with the key in .env
 client.login(process.env.DISCORD)
 
@@ -122,9 +129,10 @@ client.isModerator = function(user) {
     return user.roles.has('374893960729985035')
 }
 
+const serverChannel = '528849382196379650'
 client.updateServers = function() {
     console.log('Updating servers')
-    var channel = client.channels.get('528849382196379650')
+    var channel = client.channels.get(serverChannel)
     var murderID = '584979182459813889'
     var minigamesID = '584979191121051659'
     var minecraftID = '621400728321392641'
