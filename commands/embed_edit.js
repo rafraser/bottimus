@@ -17,8 +17,7 @@ module.exports = {
         var embed = new discord.RichEmbed()
         args.forEach(function(arg) {
             console.log(arg)
-            arg = arg.split(':')
-            console.log(arg)
+            arg = arg.split('=')
             var key = arg[0]
             var value = arg[1]
             
