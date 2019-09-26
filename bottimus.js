@@ -114,7 +114,7 @@ client.on('message', function(message) {
 const welcomeChannel = '309951255575265280'
 client.on('guildMemberAdd', function(member) {
     var chan = client.channels.get(welcomeChannel)
-    chan.send('Welcome to Fluffy Servers, ' + member.username + '! Please check out #welcome')
+    chan.send('Welcome to Fluffy Servers, ' + member.displayName + '! Please check out <#528849382196379650>')
 })
 
 // Login to the bot with the key in .env
