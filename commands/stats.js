@@ -20,15 +20,15 @@ module.exports = {
         // Pick query based on argument given
         var query_string
         if (query_type == 'username') {
-            query_string = 'SELECT * FROM playtime p LEFT JOIN stats_murder m ON p.steamid64 = m.steamid64 LEFT JOIN event_cake e ON p.steamid64 = e.steamid64 LEFT JOIN location l ON p.steamid64 = l.steamid64 WHERE p.username=? LIMIT 1'
+            query_string = 'SELECT * FROM playtime p WHERE p.username LIKE ? ORDER BY playtime DESC LIMIT 1;'
+            id = '%' + id + '%'
         } else {
-            query_string = 'SELECT * FROM playtime p LEFT JOIN stats_murder m ON p.steamid64 = m.steamid64 LEFT JOIN event_cake e ON p.steamid64 = e.steamid64 LEFT JOIN location l ON p.steamid64 = l.steamid64 WHERE p.steamid64=? LIMIT 1'
+            query_string = 'SELECT * FROM playtime p WHERE p.steamid64=? LIMIT 1;'
         }
         
         // Query database
-        pool.query(query_string, [id], function(err, results) {
+        var q = pool.query(query_string, [id], function(err, results) {
             if (err) {
-                console.log(err)
                 message.channel.send('Couldn\'t get stats :(')
                 message.channel.send(err.toString())
             } else {
@@ -39,14 +39,10 @@ module.exports = {
                     var embed = new discord.RichEmbed()
                         .setColor('#e84118')
                         .setTitle(`Stats for ${result.username}`)
-                        .addField('Hours Played', `${Math.floor(result.playtime/3600)||0}`, true)
-                        .addField('Loot Collected', `${result.loot||0}`, true)
-                        .addField('Murders', `${result.murders||0}`, true)
-                        .addField('Shot Murderers', `${result.shot_murderer||0}`, true)
-                        .addField('Shot Innocents', `${result.shot_innocent||0}`, true)
-                        .addField('Shooting %', `${Math.floor(result.shot_murderer/(result.shot_murderer+result.shot_innocent)*100) || 0}%`, true)
+                        .addField('Hours Played', `${Math.floor(result.playtime/3600)||0}`, false)
+                        .addField('Stats Profile', `http://fluffyservers.com/profile.html?steamid=${result.steamid64}`, false)
                     message.channel.send(embed)
-                } catch (e) { 
+                } catch (e) {
                     message.channel.send('User not found in database')
                 }
             }
