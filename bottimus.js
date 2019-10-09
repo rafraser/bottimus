@@ -70,8 +70,53 @@ client.on('ready', function() {
     setInterval(client.update, 60 * 1000)
 })
 
+// Command handler
+client.on('message', function(message) {
+    // Do not handle messages by bots
+    if(message.author.bot) return
+    
+    // Scanners are applied to every message
+    // This can be used to stop messages from sending
+    for(var scanner of client.scanners) {
+        try {
+            // Run the scanner
+            var result = scanner.execute(message, client)
+            
+            // Abort processing if a scanner returns false
+            if(result == false) {
+                return
+            }
+        } catch(error) {}
+    }
+    
+    // Check for commands
+    if(!message.content.startsWith(prefix)) return
+    
+    // Handle args
+    // This uses a scary regex to split the arguments up
+    // Don't worry! It's not that bad!
+    // The first half finds words not seperated by spaces
+    // The second half finds groups of words inside quotes
+    var args = message.content.slice(prefix.length)
+    args = args.match(/[^" \n]+|"[^"]+"/g)
+    
+    // Check the command name
+    var cmd = args.shift().toLowerCase()
+    if(!client.commands.has(cmd)) return
+    
+    // Execute the command
+    // Includes some terrible error handling!
+    try {
+        client.commands.get(cmd).execute(message, args, client)
+    } catch(error) {
+        message.channel.send(error.message)
+    }
+})
+
 // Start the bot
-client.login(process.env.DISCORD)// Helper utility functions
+client.login(process.env.DISCORD)
+
+// Helper utility functions
 client.isAdministrator = function(member) {
     if(this.isModerator(member)) {
         return true
