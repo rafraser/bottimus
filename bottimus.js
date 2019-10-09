@@ -31,6 +31,10 @@ client.loadScanners = function() {
 // Updater loading function
 client.loadUpdaters = function() {
     client.updaters = []
+    
+    for(var file of fs.readdirSync('./updaters')) {
+        client.updaters.push(require('./updaters/' + file))
+    }
 }
 
 // Run all startup commands
