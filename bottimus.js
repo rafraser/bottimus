@@ -140,3 +140,26 @@ client.isModerator = function(member) {
         return false
     }
 }
+
+// Helper utility function to find a user
+client.findUser = function(message, args) {
+    // Return mentioned user if any were in the message
+    if(message.mentions.members.size >= 1) {
+        return message.mentions.members.first()
+    }
+    
+    // Search the list of users for matching names
+    var search = args.shift()
+    var results = message.guild.members.filter(function(u) {
+        return u.displayName.includes(search)
+    })
+    
+    // Return results or raise an error
+    if(results.size > 1) {
+        throw new Error('More than one user matched!')
+    } else if(results.size < 1) {
+        throw new Error('No user found!')
+    } else {
+        return results.first()
+    }
+}
