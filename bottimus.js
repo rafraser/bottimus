@@ -71,4 +71,27 @@ client.on('ready', function() {
 })
 
 // Start the bot
-client.login(process.env.DISCORD)
+client.login(process.env.DISCORD)// Helper utility functions
+client.isAdministrator = function(member) {
+    if(this.isModerator(member)) {
+        return true
+    } else {
+        if(member.roles.some(function(role) {
+            role.name.endsWith('Administrator')
+        })){
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+client.isModerator = function(member) {
+    if(member.roles.some(function(role) {
+        return role.name.endsWith('Moderator')
+    })){
+        return true
+    } else {
+        return false
+    }
+}
