@@ -1,14 +1,20 @@
 const discord = require('discord.js')
+const fs = require('fs')
 const mutedid = '495945521408770049'
 
 function muteUser(client, member, duration, muter, channel) {
     var roles = member.roles
+    var roleids = []
+    roles.forEach(function(role) {
+        roleids.push(role.id)
+    })
+    
     var options = {
-        guild: member.guild,
-        roles: roles,
+        guild: member.guild.id,
+        roles: roleids,
         unmute: new Date(Date.now() + duration * 60000),
-        muter: muter,
-        channel: channel
+        muter: muter.id,
+        channel: channel.id
     }
     client.mutesData.set(member.id, options)
     
@@ -18,22 +24,33 @@ function muteUser(client, member, duration, muter, channel) {
         member.removeRole(role).catch(function(e) {})
     })
     member.addRole(member.guild.roles.get(mutedid))
+    
+    // Write a data file in case of restarting
+    client.writeDataFile('mutes', member.id, options)
 }
 
 function unmuteUser(client, id) {
     var settings = client.mutesData.get(id)
-    var member = settings.guild.members.get(id)
+    var guild = client.guilds.get(settings.guild)
+    var member = guild.members.get(id)
     client.mutesData.delete(id)
     
     // Add roles back, then removed muted role
-    settings.roles.forEach(function(role) {
+    settings.roles.forEach(function(id) {
+        var role = guild.roles.get(id)
         member.addRole(role).catch(function(e) {})
     })
     member.removeRole(member.guild.roles.get(mutedid))
     
+    // Delete the mute data file (if it exists)
+    try {
+        fs.unlink('data/mutes/' + member.id + '.json', function(e) {})
+    } catch(e) {}
+    
     // Reply message
     try {
-        settings.channel.send(member.displayName + ' has been unmuted')
+        var channel = guild.channels.get(settings.channel)
+        channel.send(member.displayName + ' has been unmuted')
     } catch(e) {}
 }
 
