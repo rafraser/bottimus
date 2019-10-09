@@ -8,6 +8,29 @@ const prefix = '!'
 // Load the configuration from the .env file
 require('dotenv').config()
 
+// Create the directories for submodules if they don't exist
+client.createDirectories = function() {
+    var directories = ['commands', 'scanners', 'updaters', 'startup', 'data']
+    for(var directory of directories) {
+        if(!fs.existsSync(directory)) {
+            fs.mkdirSync(directory)
+        }
+    }
+}
+
+// Helper function for writing a .json file
+client.writeDataFile = function(directory, name, data) {
+    // Create the data subfolder if it doesn't already exist
+    if(!fs.existsSync('data/' + directory)) {
+        fs.mkdirSync('data/' + directory)
+    }
+    
+    // Convert the data to JSON and write to the data file
+    fs.writeFile('data/' + directory + '/' + name + '.json', JSON.stringify(data), function(e) {
+        if(e) console.error(e)
+    })
+}
+
 // Command loading function
 client.loadCommands = function() {
     client.commands = new discord.Collection()
@@ -40,7 +63,7 @@ client.loadUpdaters = function() {
 // Run all startup commands
 client.loadStartup = function() {
     for(var file of fs.readdirSync('./startup')) {
-        require('./startup/' + file).execute()
+        require('./startup/' + file).execute(client)
     }
 }
 
@@ -61,6 +84,7 @@ client.on('ready', function() {
     console.log('Connected to Discord successfully')
     
     // Load all required files
+    client.createDirectories()
     client.loadCommands()
     client.loadScanners()
     client.loadUpdaters()
