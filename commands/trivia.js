@@ -1,6 +1,7 @@
 const discord = require('discord.js')
 const https = require('https')
 const pool = require('../database')
+const arcade = require('../arcade')
 const entities = new require('html-entities').AllHtmlEntities
 
 const arrayOfLetters = ['A', 'B', 'C', 'D']
@@ -115,8 +116,10 @@ module.exports = {
                         if (guesses[player] == data.correct) {
                             winners.push(usernames[player])
                             incrementStatScore(player, data.category, true)
+                            arcade.incrementArcadeCredits(player, 5)
                         } else {
                             incrementStatScore(player, data.category, false)
+                            arcade.incrementArcadeCredits(player, 1)
                         }
                     }
 					
