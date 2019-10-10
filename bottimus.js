@@ -1,5 +1,6 @@
 const fs = require('fs')
 const discord = require('discord.js')
+const spawn = require('child_process').spawn
 
 // Create a new Discord client
 const client = new discord.Client()
@@ -195,4 +196,24 @@ client.findUser = function(message, args) {
     } else {
         return results.first()
     }
+}
+
+// Execute a given python script
+client.executePython = function(script, args) {
+    args.unshift('python/' + script + '.py')
+    
+    var p = new Promise(function(resolve, reject) {
+        var python = spawn('py', args)
+        
+        // Resolve or reject the promise depending on the result of the python code
+        // 0 is a success, any other code is a failure
+        python.on('close', function(code) {
+            if(code == 0) {
+                resolve()
+            } else {
+                reject()
+            }
+        })
+    })
+    return p
 }
