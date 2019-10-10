@@ -176,6 +176,11 @@ client.findUser = function(message, args) {
         return message.mentions.members.first()
     }
     
+    // Handle case with 0 arguments
+    if(!args || args.length < 1) {
+        throw new Error('No user found!')
+    }
+    
     // Search the list of users for matching names
     var search = args.shift()
     var results = message.guild.members.filter(function(u) {
