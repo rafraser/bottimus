@@ -20,74 +20,93 @@ function messageFilter(m) {
     return (!m.member.user.bot)
 }
 
+function startTypeRacer(client, message, display) {
+    var n = 30
+    var hard = 5
+    var list = shuffle(words.easy).slice(0, n-hard).concat(shuffle(words.hard).slice(0, hard))
+    display.delete()
+    
+    client.executePython('typeracer', list.join(' ')).then(function() {
+        // Send the image to the channel
+        var attachment = new discord.Attachment('./img/typeracer.png')
+        message.channel.send(attachment).then(function() {
+            var starttime = new Date()
+            var winners = new Map()
+            
+            var collector = message.channel.createMessageCollector(messageFilter, {time: 60000 })
+            collector.on('collect', function(m) {
+                // Check the message and see if it's a valid race response
+                // Skip message if already won
+                if(winners.get(m.member.id)) return
+                
+                var endtime = new Date()
+                var attempt = m.content.split(' ')
+                if(attempt.length < n) return
+                
+                // Check each word submitted by the user
+                // They are allowed 2 mistakes out of 50 words (96% accuracy)
+                var wrong = 0
+                for(var i=0; i<n; i++) {
+                    if(attempt[i].toLowerCase() == list[i].toLowerCase()) continue
+                    
+                    // Wrong word, oh no!
+                    wrong++
+                    if(wrong > 1) return
+                }
+                
+                // Everything is fine!
+                winners.set(m.member.id, endtime)
+                
+                // React to the message
+                m.react('✅')
+            })
+            
+            collector.on('end', function() {
+                var letters = list.join(' ').length
+                var place = 1
+                var string = 'The race is over!\n'
+                // Announce the winners
+                for(var result of winners) {
+                    var member = message.guild.members.get(result[0])
+                    var finishtime = result[1]
+                    var duration = (finishtime - starttime) / 1000
+                    var wpm = Math.floor((letters/5) * (60/duration))
+                    
+                    // Award credits based on WPM
+                    var credits = wpm/10 <= 1 ? 1 : wpm/10 >= 10 ? 10 : num/10
+                    arcade.incrementArcadeCredits(result[0], credits)
+                    
+                    string += '#' + place + ') ' + member.displayName + ': ' + wpm + 'WPM\n'
+                    place++
+                }
+                
+                message.channel.send(string)
+                client.playingTyperacer = false
+            })
+        })
+    }).catch(function(e) {message.channel.send(e)})
+}
+
 module.exports = {
     name: 'typeracer',
     description: 'Play a game of Type Racer',
     execute(message, args, client) {
+        // Only allow a single game of hangman
+        if(client.playingTyperacer) return
+        
         // Generate a list of n words for type racer
         // Of these words, a certain number are taken from the hard list
         // while the rest are taken from the easy list
-        var n = 30
-        var hard = 5
-        var list = shuffle(words.easy).slice(0, n-hard).concat(shuffle(words.hard).slice(0, hard))
+        client.playingTyperacer = true
         
-        client.executePython('typeracer', list.join(' ')).then(function() {
-            // Send the image to the channel
-            var attachment = new discord.Attachment('./img/typeracer.png')
-            message.channel.send(attachment).then(function() {
-                var starttime = new Date()
-                var winners = new Map()
-                
-                var collector = message.channel.createMessageCollector(messageFilter, {time: 60000 })
-                collector.on('collect', function(m) {
-                    // Check the message and see if it's a valid race response
-                    // Skip message if already won
-                    if(winners.get(m.member.id)) return
-                    
-                    var endtime = new Date()
-                    var attempt = m.content.split(' ')
-                    if(attempt.length < n) return
-                    
-                    // Check each word submitted by the user
-                    // They are allowed 2 mistakes out of 50 words (96% accuracy)
-                    var wrong = 0
-                    for(var i=0; i<n; i++) {
-                        if(attempt[i].toLowerCase() == list[i].toLowerCase()) continue
-                        
-                        // Wrong word, oh no!
-                        wrong++
-                        if(wrong > 1) return
-                    }
-                    
-                    // Everything is fine!
-                    winners.set(m.member.id, endtime)
-                    
-                    // React to the message
-                    m.react('✅')
-                })
-                
-                collector.on('end', function() {
-                    var letters = list.join(' ').length
-                    var place = 1
-                    var string = 'The race is over!\n'
-                    // Announce the winners
-                    for(var result of winners) {
-                        var member = message.guild.members.get(result[0])
-                        var finishtime = result[1]
-                        var duration = (finishtime - starttime) / 1000
-                        var wpm = Math.floor((letters/5) * (60/duration))
-                        
-                        // Award credits based on WPM
-                        var credits = wpm/10 <= 1 ? 1 : wpm/10 >= 10 ? 10 : num
-                        arcade.incrementArcadeCredits(result[0], credits)
-                        
-                        string += '#' + place + ') ' + member.displayName + ': ' + wpm + 'WPM\n'
-                        place++
-                    }
-                    
-                    message.channel.send(string)
-                })
-            })
-        }).catch(function(e) {message.channel.send(e)})
+        message.channel.send('Get ready for Type Racer!').then(function(m) {
+            // Small delay before starting to allow players time to prepare
+            setTimeout(function() { m.edit('Type Racer starting in: 5') }, 5000)
+            setTimeout(function() { m.edit('Type Racer starting in: 4') }, 6000)
+            setTimeout(function() { m.edit('Type Racer starting in: 3') }, 7000)
+            setTimeout(function() { m.edit('Type Racer starting in: 2') }, 8000)
+            setTimeout(function() { m.edit('Type Racer starting in: 1') }, 9000)
+            setTimeout(function() { startTypeRacer(client, message, m) }, 10000)
+        })
     },
 }
