@@ -200,18 +200,31 @@ client.findUser = function(message, args) {
 
 // Execute a given python script
 client.executePython = function(script, args) {
+    if(!Array.isArray(args)) {
+        args = [args]
+    }
     args.unshift('python/' + script + '.py')
     
     var p = new Promise(function(resolve, reject) {
         var python = spawn('py', args)
+        var data = ''
+        
+        // Log print statements and errors to the data
+        python.stdout.on('data', function(d) {
+            data += d
+        })
+        
+        python.stderr.on('data', function(d) {
+            data += d
+        })
         
         // Resolve or reject the promise depending on the result of the python code
         // 0 is a success, any other code is a failure
         python.on('close', function(code) {
             if(code == 0) {
-                resolve()
+                resolve(data)
             } else {
-                reject()
+                reject(data)
             }
         })
     })
