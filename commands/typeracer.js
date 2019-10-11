@@ -1,4 +1,3 @@
-const words = require('../words')
 const words = require('../typeracer_words')
 const arcade = require('../arcade')
 
@@ -24,14 +23,20 @@ module.exports = {
     name: 'typeracer',
     description: 'Play a game of Type Racer',
     execute(message, args, client) {
-        var n = 25
-        var list = shuffle(words).slice(0, n)
+        // Generate a list of n words for type racer
+        // Of these words, a certain number are taken from the hard list
+        // while the rest are taken from the easy list
+        var n = 30
+        var hard = 5
+        var list = shuffle(words.easy).slice(0, n-hard).concat(shuffle(words.hard).slice(0, hard))
+        
+        
         var starttime = new Date()
         message.channel.send(list.join(' ')).then(function() {
             var starttime = new Date()
             var winners = new Map()
             
-            var collector = message.channel.createMessageCollector(messageFilter, {time: 40000 })
+            var collector = message.channel.createMessageCollector(messageFilter, {time: 60000 })
             collector.on('collect', function(m) {
                 // Check the message and see if it's a valid race response
                 // Skip message if already won
@@ -39,7 +44,6 @@ module.exports = {
                 
                 var endtime = new Date()
                 var attempt = m.content.split(' ')
-                console.log(attempt.length, n)
                 if(attempt.length < n) return
                 
                 // Check each word submitted by the user
@@ -52,7 +56,6 @@ module.exports = {
                     wrong++
                     if(wrong > 1) return
                 }
-                console.log('Passed!')
                 
                 // Everything is fine!
                 winners.set(m.member.id, endtime)
