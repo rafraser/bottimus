@@ -92,7 +92,6 @@ client.on('ready', function() {
     
     // Run startup files
     client.loadStartup()
-    client.user.setActivity('Bottimus2 Beta')
     
     // Start the update loop
     client.minute = 0
