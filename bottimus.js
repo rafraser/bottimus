@@ -205,7 +205,7 @@ client.executePython = function(script, args) {
     args.unshift('python/' + script + '.py')
     
     var p = new Promise(function(resolve, reject) {
-        var python = spawn('py', args)
+        var python = spawn('python3', args)
         var data = ''
         
         // Log print statements and errors to the data
