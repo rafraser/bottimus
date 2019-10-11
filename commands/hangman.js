@@ -1,6 +1,6 @@
 const discord = require('discord.js')
 const arcade = require('../arcade')
-const words = require('../words')
+const words = require('../hangman_words')
 
 function getRandomWord() {
     return words[Math.floor(Math.random() * words.length)]

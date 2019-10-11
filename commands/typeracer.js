@@ -1,4 +1,5 @@
 const words = require('../words')
+const words = require('../typeracer_words')
 const arcade = require('../arcade')
 
 function shuffle(a) {
