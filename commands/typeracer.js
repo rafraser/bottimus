@@ -75,6 +75,10 @@ module.exports = {
                     var duration = (finishtime - starttime) / 1000
                     var wpm = Math.floor((letters/5) * (60/duration))
                     
+                    // Award credits based on WPM
+                    var credits = wpm/10 <= 1 ? 1 : wpm/10 >= 10 ? 10 : num
+                    arcade.incrementArcadeCredits(result[0], credits)
+                    
                     string += '#' + place + ') ' + member.displayName + ': ' + wpm + 'WPM\n'
                     place++
                 }
