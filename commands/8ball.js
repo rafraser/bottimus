@@ -11,7 +11,8 @@ module.exports = {
     execute(message, args) {
         // Pick one of the 20 8ball images at random and send it as a reply
         var result = getRandomInt(1, 20)
-        var img = new discord.Attachment(path.join(__dirname, '../img/8ball/' + result + '.png'))
+        // var img = new discord.Attachment(path.join(__dirname, '../img/8ball/' + result + '.png'))
+        var img = new discord.Attachment('./img/8ball/' + result + '.png')
         message.channel.send(img)
     },
 }
