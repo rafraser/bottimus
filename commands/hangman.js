@@ -16,6 +16,7 @@ function generateEmbed(attempts, guesses, fails) {
 }
 
 function hangmanFilter(msg) {
+    if(msg.member.user.bot) return false
     if(msg.content.length > 1) return false
     return ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(msg.content) > -1)
 }
