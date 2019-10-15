@@ -59,7 +59,7 @@ function startTypeRacer(client, message, display) {
                 
                 // React to the message
                 m.delete()
-                m.channel.reply('✅ ' + m.member.displayName + ' has completed the race!')
+                m.channel.send('✅ ' + m.member.displayName + ' has completed the race!')
             })
             
             collector.on('end', function() {
