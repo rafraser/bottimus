@@ -58,7 +58,8 @@ function startTypeRacer(client, message, display) {
                 winners.set(m.member.id, endtime)
                 
                 // React to the message
-                m.react('✅')
+                m.delete()
+                m.channel.reply('✅ ' + m.member.displayName + ' has completed the race!')
             })
             
             collector.on('end', function() {
