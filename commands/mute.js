@@ -82,8 +82,26 @@ module.exports = {
         }
         
         try {
+            // Don't mute administrators
             var target = client.findUser(message, args)
-            var duration = args.shift() || 30
+            if(client.isAdministrator(target)) {
+                message.channel.send('You cannot mute Administrators!')
+                return
+            }
+            
+            // Search the arguments until a duration is found
+            var duration = null
+            while(duration == null && args.length > 1) {
+                var a = parseInt(args.shift())
+                if(!isNaN(a)) {
+                    duration = a
+                }
+            }
+            
+            // Half hour mute if duration could not be found
+            if(duration == null || isNaN(duration)) {
+                duration = 30
+            }
             
             // Handle muting process in the above functions
             if(client.mutesData.has(target.id)) {
