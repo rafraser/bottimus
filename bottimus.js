@@ -160,6 +160,8 @@ client.isAdministrator = function(member) {
 }
 
 client.isModerator = function(member) {
+    if(client.isAdministrator(member)) return true
+    
     if(member.roles.some(function(role) {
         return role.name.endsWith('Moderator')
     })){
