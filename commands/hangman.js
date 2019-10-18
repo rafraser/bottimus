@@ -18,6 +18,7 @@ function generateEmbed(attempts, guesses, fails) {
 function hangmanFilter(msg) {
     if(msg.member.user.bot) return false
     if(msg.content.length > 1) return false
+    if(msg.content == '' || msg.content == ' ') return false
     return ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(msg.content) > -1)
 }
 
@@ -42,7 +43,6 @@ module.exports = {
                 // Check words for valid guesses
                 var letter = m.content
                 var user = m.member
-                m.delete()
                 
                 // Don't count guesses twice
                 if(attempts.includes(letter)) {
@@ -66,6 +66,8 @@ module.exports = {
                         }
                     }
                 }
+                
+                m.delete()
                 
                 // Update the embed
                 game_msg.edit(generateEmbed(attempts, guesses, fails))
