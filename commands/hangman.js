@@ -11,6 +11,7 @@ function generateEmbed(attempts, guesses, fails) {
     .setTitle('Hangman')
     .setDescription((8 - fails) + ' mistakes left!')
     .setFooter(attempts.join(' '))
+    .setColor('#d63031')
     .addField(guesses.join(' '), '\u200b')
     return embed
 }
