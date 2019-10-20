@@ -5,7 +5,7 @@ const discord = require('discord.js')
 
 // Stores results for players that complete the Type Race
 function incrementStatScore(userid, speed) {
-    var query_one = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE completed = completed + 1, speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1);'
+    var query_one = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1), completed = completed + 1;'
     var query_two = 'SELECT speed_best FROM arcade_typeracer WHERE discordid = ?;'
     var query_three = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
     
