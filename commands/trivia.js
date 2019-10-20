@@ -8,14 +8,9 @@ const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = {'🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3}
 
 function incrementStatScore(userid, category, correct) {
-    var query_string;
-    if(correct) {
-        query_string = "INSERT INTO arcade_trivia VALUES(?, ?, 1, 1) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + 1"
-    } else {
-        query_string = "INSERT INTO arcade_trivia VALUES(?, ?, 1, 0) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct"
-    }
+    var query_string = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
     
-    pool.query(query_string, [userid, category],function(err, results) {
+    pool.query(query_string, [userid, category, correct],function(err, results) {
         if (err) {
             console.log(err)
         }
@@ -95,34 +90,33 @@ module.exports = {
                     message.channel.send('The correct answer is: ' + arrayOfLetters[data.correct])
                     
                     // Sort out all the guesses, disqualifying anyone that guessed multiple times
-                    var guesses = {}
-                    var usernames = {}
+                    var guesses = new Map()
                     collected.forEach(function(reaction) {
                         reaction.users.forEach(function(user) {
                             if(user.bot) return
                             
-                            if(guesses[user.id]) {
-                                guesses[user.id] = 'DQ'
+                            if(guesses.get(user.id)) {
+                                guesses.set(user.id, 'DQ')
                             } else {
-                                guesses[user.id] = emojiToNum[reaction._emoji.name]
+                                guesses.set(user.id, emojiToNum[reaction._emoji.name])
                             }
-                            usernames[user.id] = user.username
                         })
                     })
                     
                     // From all the guesses, determine who won
                     var winners = []
-                    for (var player in guesses) {
-                        if (guesses[player] == data.correct) {
-                            winners.push(usernames[player])
-                            incrementStatScore(player, data.category, true)
-                            arcade.incrementArcadeCredits(player, 5)
-                        } else {
-                            incrementStatScore(player, data.category, false)
-                            arcade.incrementArcadeCredits(player, 1)
+                    guesses.forEach(function(guess, id) {
+                        var c = (guess == data.correct) ? 1 : 0
+                        if(c) {
+                            var username = message.guild.members.get(id).displayName
+                            winners.push(username)
                         }
-                    }
-					
+                        
+                        // Increment stat points
+                        incrementStatScore(id, data.category, c)
+                        arcade.incrementArcadeCredits(id, 1 + (c*4))
+                    })
+                    
                     // Message if there is any winners
                     if (winners.length > 0) {
                         message.channel.send('Congratulations to: ' + winners.join(', '))
