@@ -1,6 +1,18 @@
 const discord = require('discord.js')
 const arcade = require('../arcade')
+const pool = require('../database')
 const words = require('../hangman_words')
+
+function incrementStatScore(userid, guesses, correct, revealed, won, contribution) {
+    // Sorry
+    var query_string = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
+    
+    pool.query(query_string, [userid, guesses, correct, revealed, won, contribution],function(err, results) {
+        if (err) {
+            console.log(err)
+        }
+    })
+}
 
 function getRandomWord() {
     return words[Math.floor(Math.random() * words.length)]
@@ -38,6 +50,11 @@ module.exports = {
         var guesses = Array(word.length).fill('\\_')
         client.playingHangman = true
         
+        // Setup some collections for player data
+        var player_guesses = new Map()
+        var player_correct = new Map()
+        var player_revealed = new Map()
+        
         message.channel.send(generateEmbed(attempts, guesses, fails)).then(function(game_msg) {
             var collector = game_msg.channel.createMessageCollector(hangmanFilter, {time: 60000})
             collector.on('collect', function(m) {
@@ -55,16 +72,41 @@ module.exports = {
                     // Incorrect guess, oh no :(
                     game_msg.channel.send('Uh oh! ' + letter + ' is not in the word!').then(function(msg) { msg.delete(1000) })
                     fails++
+                    
+                    // Track guesses per user
+                    if(player_guesses.get(user.id)) {
+                        player_guesses.set(user.id, player_guesses.get(user.id) + 1)
+                    } else {
+                        player_guesses.set(user.id, 1)
+                    }
                 } else {
                     // Correct guess!
                     game_msg.channel.send('Good guess! ' + letter + ' is in the word!').then(function(msg) { msg.delete(1000) })
                     arcade.incrementArcadeCredits(user.id, 1)
                     
+                    // Reveal letters in the word
+                    var revealed = 0
                     for(var i=0; i<word.length; i++) {
                         if(word.charAt(i) == letter) {
                             guesses[i] = letter
-                            correct++
+                            revealed++
                         }
+                    }
+                    correct += revealed
+                    
+                    // Track guesses per user
+                    if(player_guesses.get(user.id)) {
+                        player_guesses.set(user.id, player_guesses.get(user.id) + 1)
+                    } else {
+                        player_guesses.set(user.id, 1)
+                    }
+                    
+                    if(player_correct.get(user.id)) {
+                        player_correct.set(user.id, player_correct.get(user.id) + 1)
+                        player_revealed.set(user.id, player_revealed.get(user.id) + revealed) 
+                    } else {
+                        player_correct.set(user.id, 1)
+                        player_revealed.set(user.id, revealed)
                     }
                 }
                 
@@ -96,6 +138,17 @@ module.exports = {
                 } else {
                     game_msg.channel.send('Time\s up! The word was ' + word)
                 }
+                
+                // Increment stats data for all players
+                // TODO
+                player_guesses.forEach(function(guesses, key) {
+                    var member = message.guild.members.get(key)
+                    var correct = player_correct.get(key) || 0
+                    var revealed = player_revealed.get(key) || 0
+                    var contribution = Math.floor((revealed/word.length)*100)
+                    var won = (reason == 'win') ? 1 : 0
+                    incrementStatScore(key, guesses, correct, revealed, won, contribution)
+                })
             })
         })
     }
