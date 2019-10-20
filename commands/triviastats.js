@@ -17,7 +17,7 @@ module.exports = {
     name: 'triviastats',
     description: 'Fetchs statistics from Trivia',
     execute(message, args, client) {
-        var query_string = "SELECT category, attempted, correct, (correct/attempted) AS percent FROM trivia_stats WHERE discordid = ? ORDER BY (correct/attempted) DESC;"
+        var query_string = "SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;"
         
         // Query database
         pool.query(query_string, [message.member.id], function(err, results) {

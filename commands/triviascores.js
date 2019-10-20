@@ -17,11 +17,11 @@ module.exports = {
         
         var query_string
         if(args[0].toLowerCase() == 'percentage') {
-            query_string = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM trivia_stats GROUP BY discordid HAVING SUM(attempted) >= 10 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
+            query_string = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia GROUP BY discordid HAVING SUM(attempted) >= 10 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
         } else if(args[0].toLowerCase() == 'total') {
-            query_string = "SELECT discordid, SUM(correct) AS score FROM trivia_stats GROUP BY discordid ORDER BY score DESC LIMIT 10;"
+            query_string = "SELECT discordid, SUM(correct) AS score FROM arcade_trivia GROUP BY discordid ORDER BY score DESC LIMIT 10;"
         } else {
-            query_string = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM trivia_stats WHERE category = ? GROUP BY discordid HAVING SUM(attempted) >= 5 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
+            query_string = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia WHERE category = ? GROUP BY discordid HAVING SUM(attempted) >= 5 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
         }
         
         // Query database

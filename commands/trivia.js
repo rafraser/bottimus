@@ -10,9 +10,9 @@ const emojiToNum = {'🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3}
 function incrementStatScore(userid, category, correct) {
     var query_string;
     if(correct) {
-        query_string = "INSERT INTO trivia_stats VALUES(?, ?, 1, 1) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + 1"
+        query_string = "INSERT INTO arcade_trivia VALUES(?, ?, 1, 1) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + 1"
     } else {
-        query_string = "INSERT INTO trivia_stats VALUES(?, ?, 1, 0) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct"
+        query_string = "INSERT INTO arcade_trivia VALUES(?, ?, 1, 0) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct"
     }
     
     pool.query(query_string, [userid, category],function(err, results) {
