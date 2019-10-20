@@ -1,6 +1,64 @@
 const words = require('../typeracer_words')
 const arcade = require('../arcade')
+const pool = require('../database')
 const discord = require('discord.js')
+
+// Stores results for players that complete the Type Race
+function incrementStatScore(userid, speed) {
+    var query_one = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE completed = completed + 1, speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1);'
+    var query_two = 'SELECT speed_best FROM arcade_typeracer WHERE discordid = ?;'
+    var query_three = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
+    
+    // callback hell I know
+    var p = new Promise(function(resolve, reject) {
+        pool.query(query_one, [userid, speed], function(err, results) {
+            if (err) { console.log(err); return }
+            pool.query(query_two, [userid], function(err, results) {
+                if (err) { console.log(err); return }
+                var best = results[0].speed_best
+                
+                if(speed > best) {
+                    pool.query(query_three, [speed, new Date(), userid], function(err) {
+                        if (err) console.log(err)
+                    })
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+        })
+    })
+    return p
+}
+
+// UNUSED Function
+// Stores results for players that complete the Type Race on mobile
+function incrementStatScoreMobile(userid, speed) {
+    var query_one = 'INSERT INTO arcade_typeracer_mobile (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE completed = completed + 1, speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1);'
+    var query_two = 'SELECT speed_best FROM arcade_typeracer_mobile WHERE discordid = ?;'
+    var query_three = 'UPDATE arcade_typeracer_mobile SET speed_best = ?, date_best = ? WHERE discordid = ?;'
+    
+    // callback hell I know
+    var p = new Promise(function(resolve, reject) {
+        pool.query(query_one, [userid, speed], function(err, results) {
+            if (err) { console.log(err); return }
+            pool.query(query_two, [userid], function(err, results) {
+                if (err) { console.log(err); return }
+                var best = results[0].speed_best
+                
+                if(speed > best) {
+                    pool.query(query_three, [speed, new Date(), userid], function(err) {
+                        if (err) console.log(err)
+                    })
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+        })
+    })
+    return p
+}
 
 function shuffle(a) {
     var j, x, i
@@ -76,6 +134,14 @@ function startTypeRacer(client, message, display) {
                     // Award credits based on WPM
                     var credits = wpm/10 <= 1 ? 1 : wpm/10 >= 10 ? 10 : wpm/10
                     arcade.incrementArcadeCredits(result[0], credits)
+                    
+                    // Prepare function to announce records
+                    var record_func = function(record) {
+                        if(record) {
+                            message.channel.send('⭐ ' + member.displayName + ' set a new record of ' +  wpm + 'WPM')
+                        }
+                    }
+                    incrementStatScore(result[0], wpm).then(record_func)
                     
                     string += '#' + place + ') ' + member.displayName + ': ' + wpm + 'WPM\n'
                     place++
