@@ -135,13 +135,12 @@ function startTypeRacer(client, message, display) {
                     var credits = wpm/10 <= 1 ? 1 : wpm/10 >= 10 ? 10 : wpm/10
                     arcade.incrementArcadeCredits(result[0], credits)
                     
-                    // Prepare function to announce records
-                    var record_func = function(record) {
+                    // Store data, announcing records when applicable
+                    incrementStatScore(result[0], wpm).then(function(record) {
                         if(record) {
                             message.channel.send('⭐ ' + member.displayName + ' set a new record of ' +  wpm + 'WPM')
                         }
-                    }
-                    incrementStatScore(result[0], wpm).then(record_func)
+                    })
                     
                     string += '#' + place + ') ' + member.displayName + ': ' + wpm + 'WPM\n'
                     place++
