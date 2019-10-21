@@ -21,9 +21,9 @@ function incrementStatScore(userid, speed) {
                     pool.query(query_three, [speed, new Date(), userid], function(err) {
                         if (err) console.log(err)
                     })
-                    resolve(true)
+                    resolve([true, userid, speed])
                 } else {
-                    resolve(false)
+                    resolve([false])
                 }
             })
         })
@@ -137,8 +137,11 @@ function startTypeRacer(client, message, display) {
                     
                     // Store data, announcing records when applicable
                     incrementStatScore(result[0], wpm).then(function(record) {
-                        if(record) {
-                            message.channel.send('⭐ ' + member.displayName + ' set a new record of ' +  wpm + 'WPM')
+                        if(record[0]) {
+                            var id = record[1]
+                            var speed = record[2]
+                            var member = message.guild.members.get(id).displayName
+                            message.channel.send('⭐ ' + member + ' set a new record of ' + speed + ' WPM!')
                         }
                     })
                     
