@@ -146,16 +146,12 @@ client.login(process.env.DISCORD)
 
 // Helper utility functions
 client.isAdministrator = function(member) {
-    if(this.isModerator(member)) {
+    if(member.roles.some(function(role) {
+        role.name.endsWith('Administrator')
+    })){
         return true
     } else {
-        if(member.roles.some(function(role) {
-            role.name.endsWith('Administrator')
-        })){
-            return true
-        } else {
-            return false
-        }
+        return false
     }
 }
 
