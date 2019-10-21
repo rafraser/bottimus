@@ -91,12 +91,16 @@ module.exports = {
             
             // Search the arguments until a duration is found
             var duration = null
-            while(duration == null && args.length > 1) {
-                var a = parseInt(args.shift())
+            for(var i=0; i < args.length; i++) {
+                var a = args[i]
+                a = parseInt(a, 10)
+                
                 if(!isNaN(a)) {
                     duration = a
+                    break
                 }
             }
+            console.log(duration)
             
             // Half hour mute if duration could not be found
             if(duration == null || isNaN(duration)) {
