@@ -147,7 +147,7 @@ client.login(process.env.DISCORD)
 // Helper utility functions
 client.isAdministrator = function(member) {
     if(member.roles.some(function(role) {
-        role.name.endsWith('Administrator')
+        return role.name.endsWith('Administrator')
     })){
         return true
     } else {
