@@ -190,12 +190,15 @@ client.findUser = function(message, args, retself=False) {
     })
     
     // Return results or raise an error
+    // In the event no user was found, shove the argument back on the list
     if(results.size > 1) {
         throw new Error('More than one user matched!')
     } else if(results.size < 1) {
         if(retself) {
+            args.unshift(search)
             return message.member
         } else {
+            args.unshift(search)
             throw new Error('No user found!')
         }
     } else {
