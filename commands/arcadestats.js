@@ -69,7 +69,7 @@ embedFunctions['hangman'] = function(user) {
             // Generate a nice embed for details
             var embed = new discord.RichEmbed()
             .setColor('#4cd137')
-            .setTitle(`[Hangman] ${username}`)
+            .setTitle(`🚷 Hangman -  ${username}`)
             .addField('Letters Guessed', `${r.guesses}`, true)
             .addField('Letters Correct', `${r.correct}`, true)
             .addField('Percentage', `${Math.floor(r.percent*100) || 0}%`, true)
@@ -93,7 +93,7 @@ embedFunctions['trivia'] = function(user) {
             // Generate a nice embed for details
             var embed = new discord.RichEmbed()
             .setColor('#4cd137')
-            .setTitle(`[Trivia] ${username}`)
+            .setTitle(`❓ Trivia - ${username}`)
             .addField('Questions Answered', `${total_guesses}`, true)
             .addField('Questions Correct', `${total_correct}`, true)
             .addField('Percentage', `${Math.floor((total_correct/total_guesses)*100) || 0}%`, true)
@@ -122,7 +122,7 @@ embedFunctions['typeracer'] = function(user) {
             // Generate a nice embed for details
             var embed = new discord.RichEmbed()
             .setColor('#4cd137')
-            .setTitle(`[Type Racer] ${username}`)
+            .setTitle(`🏎 Type Racer - ${username}`)
             .addField('Races Completed', `${r.completed}`, true)
             .addField('Average Speed', `${r.speed_average}WPM`, true)
             .addField('Best Speed', `${r.speed_best}WPM`, true)
