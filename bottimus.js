@@ -168,7 +168,7 @@ client.isModerator = function(member) {
 }
 
 // Helper utility function to find a user
-client.findUser = function(message, args) {
+client.findUser = function(message, args, retself=False) {
     // Return mentioned user if any were in the message
     if(message.mentions.members.size >= 1) {
         return message.mentions.members.first()
@@ -176,7 +176,11 @@ client.findUser = function(message, args) {
     
     // Handle case with 0 arguments
     if(!args || args.length < 1) {
-        throw new Error('No user found!')
+        if(retself) {
+            return message.member
+        } else {
+            throw new Error('No user found!')
+        }
     }
     
     // Search the list of users for matching names
@@ -189,7 +193,11 @@ client.findUser = function(message, args) {
     if(results.size > 1) {
         throw new Error('More than one user matched!')
     } else if(results.size < 1) {
-        throw new Error('No user found!')
+        if(retself) {
+            return message.member
+        } else {
+            throw new Error('No user found!')
+        }
     } else {
         return results.first()
     }
