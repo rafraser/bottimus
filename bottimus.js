@@ -176,7 +176,7 @@ client.isModerator = function(member) {
 }
 
 // Helper utility function to find a user
-client.findUser = function(message, args, retself=False) {
+client.findUser = function(message, args, retself=false) {
     // Return mentioned user if any were in the message
     if(message.mentions.members.size >= 1) {
         return message.mentions.members.first()
