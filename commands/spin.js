@@ -18,6 +18,9 @@ module.exports = {
                         message.channel.send(data)
                         client.spinningWheel = null
                     }, 4000)
+                }).catch(function() {
+                    message.channel.send('The wheel broke :(')
+                    client.spinningWheel = null
                 })
             })
         })
