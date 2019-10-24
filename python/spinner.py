@@ -113,7 +113,10 @@ def main(prizes, filename='./img/wheel.gif'):
     # Pick colors
     colors = [(232, 67, 147), (108, 92, 231), (0, 206, 201), (255, 159, 67), (249, 202, 36), (235, 77, 75)]
     random.shuffle(colors)
-    colors = colors[:math.ceil(n/2)] * 2
+    if n < 5:
+        colors = colors[:n]
+    else:
+        colors = colors[:math.ceil(n/2)] * 2
     
     # Animation properties
     count = 90
