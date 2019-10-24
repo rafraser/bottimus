@@ -116,7 +116,9 @@ def main(prizes, filename='./img/wheel.gif'):
     if n < 5:
         colors = colors[:n]
     else:
-        colors = colors[:math.ceil(n/2)] * 2
+        colors = colors[:math.ceil(n/2)]
+        while len(colors) < n:
+            colors = colors * 2
     
     # Animation properties
     count = 90
