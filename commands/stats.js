@@ -5,6 +5,7 @@ module.exports = {
     name: 'stats',
     description: 'Fetchs statistics from Simply Murder',
     execute(message, args) {
+        if(message.guild != '309951255575265280') return
         if(!args.length || args.length < 1) { return }
         
         // Friendly join multiple arguments

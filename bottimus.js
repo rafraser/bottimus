@@ -144,6 +144,8 @@ client.on('message', function(message) {
 // Greet new users to the server
 // Welcome new users
 client.on('guildMemberAdd', function(member) {
+    if(member.guild != '309951255575265280') return
+    
     var chan = member.guild.channels.find(ch => ch.name === 'general')
     chan.send(`Welcome to Fluffy Servers, ${member.displayName}! Please check out <#528849382196379650>`)
     member.addRole('535346825423749120')

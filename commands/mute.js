@@ -70,6 +70,8 @@ module.exports = {
     mute: muteUser,
     unmute: unmuteUser,
     execute(message, args, client) {
+        if(message.guild != '309951255575265280') return
+        
         // Check that the user has permission
         if(!client.isModerator(message.member)) {
             message.channel.send('You need to be a Moderator to use this!')
