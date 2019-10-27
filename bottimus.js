@@ -40,6 +40,13 @@ client.loadCommands = function() {
     for(var file of fs.readdirSync('./commands')) {
         var command = require('./commands/' + file)
         client.commands.set(command.name, command)
+        
+        // Link aliases
+        if(command.aliases) {
+            for(var alias of command.aliases) {
+                client.commands.set(alias, command)    
+            }
+        }
     }
 }
 

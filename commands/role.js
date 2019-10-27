@@ -3,6 +3,7 @@ const discord = require('discord.js')
 module.exports = {
     name: 'role',
     description: 'Assign a role to yourself',
+    aliases: ['roleme', 'assign', 'setrole'],
     execute(message, args) {
         if(message.guild.id != '309951255575265280') return;
         

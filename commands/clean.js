@@ -3,6 +3,7 @@ const discord = require('discord.js')
 module.exports = {
     name: 'clean',
     description: '🛡️ Delete the last X messages from the channel',
+    aliases: ['cleanup'],
     execute(message, args, client) {
         if(message.guild.id != '309951255575265280') return
         

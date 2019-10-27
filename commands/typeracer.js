@@ -159,6 +159,7 @@ function startTypeRacer(client, message, display) {
 module.exports = {
     name: 'typeracer',
     description: 'Play a game of Type Racer',
+    aliases: ['typerace'],
     execute(message, args, client) {
         // Only allow a single game of hangman
         if(client.playingTyperacer) return

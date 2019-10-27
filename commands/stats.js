@@ -4,6 +4,7 @@ const discord = require('discord.js')
 module.exports = {
     name: 'stats',
     description: 'Fetchs statistics from Simply Murder',
+    aliases: ['murderstats'],
     execute(message, args) {
         if(!args.length || args.length < 1) { return }
         

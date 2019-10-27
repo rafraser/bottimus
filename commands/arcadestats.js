@@ -137,6 +137,7 @@ embedFunctions['typeracer'] = function(user) {
 module.exports = {
     name: 'arcadestats',
     description: 'Fetchs statistics for arcade games',
+    aliases: ['gamestats'],
     execute(message, args, client) {
         var user = client.findUser(message, args, true)
         var game = args.shift()

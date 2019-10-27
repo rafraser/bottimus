@@ -93,6 +93,7 @@ function generateScratchCard(msg, user, client) {
 module.exports = {
     name: 'scratchcard',
     description: 'Scratch a prize card for 250 coins',
+    aliases: ['scratch'],
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
             if(amount <= 250) {

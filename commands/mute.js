@@ -67,6 +67,7 @@ function formatDuration(duration) {
 module.exports = {
     name: 'mute',
     description: '🛡️ Mute a specified user',
+    aliases: ['banish', 'void'],
     mute: muteUser,
     unmute: unmuteUser,
     execute(message, args, client) {
