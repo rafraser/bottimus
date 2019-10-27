@@ -4,7 +4,7 @@ const spawn = require('child_process').spawn
 
 // Create a new Discord client
 const client = new discord.Client()
-const prefix = '!'
+const prefixes = ['!', 'Bottimus, ']
 
 // Load the configuration from the .env file
 require('dotenv').config()
@@ -123,16 +123,25 @@ client.on('message', function(message) {
             }
         } catch(error) {}
     }
-    
+
     // Check for commands
-    if(!message.content.startsWith(prefix)) return
+    // This supports multiple prefixes now
+    var isCommand = false
+    var args
+    for(var prefix of prefixes) {
+        if(message.content.startsWith(prefix)) {
+            isCommand = true
+            args = message.content.slice(prefix.length)
+            break
+        }
+    }
+    if(!isCommand) return false
     
     // Handle args
     // This uses a scary regex to split the arguments up
     // Don't worry! It's not that bad!
     // The first half finds words not seperated by spaces
     // The second half finds groups of words inside quotes
-    var args = message.content.slice(prefix.length)
     args = args.match(/[^" \n]+|"[^"]+"/g)
     
     // Check the command name
@@ -163,7 +172,7 @@ client.login(process.env.DISCORD)
 
 // Helper utility functions
 client.isAdministrator = function(member) {
-    if(mmember.guild.id != '309951255575265280') return false
+    if(member.guild.id != '309951255575265280') return false
     
     if(member.roles.some(function(role) {
         return role.name.endsWith('Administrator')
@@ -175,7 +184,7 @@ client.isAdministrator = function(member) {
 }
 
 client.isModerator = function(member) {
-    if(mmember.guild.id != '309951255575265280') return false
+    if(member.guild.id != '309951255575265280') return false
     if(client.isAdministrator(member)) return true
     
     if(member.roles.some(function(role) {
