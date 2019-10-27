@@ -163,6 +163,8 @@ client.login(process.env.DISCORD)
 
 // Helper utility functions
 client.isAdministrator = function(member) {
+    if(mmember.guild.id != '309951255575265280') return false
+    
     if(member.roles.some(function(role) {
         return role.name.endsWith('Administrator')
     })){
@@ -173,6 +175,7 @@ client.isAdministrator = function(member) {
 }
 
 client.isModerator = function(member) {
+    if(mmember.guild.id != '309951255575265280') return false
     if(client.isAdministrator(member)) return true
     
     if(member.roles.some(function(role) {

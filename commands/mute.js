@@ -70,7 +70,7 @@ module.exports = {
     mute: muteUser,
     unmute: unmuteUser,
     execute(message, args, client) {
-        if(message.guild != '309951255575265280') return
+        if(message.guild.id != '309951255575265280') return
         
         // Check that the user has permission
         if(!client.isModerator(message.member)) {
@@ -102,7 +102,6 @@ module.exports = {
                     break
                 }
             }
-            console.log(duration)
             
             // Half hour mute if duration could not be found
             if(duration == null || isNaN(duration)) {

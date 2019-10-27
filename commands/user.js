@@ -26,7 +26,7 @@ module.exports = {
     name: 'user',
     description: 'Get information about when a user joined',
     execute(message, args, client) {
-        if(message.guild != '309951255575265280') return
+        if(message.guild.id != '309951255575265280') return
         
         getUserRankings(message.guild).then(function(rankings) {
             var user
