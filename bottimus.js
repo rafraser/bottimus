@@ -265,6 +265,7 @@ client.executePython = function(script, args) {
         // Resolve or reject the promise depending on the result of the python code
         // 0 is a success, any other code is a failure
         python.on('close', function(code) {
+            data = data.trim() // remove any whitespace at the end
             if(code == 0) {
                 resolve(data)
             } else {
