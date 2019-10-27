@@ -4,7 +4,7 @@ import random
 import sys
 
 # Draw the slice text / icon
-def render_prize(ang, i, font):
+def render_prize(prizes, ang, i, font):
     ang = (360 - ang) % 360
     canvas = Image.new('RGBA', (1024, 1024))
     draw = ImageDraw.Draw(canvas)
@@ -63,7 +63,7 @@ def render_background():
     return canvas
     
 # Render the wheel
-def render_spinner(n, colors, font):
+def render_spinner(prizes, n, colors, font):
     canvas = Image.new('RGBA', (1024, 1024))
     draw = ImageDraw.Draw(canvas)
     width = 360/n
@@ -84,7 +84,7 @@ def render_spinner(n, colors, font):
         draw.line((512, 512, 512 + radius*math.cos(rad), 512 + radius*math.sin(rad)), (245, 246, 250), 8)
         
         # Render the prize information
-        prize = render_prize(ang + offset + 180, i, font)
+        prize = render_prize(prizes, ang + offset + 180, i, font)
         canvas.paste(prize, (0, 0), prize)
         ang = ang + width
         
@@ -97,11 +97,10 @@ def render_spinner(n, colors, font):
 # Render each frame of the animation
 def render_frame(background, emblem, spinner, rotation):
     canvas = background.copy()
-    spin = spinner.rotate(rotation, center=(512, 512))
+    spin = spinner.rotate(rotation, center=(256, 256))
     canvas.paste(spin, (0, 0), spin)
     canvas.paste(emblem, (0, 0), emblem)
     
-    canvas = canvas.resize((512, 512), Image.LANCZOS)
     return canvas
 
 def main(prizes, filename='./img/wheel.gif'):
@@ -128,9 +127,9 @@ def main(prizes, filename='./img/wheel.gif'):
     ang = 0
     
     # Render the important parts only once
-    background = render_background()
-    emblem = render_emblem(logo)
-    spinner = render_spinner(n, colors, font)
+    background = render_background().resize((512, 512), Image.BICUBIC)
+    emblem = render_emblem(logo).resize((512, 512), Image.BICUBIC)
+    spinner = render_spinner(prizes, n, colors, font).resize((512, 512), Image.BICUBIC)
     
     # Spin the wheel!
     for i in range(count-1):
