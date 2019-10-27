@@ -84,6 +84,13 @@ client.update = function() {
 client.on('ready', function() {
     console.log('Connected to Discord successfully')
     
+    // Run a quick check to see if this is a test bot
+    // Testing mode is enabled if a .testmode file exists
+    fs.access('.testmode', fs.constants.F_OK, function(err) {
+        client.testingMode = !err
+        console.log('Testing Mode: ' + client.testingMode)
+    })
+    
     // Load all required files
     client.createDirectories()
     client.loadCommands()

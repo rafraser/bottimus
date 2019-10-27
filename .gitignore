@@ -1,4 +1,5 @@
 .env
+.testmode
 node_modules/
 package-lock.json
 hangman_words.js
