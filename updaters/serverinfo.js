@@ -52,7 +52,7 @@ function updateMinecraft(message) {
 const serverChannel = '528849382196379650'
 const murderMessage = '584979182459813889'
 const minigamesMessage = '584979191121051659'
-const minecraftMessage = '621400728321392641'
+//const minecraftMessage = '621400728321392641'
 
 module.exports = {
     description: 'Update the server information in the welcome channel',
@@ -62,7 +62,7 @@ module.exports = {
             var channel = client.channels.get(serverChannel)
             channel.fetchMessage(murderMessage).then(function(m) { updateMurder(m) })
             channel.fetchMessage(minigamesMessage).then(function(m) { updateMinigames(m) })
-            channel.fetchMessage(minecraftMessage).then(function(m) { updateMinecraft(m) })
+            //channel.fetchMessage(minecraftMessage).then(function(m) { updateMinecraft(m) })
         } catch(e) {
             console.log('Failed to update server info')
         }
