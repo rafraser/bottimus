@@ -1,24 +1,27 @@
 const pool = require('./database')
 const prizeList = {
     'bowlingpin': ['Bowling Pin', 0],
-    'cards': ['Deck of Cards', 0],
     'chocolate': ['Suspicious Chocolate', 0],
-    'coin': ['Fluffy Servers Token', 1],
-    'dice': ['Fuzzy Dice', 1],
-    'drum': ['Industrial Drum', 0],
-    'fox': ['Plush Fox', 2],
-    'gamebro': ['Gamebro', 1],
-    'gamebrocolor': ['Gamebro Color', 2],
-    'goldmonitor': ['Royal (Broken) Monitor', 2],
-    'monitor': ['Broken Monitor', 1],
-    'oldbarrel': ['Ancient Barrel', 0],
-    'pluto': ['Pluto', 2],
-    'purplerocket': ['Toy Rocket (Purple)', 0],
     'redrocket': ['Toy Rocket (Red)', 0],
-    'toxicdrum': ['Corrosive Waste Drum', 1]
+    'drum': ['Industrial Drum', 0],
+    
+    'cards': ['Deck of Cards', 1],
+    'dice': ['Fuzzy Dice', 1],
+    'purplerocket': ['Toy Rocket (Purple)', 1],
+    'oldbarrel': ['Ancient Barrel', 1],
+    
+    'coin': ['Fluffy Servers Token', 2],
+    'monitor': ['Broken Monitor', 2],
+    'toxicdrum': ['Corrosive Waste Drum', 2],
+    'gamebro': ['Gamebro', 2],
+    
+    'pluto': ['Pluto', 3],
+    'goldmonitor': ['Royal (Broken) Monitor', 3],
+    'fox': ['Plush Fox', 3],
+    'gamebrocolor': ['Gamebro Color', 3],
 }
 
-const prizeRarities = ['Common', 'Rare', 'Legendary']
+const prizeRarities = ['Common', 'Uncommon', 'Rare', 'Legendary']
 
 function incrementArcadeCredits(userid, amount) {
     var query_string = "INSERT INTO arcade_currency VALUES(?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);"
