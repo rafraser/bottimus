@@ -8,12 +8,12 @@ function updateScratch(id, amount) {
 }
 
 const prizes = [
-    ['💰', 2500, 0.02],
-    ['🍉', 1000, 0.05],
-    ['🍒', 800, 0.05],
-    ['🍋', 500, 0.08],
+    ['💰', 2500, 0.01],
+    ['🍉', 1000, 0.04],
+    ['🍒', 800, 0.06],
+    ['🍋', 500, 0.11],
     ['🍓', 300, 0.15],
-    ['🍇', 100, 0.25]
+    ['🍇', 100, 0.27]
 ]
 
 const icons = ['💰', '💰', '🍉', '🍉', '🍒', '🍒', '🍋', '🍋', '🍓', '🍓', '🍇', '🍇']
@@ -85,8 +85,12 @@ function generateScratchCard(msg, user, client) {
     
     // Announce winnings after 5 seconds
     setTimeout(function() {
-        var coin = client.emojis.get('631834832300670976')
-        msg.channel.send(`Congrats! You won ${coin} ${amount}`)
+        if(amount > 0) {
+            var coin = client.emojis.get('631834832300670976')
+            msg.channel.send(`Congrats! You won ${coin} ${amount}`) 
+        } else {
+            msg.channel.send('Better luck next time :(')
+        }
     }, 5000)
 }
 
@@ -94,6 +98,7 @@ module.exports = {
     name: 'scratchcard',
     description: 'Scratch a prize card for 250 coins',
     aliases: ['scratch'],
+    cooldown: 15,
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
             if(amount <= 250) {
