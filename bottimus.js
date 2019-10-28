@@ -155,10 +155,27 @@ client.on('message', function(message) {
     var cmd = args.shift().toLowerCase()
     if(!client.commands.has(cmd)) return
     
+    // Check for cooldowns
+    var command = client.commands.get(cmd)
+    if(command.cooldown) {
+        var user = message.member.id
+        if(client.cooldowns.get(cmd)) {
+            var cools = client.cooldowns.get(cmd)
+            if(cools.has(user)) {
+                var elapsed = Date.now() - cools.get(user)
+                if(elapsed < command.cooldown * 1000) return
+            }
+        } else {
+            client.cooldowns.set(cmd, new Map())
+        }
+        
+        client.cooldowns.get(cmd).set(user, Date.now())
+    }
+    
     // Execute the command
     // Includes some terrible error handling!
     try {
-        client.commands.get(cmd).execute(message, args, client)
+        command.execute(message, args, client)
     } catch(error) {
         message.channel.send(error.message)
     }

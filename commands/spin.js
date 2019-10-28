@@ -5,6 +5,7 @@ const discord = require('discord.js')
 module.exports = {
     name: 'spintest',
     description: 'Spin the test wheel',
+    cooldown: 30,
     execute(message, args, client) {
         if(client.spinningWheel) return
         

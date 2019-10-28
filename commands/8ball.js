@@ -8,6 +8,7 @@ function getRandomInt(min, max) {
 module.exports = {
     name: '8ball',
     description: 'Ask the magic 8ball a question... if you dare',
+    cooldown: 30,
     execute(message, args) {
         // Pick one of the 20 8ball images at random and send it as a reply
         var result = getRandomInt(1, 20)

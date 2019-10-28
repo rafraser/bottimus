@@ -60,7 +60,7 @@ function getQuestionData() {
 module.exports = {
     name: 'trivia',
     description: 'Play a trivia question',
-    cooldown: 5,
+    cooldown: 12,
     execute(message, args, client) {
         getQuestionData().then(function(data) {
             // Create an embed for the question
