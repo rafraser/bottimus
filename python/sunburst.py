@@ -37,7 +37,7 @@ def generate_frame(offset=0, color='yellow'):
     
 def render_award(image, color, toptext, bottomtext):
     prize = Image.open('./img/' + image + '.png').resize((256, 256))
-    font = ImageFont.truetype('./img/font/disco.ttf', 56)
+    font = ImageFont.truetype('./img/font/disco.ttf', 52)
     mid = math.floor(256/2)
     
     frames = []
