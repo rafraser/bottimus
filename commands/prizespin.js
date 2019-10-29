@@ -51,8 +51,10 @@ function spinPrizeWheel(msg, user, client) {
         var attachment = new discord.Attachment('./img/spinner.gif')
         msg.channel.send(attachment).then(function() {
             var prize = data.replace('#prizes/', '').trim()
-            generatePrizeGIF(prize, msg, client)
             arcade.unlockArcadePrize(user, prize)
+            setTimeout(function() {
+                generatePrizeGIF(prize, msg, client)
+            }, 6500)
         }).catch(function(e) {
             msg.channel.send(e.toString())
             msg.channel.send('The wheel broke :(')
