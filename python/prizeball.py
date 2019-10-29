@@ -101,7 +101,7 @@ def render_award(image, color, toptext, bottomtext):
     durations[0] = 500
     durations[len_start] = 800
     durations[20] = 500
-    frames[0].save('test.gif', format='GIF', append_images=frames[1:], save_all=True, duration=durations, loop=0)
+    frames[0].save('./img/prizeball.gif', format='GIF', append_images=frames[1:], save_all=True, duration=durations, loop=0)
     
 if __name__ == '__main__':
     image = sys.argv[1]
