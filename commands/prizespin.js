@@ -17,52 +17,71 @@ function getPrizeRarities() {
     return rarities
 }
 
-function pickPrize() {
+function pickPrizes() {
     var prizelist = getPrizeRarities()
-    
-    var p = Math.random()
-    var rarity = 'Common'
-    if(p > 0.9) {
-        rarity = 'Legendary'
-    } else if(p > 0.7) {
-        rarity = 'Rare' 
-    } else if(p > 0.4){
-        rarity = 'Uncommon'  
+    var results = []
+    for(var i=0; i<8; i++) {
+        var p = Math.random()
+        var rarity = 'Common'
+        if(p > 0.9) {
+            rarity = 'Legendary'
+        } else if(p > 0.7) {
+            rarity = 'Rare' 
+        } else if(p > 0.4){
+            rarity = 'Uncommon'  
+        }
+        
+        var r = prizelist[rarity]
+        var p = null
+        //while(p == null || results.indexOf(p) != -1) {
+            p = r[Math.floor(Math.random() * r.length)]
+        //}
+        results.push(p)
     }
     
-    var r = prizelist[rarity]
-    return r[Math.floor(Math.random() * r.length)]
+    return results
 }
 
-function openPrizeBall(msg, prize, user, client) {
-    var p = arcade.prizes[prize]
-    var args = ['prizes/'+prize, arcade.rarities[p[1]], arcade.rarities[p[1]] + " Prize!", arcade.prizes[prize][0]]
-    client.executePython('prizeball', args).then(function() {
-        var attachment = new discord.Attachment('./img/prizeball.gif')
-        msg.channel.send(attachment)
+function spinPrizeWheel(msg, user, client) {
+    msg.clearReactions()
+    msg.edit('Get ready!')
+    var prizes = pickPrizes().map(x => '#prizes/' + x)
+    
+    client.executePython('spinner', prizes).then(function(data) {
+        var attachment = new discord.Attachment('./img/spinner.gif')
+        msg.channel.send(attachment).then(function() {
+            var prize = data.replace('#prizes/', '').trim()
+            arcade.unlockArcadePrize(user, prize)
+            setTimeout(function() {
+                generatePrizeGIF(prize, msg, client)
+            }, 6500)
+        }).catch(function(e) {
+            msg.channel.send(e.toString())
+            msg.channel.send('The wheel broke :(')
+        })
     })
 }
 
-function redeemPrize(msg, user, client) {
-    msg.clearReactions()
-    msg.edit('Get ready!')
-    var prize = pickPrize()
-    arcade.unlockArcadePrize(user, prize)
-    openPrizeBall(msg, prize, user, client)
+function generatePrizeGIF(prize, msg, client) {
+    var p = arcade.prizes[prize]
+    var args = ['prizes/'+prize, arcade.rarities[p[1]], arcade.rarities[p[1]] + " Prize!", arcade.prizes[prize][0]]
+    client.executePython('sunburst', args).then(function() {
+        var attachment = new discord.Attachment('./img/sunbeam.gif')
+        msg.channel.send(attachment)
+    })
 }
 
 module.exports = {
     name: 'prizespin',
     description: 'Try your luck at the legendary wheel of prizes!',
     cooldown: 60,
-    aliases: ['redeemprize', 'prizeball'],
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
             if(amount <= 1000) {
                 message.channel.send('You need at least 1000 coins for this!')
             } else {
                 // Send a confirmation message
-                message.channel.send('Redeeming a prize costs 1000 coins: react to confirm').then(function(msg) {
+                message.channel.send('The prize wheel costs 1000 coins: react to confirm').then(function(msg) {
                     msg.react('✅')
                     const filter = function(reaction, user) {
                         return user.id == message.member.id && reaction.emoji.name == '✅'
@@ -73,7 +92,7 @@ module.exports = {
                         // Confirmation received!
                         collector.stop()
                         arcade.incrementArcadeCredits(message.member.id, -1000)
-                        redeemPrize(msg, message.member.id, client)
+                        spinPrizeWheel(msg, message.member.id, client)
                     })
                 })
             }
