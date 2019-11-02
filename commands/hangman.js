@@ -55,7 +55,7 @@ module.exports = {
         var player_correct = new Map()
         var player_revealed = new Map()
         
-        message.channel.send(generateEmbed(attempts, guesses, fails)).then(function(game_msg) {
+        message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails)).then(function(game_msg) {
             var collector = game_msg.channel.createMessageCollector(hangmanFilter, {time: 60000})
             collector.on('collect', function(m) {
                 // Check words for valid guesses
@@ -64,6 +64,8 @@ module.exports = {
                 
                 // Don't count guesses twice
                 if(attempts.includes(letter)) {
+                    game_msg.channel.send(letter + ' has already been guessed!').then(function(msg) { msg.delete(1000) })
+                    m.delete()
                     return
                 }
                 
