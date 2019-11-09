@@ -37,7 +37,7 @@ function getArcadeCredits(userid) {
         var query_string = "SELECT * FROM arcade_currency WHERE userid = ?;"
         pool.query(query_string, [userid], function(err, results) {
             if(err) {
-                reject(err)
+                resolve(0)
             } else {
                 if(results.length < 1) resolve(0)
                 resolve(results[0].amount || 0)
