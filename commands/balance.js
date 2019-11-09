@@ -9,6 +9,9 @@ module.exports = {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
             var coin = client.emojis.get('631834832300670976')
             message.channel.send(`Balance: ${amount}${coin}`)
+        }).catch(function() {
+            var coin = client.emojis.get('631834832300670976')
+            message.channel.send(`You don't have any coins! Go play some games and earn some ${coin}`)
         })
     },
 }
