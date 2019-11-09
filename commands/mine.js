@@ -2,6 +2,11 @@ const arcade = require('../arcade')
 const pool = require('../database')
 const discord = require('discord.js')
 
+function incrementStatScore(userid, amount) {
+    var query_string = "INSERT INTO arcade_mining VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE number = number + 1, diamonds = diamonds + VALUES(diamonds)"
+    pool.query(query_string, [userid, amount])
+}
+
 function generateMiningEmbed(msg, name, amount, over=false) {
     var embed = new discord.RichEmbed()
     .setTitle(name + '\'s Mining Expedition')
@@ -42,14 +47,20 @@ function startMiningTrip(msg, member, client) {
         
         // Finish the expedition and announce the earnings
         collector.on('end', function() {
-            var coin = client.emojis.get('631834832300670976')
-            var coins = amount*5
+            // Cleanup game
+            msg.clearReactions()
             gameover = true
             collecting = false
+            
+            // Announce results
+            var coin = client.emojis.get('631834832300670976')
+            var coins = amount*5
             generateMiningEmbed(msg, member.displayName, amount, true)
             msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${coins} coins earned`)
-            msg.clearReactions()
+            
+            // Send results to the database
             arcade.incrementArcadeCredits(member.id, coins)
+            incrementStatScore(member.id, amount)
         })
     })
 }
