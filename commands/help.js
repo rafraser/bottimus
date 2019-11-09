@@ -11,22 +11,24 @@ __Games__
 \`\`\`
 __Gambling__
 \`\`\`
-!scratchcard    Try your luck with a scratchcard
+!balance        Check how many tokens you have
 !dailyspin      Spin for free coins every 12 hours
-!prize          Exchange 1000 coins for a rare prize
+!scratchcard    Try your luck with a scratchcard
+!prizeball      Exchange 1000 coins for a rare prize
 !inventory      View your current prize inventory
 \`\`\`
 __Miscellaneous__
 \`\`\`
 !8ball          Ask the magic 8ball a question
-!balance        Check how many tokens you have
+!catfact        Get a random fact about cats
+!numberfact     Get a random fact about numbers
 \`\`\`
 `
 
 module.exports = {
     name: 'help',
     description: 'Sends a help message',
-    aliases: ['helpme'],
+    aliases: ['helpme', 'bottimushelp'],
     execute(message, args, client) {
         message.author.send(helpMessage)
     }
