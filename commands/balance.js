@@ -4,6 +4,7 @@ const discord = require('discord.js')
 module.exports = {
     name: 'balance',
     description: 'Get Arcade points information',
+    cooldown: 10,
     aliases: ['credits'],
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {

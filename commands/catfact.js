@@ -4,6 +4,7 @@ const https = require('https')
 module.exports = {
     name: 'catfact',
     description: 'Get a random cat fact',
+    cooldown: 10,
     execute(message, args) {
         var url = 'https://catfact.ninja/fact'
         

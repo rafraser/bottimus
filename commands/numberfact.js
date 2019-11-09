@@ -4,6 +4,7 @@ const http = require('http')
 module.exports = {
     name: 'numberfact',
     description: 'Get a random number fact',
+    cooldown: 10,
     execute(message, args) {
         var url
         args[0] = args[0].replace('.', '').replace(',', '')
