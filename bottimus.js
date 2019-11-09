@@ -257,7 +257,7 @@ client.findUser = function(message, args, retself=false) {
     // Search the list of users for matching names
     var search = args.shift()
     var results = message.guild.members.filter(function(u) {
-        return u.displayName.includes(search)
+        return u.displayName.toLowerCase().includes(search) || u.user.username.toLowerCase().includes(search)
     })
     
     // Return results or raise an error
