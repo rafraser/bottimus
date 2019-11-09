@@ -98,7 +98,7 @@ module.exports = {
     name: 'scratchcard',
     description: 'Scratch a prize card for 250 coins',
     aliases: ['scratch'],
-    cooldown: 15,
+    cooldown: 45,
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
             if(amount <= 250) {
@@ -111,7 +111,7 @@ module.exports = {
                         return user.id == message.member.id && reaction.emoji.name == '✅'
                     }
                     
-                    var collector = msg.createReactionCollector(filter, {time: 5000})
+                    var collector = msg.createReactionCollector(filter, {time: 10000})
                     collector.on('collect', function() {
                         // Confirmation received!
                         collector.stop()
