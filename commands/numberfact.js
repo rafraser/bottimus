@@ -6,6 +6,7 @@ module.exports = {
     description: 'Get a random number fact',
     execute(message, args) {
         var url
+        args[0] = args[0].replace('.', '').replace(',', '')
         
         // Get the url to search
         if(args.length >= 1 && !isNaN(args[0])) {
