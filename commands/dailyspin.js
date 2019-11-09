@@ -20,16 +20,6 @@ function updateLastSpin(id, date) {
     pool.query(query_string, [id, date])
 }
 
-function formatTime(ms) {
-    if(ms < 120 * 1000) {
-        return Math.floor(ms/1000) + ' seconds'
-    } else if(ms < 3600 * 1000) {
-        return Math.floor(ms/60000) + ' minutes'
-    } else {
-        return Math.floor(ms/3600000) + ' hours'
-    }
-}
-
 function pickWheel() {
     var wheels = [
         ['#coin 100', '#coin 200', '#coin 400', '#coin 200', '#coin 400', '#coin 100'],
@@ -54,7 +44,7 @@ module.exports = {
                 var elapsed = Math.abs(current - lastspin)
                 var delay = 12 * 3600 * 1000
                 if(elapsed < delay) {
-                    message.channel.send('Your next daily spin is in ' + formatTime(delay - elapsed))
+                    message.channel.send('Your next daily spin is in ' + client.timeToString(delay - elapsed))
                     return
                 }
             }

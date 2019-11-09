@@ -163,7 +163,13 @@ client.on('message', function(message) {
             var cools = client.cooldowns.get(cmd)
             if(cools.has(user)) {
                 var elapsed = Date.now() - cools.get(user)
-                if(elapsed < command.cooldown * 1000) return
+                
+                // Cooldown is still active: send a warning message
+                if(elapsed < command.cooldown * 1000) {
+                    var timeleft = (command.cooldown * 1000) - elapsed
+                    message.channel.send('Slow down! Try again in ' + client.timeToString(timeleft))
+                    return
+                }
             }
         } else {
             client.cooldowns.set(cmd, new Map())
@@ -195,6 +201,17 @@ client.on('guildMemberAdd', function(member) {
 client.login(process.env.DISCORD)
 
 // Helper utility functions
+client.timeToString = function(ms) {
+    if(ms < 120 * 1000) {
+        return (Math.floor(ms/1000) - 1) + ' seconds'
+    } else if(ms < 3600 * 1000) {
+        return Math.floor(ms/60000) + ' minutes'
+    } else {
+        return Math.floor(ms/3600000) + ' hours'
+    }
+}
+
+// Check for Administrator status
 client.isAdministrator = function(member) {
     if(member.guild.id != '309951255575265280') return false
     
@@ -207,6 +224,7 @@ client.isAdministrator = function(member) {
     }
 }
 
+// Check for Moderator status
 client.isModerator = function(member) {
     if(member.guild.id != '309951255575265280') return false
     if(client.isAdministrator(member)) return true

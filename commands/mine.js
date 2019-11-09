@@ -70,7 +70,7 @@ function startMiningTrip(msg, member, client) {
 module.exports = {
     name: 'mine',
     description: '-',
-    cooldown: 45,
+    cooldown: 180,
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
             if(amount < 25) {
