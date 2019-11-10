@@ -132,7 +132,12 @@ function startTypeRacer(client, message, display) {
                     var wpm = Math.floor((letters/5) * (60/duration))
                     
                     // Award credits based on WPM
-                    var credits = wpm/10 <= 1 ? 1 : wpm/10 >= 10 ? 10 : wpm/10
+                    var credits = 20 + Math.ceil(wpm/2)
+                    if(credits <= 25) {
+                        credits = 25
+                    } else if(credits >= 75) {
+                        credits = 75
+                    }
                     arcade.incrementArcadeCredits(result[0], credits)
                     
                     // Store data, announcing records when applicable
