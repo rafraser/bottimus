@@ -101,7 +101,7 @@ module.exports = {
     cooldown: 45,
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
-            if(amount <= 250) {
+            if(amount < 250) {
                 message.channel.send('You need at least 250 coins for this!')
             } else {
                 // Send a confirmation message

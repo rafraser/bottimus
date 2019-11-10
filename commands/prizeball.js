@@ -55,10 +55,10 @@ module.exports = {
     name: 'prizeball',
     description: 'Try your luck at the legendary prize ball machine!',
     cooldown: 60,
-    aliases: ['redeemprize'],
+    aliases: ['redeemprize', 'prize'],
     execute(message, args, client) {
         arcade.getArcadeCredits(message.member.id).then(function(amount) {
-            if(amount <= 1000) {
+            if(amount < 1000) {
                 message.channel.send('You need at least 1000 coins for this!')
             } else {
                 // Send a confirmation message
