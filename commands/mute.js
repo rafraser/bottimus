@@ -54,16 +54,6 @@ function unmuteUser(client, id) {
     } catch(e) {}
 }
 
-function formatDuration(duration) {
-    if(duration <= 1) {
-        return '1 minute'
-    } else if(duration <= 120) {
-        return duration + ' minutes'
-    } else {
-        return (duration/60) + ' hours'
-    }
-}
-
 module.exports = {
     name: 'mute',
     description: '🛡️ Mute a specified user',
@@ -119,7 +109,7 @@ module.exports = {
                 var embed = new discord.RichEmbed()
                 .setColor('#c0392b')
                 .setTitle('🦀 ' + target.displayName + ' is gone 🦀')
-                .setDescription('They have been banished to the void for ' + formatDuration(duration))
+                .setDescription('They have been banished to the void for ' + client.timeToString(duration * 60 * 1000))
                 message.channel.send(embed)
             }
         } catch(error) {

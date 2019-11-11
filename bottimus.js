@@ -202,12 +202,16 @@ client.login(process.env.DISCORD)
 
 // Helper utility functions
 client.timeToString = function(ms) {
-    if(ms < 120 * 1000) {
-        return (Math.floor(ms/1000) + 1) + ' seconds'
+    if(ms < 1000) {
+        return '1 second'
+    } else if(ms < 60 * 1000) {
+        return (Math.floor(ms/1000)) + ' seconds'
     } else if(ms < 3600 * 1000) {
-        return Math.floor(ms/60000) + ' minutes'
+        return Math.floor(ms/(60 * 1000)) + ' minutes'
+    } else if(ms < 24 * 3600 * 1000) {
+        return Math.floor(ms/(3600 * 1000)) + ' hours'
     } else {
-        return Math.floor(ms/3600000) + ' hours'
+        return Math.floor(ms/(24 * 3600 * 1000)) + ' days'
     }
 }
 
