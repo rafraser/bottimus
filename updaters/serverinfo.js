@@ -50,8 +50,8 @@ function updateMinecraft(message) {
 }
 
 const serverChannel = '528849382196379650'
-const murderMessage = '584979182459813889'
-const minigamesMessage = '584979191121051659'
+const murderMessage = '644776579809017877'
+const minigamesMessage = '644776606451367962'
 //const minecraftMessage = '621400728321392641'
 
 module.exports = {
