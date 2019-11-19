@@ -2,7 +2,7 @@ import math
 import sys
 from PIL import Image, ImageDraw, ImageFont
 
-prizes = ['bowlingpin', 'cards', 'chocolate', 'coin', 'dice', 'drum', 'toxicdrum', 'fox', 'gamebro', 'gamebrocolor', 'goldmonitor', 'monitor', 'oldbarrel', 'pluto', 'purplerocket', 'redrocket']
+prizes = ['bowlingpin', 'cards', 'chocolate', 'coin', 'dice', 'drum', 'toxicdrum', 'fox', 'icefox', 'gamebro', 'gamebrocolor', 'goldmonitor', 'monitor', 'oldbarrel', 'mysteryorb', 'pluto', 'purplerocket', 'redrocket', 'bluerocket', 'greenrocket']
 background = Image.open('./img/frame.png').resize((126, 126))
 
 def silhoutte(image):
@@ -36,7 +36,7 @@ def renderSquare(prize=None, locked=False):
     return canvas
 
 def renderInventory(items): 
-    row_size = 4
+    row_size = 5
     num_rows = math.ceil(len(prizes)/row_size)
     
     # Create the canvas
