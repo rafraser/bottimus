@@ -3,6 +3,8 @@ const prizeList = {
     'bowlingpin': ['Bowling Pin', 0],
     'chocolate': ['Suspicious Chocolate', 0],
     'redrocket': ['Toy Rocket (Red)', 0],
+    'greenrocket': ['Toy Rocket (Green)', 0],
+    'bluerocket': ['Toy Rocket (Blue)', 0],
     'drum': ['Industrial Drum', 0],
     
     'cards': ['Deck of Cards', 1],
@@ -14,10 +16,12 @@ const prizeList = {
     'monitor': ['Broken Monitor', 2],
     'toxicdrum': ['Corrosive Waste Drum', 2],
     'gamebro': ['Gamebro', 2],
+    'mysteryorb': ['Mysterious Orb', 2],
     
     'pluto': ['Pluto', 3],
     'goldmonitor': ['Royal (Broken) Monitor', 3],
     'fox': ['Plush Fox', 3],
+    'icefox': ['Ice Fox', 3],
     'gamebrocolor': ['Gamebro Color', 3],
 }
 
