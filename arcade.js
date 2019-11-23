@@ -4,12 +4,12 @@ const prizeList = {
     'chocolate': ['Suspicious Chocolate', 0],
     'redrocket': ['Toy Rocket (Red)', 0],
     'greenrocket': ['Toy Rocket (Green)', 0],
-    'bluerocket': ['Toy Rocket (Blue)', 0],
     'drum': ['Industrial Drum', 0],
     
     'cards': ['Deck of Cards', 1],
     'dice': ['Fuzzy Dice', 1],
     'purplerocket': ['Toy Rocket (Purple)', 1],
+    'bluerocket': ['Toy Rocket (Blue)', 1],
     'oldbarrel': ['Ancient Barrel', 1],
     
     'coin': ['Fluffy Servers Token', 2],

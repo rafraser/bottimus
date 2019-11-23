@@ -2,7 +2,7 @@ import math
 import sys
 from PIL import Image, ImageDraw, ImageFont
 
-prizes = ['bowlingpin', 'cards', 'chocolate', 'coin', 'dice', 'drum', 'toxicdrum', 'fox', 'icefox', 'gamebro', 'gamebrocolor', 'goldmonitor', 'monitor', 'oldbarrel', 'mysteryorb', 'pluto', 'purplerocket', 'redrocket', 'bluerocket', 'greenrocket']
+prizes = ['cards', 'chocolate', 'dice', 'coin', 'mysteryorb', 'oldbarrel', 'drum', 'toxicdrum', 'fox', 'icefox', 'gamebro', 'gamebrocolor', 'monitor', 'goldmonitor', 'pluto', 'bowlingpin', 'purplerocket', 'redrocket', 'bluerocket', 'greenrocket']
 background = Image.open('./img/frame.png').resize((126, 126))
 
 def silhoutte(image):
