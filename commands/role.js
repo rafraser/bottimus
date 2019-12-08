@@ -9,7 +9,7 @@ module.exports = {
         
         // Handle no arguments with some help text
         if(!args.length || args.length < 1) {
-            message.channel.send('Please select at least one role:```yaml\nevent\nmapping\nminecraft\nminigames```')
+            message.channel.send('Please select at least one role:```yaml\nevent\nmapping\nminecraft\nminigames\nscp```')
             return
         }
         
@@ -62,6 +62,16 @@ module.exports = {
                 } else {
                     user.addRole(role)
                     message_stack += 'Thanks for joining the Minigames beta!\n'
+                }
+            } else if(role.includes('scp')) {
+                var role_id = '653083644256190485'
+                var role = message.guild.roles.get(role_id)
+                if(user.roles.has(role_id)) {
+                    user.removeRole(role)
+                    message_stack += 'Sorry to see you leave #scp :(\n'
+                } else {
+                    user.addRole(role)
+                    message_stack += 'Welcome to the SCP foundation!\n'
                 }
             }
         }
