@@ -71,7 +71,7 @@ module.exports = {
                     message_stack += 'Sorry to see you leave #scp :(\n'
                 } else {
                     user.addRole(role)
-                    message_stack += 'Welcome to the SCP foundation!\n'
+                    message_stack += 'Welcome to the SCP Foundation!\n'
                 }
             }
         }
