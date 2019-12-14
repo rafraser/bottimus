@@ -35,18 +35,23 @@ function unmuteUser(client, id) {
     var member = guild.members.get(id)
     client.mutesData.delete(id)
     
+    // Delete the mute data file (if it exists)
+    try {
+        fs.unlink('data/mutes/' + member.id + '.json', function(e) {})
+    } catch(e) {}
+    
+    // Abort if the member doesn't exist
+    if(!member) {
+        return
+    }
+    
     // Add roles back, then removed muted role
     settings.roles.forEach(function(id) {
         var role = guild.roles.get(id)
         member.addRole(role).catch(function(e) {})
     })
     member.removeRole(member.guild.roles.get(mutedid))
-    
-    // Delete the mute data file (if it exists)
-    try {
-        fs.unlink('data/mutes/' + member.id + '.json', function(e) {})
-    } catch(e) {}
-    
+
     // Reply message
     try {
         var channel = guild.channels.get(settings.channel)
