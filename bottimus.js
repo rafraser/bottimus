@@ -203,6 +203,7 @@ client.on('messageDelete', function(message) {
     if(message.guild.id != '309951255575265280') return
     if(client.testingMode) return
     if(message.member.user.bot) return
+    if(message.channel.name === 'bottimus') return
     
     var channel = message.guild.channels.find(ch => ch.name === 'junkyard')
     
