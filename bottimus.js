@@ -208,8 +208,13 @@ client.on('messageDelete', function(message) {
     
     // todo: fix this to work for messages with multiple attachments
     // Not sure if this is even possible; but it's a real pain to deal with
-    var attachment = message.attachments.first().proxyURL
-    channel.send(`Deleted message by **${message.member.displayName}** in **#${message.channel.name}**:\n${message.cleanContent}`, {files: [attachment]})
+    var attachment = message.attachments.first()
+    if(attachment) {
+        channel.send(`Deleted message by **${message.member.displayName}** in **#${message.channel.name}**:\n${message.cleanContent}`, {files: [attachment.proxyURL]})
+    } else {
+        channel.send(`Deleted message by **${message.member.displayName}** in **#${message.channel.name}**:\n${message.cleanContent}`)
+    }
+    
 })
 
 // Start the bot
