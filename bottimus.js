@@ -198,6 +198,20 @@ client.on('guildMemberAdd', function(member) {
     member.addRole('535346825423749120')
 })
 
+// Log any deleted messages into a moderation logging channel
+client.on('messageDelete', function(message) {
+    if(message.guild.id != '309951255575265280') return
+    if(client.testingMode) return
+    if(message.member.user.bot) return
+    
+    var channel = message.guild.channels.find(ch => ch.name === 'junkyard')
+    
+    // todo: fix this to work for messages with multiple attachments
+    // Not sure if this is even possible; but it's a real pain to deal with
+    var attachment = message.attachments.first().proxyURL
+    channel.send(`Deleted message by **${message.member.displayName}** in **#${message.channel.name}**:\n${message.cleanContent}`, {files: [attachment]})
+})
+
 // Start the bot
 client.login(process.env.DISCORD)
 
