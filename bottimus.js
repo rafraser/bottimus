@@ -226,16 +226,25 @@ client.login(process.env.DISCORD)
 
 // Helper utility functions
 client.timeToString = function(ms) {
+    // Determine number and units
+    var time = [1, 'second']
     if(ms < 1000) {
-        return '1 second'
+        time = [1, 'second']
     } else if(ms < 60 * 1000) {
-        return (Math.floor(ms/1000)) + ' seconds'
+        time = [Math.floor(ms/1000), 'second']
     } else if(ms < 3600 * 1000) {
-        return Math.floor(ms/(60 * 1000)) + ' minutes'
+        time = [Math.floor(ms/(60 * 1000)), 'minute']
     } else if(ms < 24 * 3600 * 1000) {
-        return Math.floor(ms/(3600 * 1000)) + ' hours'
+        time = [Math.floor(ms/(3600 * 1000)), 'hour']
     } else {
-        return Math.floor(ms/(24 * 3600 * 1000)) + ' days'
+        time = [Math.floor(ms/(24 * 3600 * 1000)), 'day']
+    }
+
+    // Plurals
+    if(time[0] > 1) {
+        return time[0] + ' ' + time[1] + 's'
+    } else {
+        return time[0] + ' ' + time[1]
     }
 }
 
