@@ -2,7 +2,7 @@ const pool = require('./database')
 const discord = require('discord.js')
 
 function formatEventDate(date) {
-    return date.toLocaleString('en-GB', {timezone: 'AEST', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', '\n') + ' AEST'
+    return date.toLocaleString('en-GB', {timezone: 'AEDT', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', '\n') + ' AEDT'
 }
 
 const eventIcons = {
