@@ -1,11 +1,12 @@
 const discord = require('discord.js')
 const events = require('../events')
+const fs = require('fs')
 
 const output = '309951255575265280'
 
 module.exports = {
     description: 'Handles updating event details',
-    frequency: 1,
+    frequency: 3,
     execute(client) {
         if(!client.eventsData) return
 

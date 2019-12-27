@@ -10,7 +10,7 @@ module.exports = {
     execute(message, args, client) {
         if(message.guild.id != '309951255575265280') return
         
-        if(!client.isModerator(message.member)) {
+        if(!client.isCommunityStar(message.member)) {
             message.channel.send('You need to be a Moderator to use this!')
             return
         }
@@ -57,7 +57,7 @@ module.exports = {
             // Check that the date and time are valid
             var when = new Date(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.minute)
             if(!(when instanceof Date && !isNaN(when))) {
-                message.channel.send('Invalid event structure')
+                message.channel.send('Invalid event structure. Check that the time is the right format (HH:MM)')
                 return
             }
         } catch(e) {

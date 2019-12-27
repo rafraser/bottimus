@@ -12,6 +12,7 @@ function approveEvent(event, channel, client) {
     // Generate an initial event embed
     var timeLeft = client.timeToString(event.time - Date.now())
     var embed = events.generateEventEmbed(event, timeLeft)
+    var channel = client.channels.get(eventChannel)
 
     channel.send(embed).then(function(msg) {
         msg.react('🔔')
