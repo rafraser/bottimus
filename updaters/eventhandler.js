@@ -33,6 +33,11 @@ module.exports = {
                     var embed = events.generateCompletedEventEmbed(event)
                     message.edit(embed)
                     client.eventsData.delete(location)
+
+                    // Delete the event data file (if it exists)
+                    try {
+                        fs.unlink('data/events/' + location + '.json', function(e) {})
+                    } catch(e) {}
                 } else {
                     // Update the time remaining
                     var timeLeft = client.timeToString(event.time - Date.now())

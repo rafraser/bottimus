@@ -16,6 +16,9 @@ function approveEvent(event, channel, client) {
     channel.send(embed).then(function(msg) {
         msg.react('🔔')
         client.eventsData.set(channel.id + ',' + msg.id, event)
+
+        // Write a data file in case of restarting
+        client.writeDataFile('events', channel.id + ',' + msg.id, event)
     })
 }
 
