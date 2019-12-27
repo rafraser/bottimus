@@ -149,10 +149,10 @@ client.on('message', function(message) {
     // Don't worry! It's not that bad!
     // The first half finds words not seperated by spaces
     // The second half finds groups of words inside quotes
-    args = args.match(/[^" \n]+|"[^"]+"/g)
+    args = args.match(/[^"“” \n]+|["“][^"”]+["”]/g)
 
     // Strip any quotes at the start and end of an argument
-    args = args.map(a => a.replace(/^"|"$/g, ''))
+    args = args.map(a => a.replace(/^["“]|["”]$/g, ''))
 
     // Check the command name
     var cmd = args.shift().toLowerCase()
