@@ -27,7 +27,9 @@ module.exports = {
                     var outChannel = client.channels.get(output)
                     outChannel.send(`Event **${event.title}** is now starting!\n${pingString}`)
 
-                    message.delete()
+                    // Replace the message with a completed embed
+                    var embed = events.generateCompletedEventEmbed(event)
+                    message.edit(embed)
                     client.eventsData.delete(location)
                 } else {
                     // Update the time remaining
