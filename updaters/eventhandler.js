@@ -7,6 +7,8 @@ module.exports = {
     description: 'Handles updating event details',
     frequency: 1,
     execute(client) {
+        if(!client.eventsData) return
+
         client.eventsData.forEach(function(event, location) {
             // Get the message from the given location
             var locationSplit = location.split(',')
