@@ -275,6 +275,20 @@ client.isModerator = function(member) {
     }
 }
 
+// Check for Community Star status
+client.isCommunityStar = function(member) {
+    if(member.guild.id != '309951255575265280') return false
+    if(client.isModerator(member)) return true
+    
+    if(member.roles.some(function(role) {
+        return role.name.endsWith('Community Star')
+    })){
+        return true
+    } else {
+        return false
+    }
+}
+
 // Helper utility function to find a user
 client.findUser = function(message, args, retself=false) {
     // Return mentioned user if any were in the message
