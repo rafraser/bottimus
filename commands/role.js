@@ -9,7 +9,7 @@ module.exports = {
         
         // Handle no arguments with some help text
         if(!args.length || args.length < 1) {
-            message.channel.send('Please select at least one role:```yaml\nevent\nmapping\nminecraft\nminigames\nscp```')
+            message.channel.send('Please select at least one role:```yaml\nevent\nmapping\nminigames\nscp```')
             return
         }
         
@@ -40,17 +40,6 @@ module.exports = {
                 } else {
                     user.addRole(role)
                     message_stack += 'Welcome to #mapping!\n'
-                }
-            } else if(role.includes('minecraft') || role.includes('cube')) {
-                // Assign the mapping related role
-                var role_id = '621418889938599956'
-                var role = message.guild.roles.get(role_id)
-                if(user.roles.has(role_id)) {
-                    user.removeRole(role)
-                    message_stack += 'Sorry to see you leave #minecraft :(\n'
-                } else {
-                    user.addRole(role)
-                    message_stack += 'Welcome to #minecraft!\n'
                 }
             } else if(role.includes('mini')) {
                 // Assign the mapping related role
