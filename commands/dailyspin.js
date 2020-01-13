@@ -4,8 +4,8 @@ const discord = require('discord.js')
 
 function getLastSpin (id) {
   return new Promise(function (resolve, reject) {
-    var query_string = 'SELECT lastspin FROM arcade_dailyspin WHERE discordid = ?'
-    pool.query(query_string, [id], function (err, results) {
+    var queryString = 'SELECT lastspin FROM arcade_dailyspin WHERE discordid = ?'
+    pool.query(queryString, [id], function (err, results) {
       if (err) {
         reject(err)
       } else {
@@ -16,8 +16,8 @@ function getLastSpin (id) {
 }
 
 function updateLastSpin (id, date) {
-  var query_string = 'INSERT INTO arcade_dailyspin VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE lastspin = VALUES(lastspin), number = number + VALUES(number)'
-  pool.query(query_string, [id, date])
+  var queryString = 'INSERT INTO arcade_dailyspin VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE lastspin = VALUES(lastspin), number = number + VALUES(number)'
+  pool.query(queryString, [id, date])
 }
 
 function pickWheel () {

@@ -25,7 +25,7 @@ module.exports = {
     }
 
     http.get(url, function (resp) {
-      data = ''
+      let data = ''
 
       resp.on('data', function (chunk) {
         data += chunk

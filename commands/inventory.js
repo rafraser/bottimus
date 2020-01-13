@@ -1,5 +1,4 @@
 const arcade = require('../arcade')
-const pool = require('../database')
 const discord = require('discord.js')
 
 module.exports = {

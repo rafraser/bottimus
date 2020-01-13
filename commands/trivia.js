@@ -8,9 +8,9 @@ const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 }
 
 function incrementStatScore (userid, category, correct) {
-  var query_string = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
+  var queryString = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
 
-  pool.query(query_string, [userid, category, correct], function (err, results) {
+  pool.query(queryString, [userid, category, correct], function (err, results) {
     if (err) {
       console.log(err)
     }
@@ -31,7 +31,7 @@ function getQuestionData () {
         try {
           info = JSON.parse(resp.data).results[0]
         } catch (error) {
-          reject('Invalid question data')
+          reject(new Error('Invalid question data'))
           return
         }
 

@@ -1,5 +1,3 @@
-const discord = require('discord.js')
-
 module.exports = {
   name: 'clean',
   description: '🛡️ Delete the last X messages from the channel',

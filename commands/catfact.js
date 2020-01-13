@@ -9,7 +9,7 @@ module.exports = {
     var url = 'https://catfact.ninja/fact'
 
     https.get(url, function (resp) {
-      data = ''
+      let data = ''
 
       resp.on('data', function (chunk) {
         data += chunk

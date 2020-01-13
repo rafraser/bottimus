@@ -3,22 +3,22 @@ const discord = require('discord.js')
 
 // Calculate the totals across all trivia categories
 function calculateTriviaTotals (results) {
-  var total_guesses = 0
-  var total_correct = 0
+  var totalGuesses = 0
+  var totalCorrect = 0
 
   for (result of results) {
-    total_guesses = total_guesses + result.attempted
-    total_correct = total_correct + result.correct
+    totalGuesses = totalGuesses + result.attempted
+    totalCorrect = totalCorrect + result.correct
   }
 
-  return [total_guesses, total_correct]
+  return [totalGuesses, totalCorrect]
 }
 
 // Retrieve Hangman statistics for a given ID from the database
 function fetchHangmanStatistics (id) {
   return new Promise(function (resolve, reject) {
-    var query_string = 'SELECT guesses, correct, revealed, words, contribution, (correct/guesses) AS percent FROM arcade_hangman WHERE discordid = ?;'
-    pool.query(query_string, [id], function (err, results) {
+    var queryString = 'SELECT guesses, correct, revealed, words, contribution, (correct/guesses) AS percent FROM arcade_hangman WHERE discordid = ?;'
+    pool.query(queryString, [id], function (err, results) {
       if (err) {
         reject(err)
       } else {
@@ -31,8 +31,8 @@ function fetchHangmanStatistics (id) {
 // Retrieve Trivia statistics for a given ID from the database
 function fetchTriviaStatistics (id) {
   return new Promise(function (resolve, reject) {
-    var query_string = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
-    pool.query(query_string, [id], function (err, results) {
+    var queryString = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
+    pool.query(queryString, [id], function (err, results) {
       if (err) {
         reject(err)
       } else {
@@ -45,8 +45,8 @@ function fetchTriviaStatistics (id) {
 // Retrieve Typeracer statistics for a given ID from the database
 function fetchTyperacerStatistics (id) {
   return new Promise(function (resolve, reject) {
-    var query_string = 'SELECT completed, speed_average, speed_best, date_best FROM arcade_typeracer WHERE discordid = ?;'
-    pool.query(query_string, [id], function (err, results) {
+    var queryString = 'SELECT completed, speed_average, speed_best, date_best FROM arcade_typeracer WHERE discordid = ?;'
+    pool.query(queryString, [id], function (err, results) {
       if (err) {
         reject(err)
       } else {
@@ -88,15 +88,15 @@ embedFunctions.trivia = function (user) {
   return new Promise(function (resolve, reject) {
     fetchTriviaStatistics(user.id).then(function (results) {
       var username = user.displayName
-      var [total_guesses, total_correct] = calculateTriviaTotals(results)
+      var [totalGuesses, totalCorrect] = calculateTriviaTotals(results)
 
       // Generate a nice embed for details
       var embed = new discord.RichEmbed()
         .setColor('#4cd137')
         .setTitle(`❓ Trivia - ${username}`)
-        .addField('Questions Answered', `${total_guesses}`, true)
-        .addField('Questions Correct', `${total_correct}`, true)
-        .addField('Percentage', `${Math.floor((total_correct / total_guesses) * 100) || 0}%`, true)
+        .addField('Questions Answered', `${totalGuesses}`, true)
+        .addField('Questions Correct', `${totalCorrect}`, true)
+        .addField('Percentage', `${Math.floor((totalCorrect / totalGuesses) * 100) || 0}%`, true)
       resolve(embed)
     }).catch(function (err) {
       reject(err)

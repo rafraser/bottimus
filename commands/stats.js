@@ -1,4 +1,3 @@
-const pool = require('../database')
 const discord = require('discord.js')
 const https = require('https')
 
@@ -17,7 +16,7 @@ module.exports = {
     // Query Fluffy Servers API
     var url = 'https://fluffyservers.com/api/stats/search/' + args[0]
     https.get(url, function (resp) {
-      data = ''
+      let data = ''
 
       resp.on('data', function (chunk) {
         data += chunk

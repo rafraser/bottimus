@@ -51,9 +51,9 @@ module.exports = {
     client.playingHangman = true
 
     // Setup some collections for player data
-    var player_guesses = new Map()
-    var player_correct = new Map()
-    var player_revealed = new Map()
+    var playerGuesses = new Map()
+    var playerCorrect = new Map()
+    var playerRevealed = new Map()
 
     message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails)).then(function (game_msg) {
       var collector = game_msg.channel.createMessageCollector(hangmanFilter, { time: 60000 })
@@ -76,10 +76,10 @@ module.exports = {
           fails++
 
           // Track guesses per user
-          if (player_guesses.get(user.id)) {
-            player_guesses.set(user.id, player_guesses.get(user.id) + 1)
+          if (playerGuesses.get(user.id)) {
+            playerGuesses.set(user.id, playerGuesses.get(user.id) + 1)
           } else {
-            player_guesses.set(user.id, 1)
+            playerGuesses.set(user.id, 1)
           }
         } else {
           // Correct guess!
@@ -97,18 +97,18 @@ module.exports = {
           correct += revealed
 
           // Track guesses per user
-          if (player_guesses.get(user.id)) {
-            player_guesses.set(user.id, player_guesses.get(user.id) + 1)
+          if (playerGuesses.get(user.id)) {
+            playerGuesses.set(user.id, playerGuesses.get(user.id) + 1)
           } else {
-            player_guesses.set(user.id, 1)
+            playerGuesses.set(user.id, 1)
           }
 
-          if (player_correct.get(user.id)) {
-            player_correct.set(user.id, player_correct.get(user.id) + 1)
-            player_revealed.set(user.id, player_revealed.get(user.id) + revealed)
+          if (playerCorrect.get(user.id)) {
+            playerCorrect.set(user.id, playerCorrect.get(user.id) + 1)
+            playerRevealed.set(user.id, playerRevealed.get(user.id) + revealed)
           } else {
-            player_correct.set(user.id, 1)
-            player_revealed.set(user.id, revealed)
+            playerCorrect.set(user.id, 1)
+            playerRevealed.set(user.id, revealed)
           }
         }
 
@@ -143,10 +143,9 @@ module.exports = {
 
         // Increment stats data for all players
         // TODO
-        player_guesses.forEach(function (guesses, key) {
-          var member = message.guild.members.get(key)
-          var correct = player_correct.get(key) || 0
-          var revealed = player_revealed.get(key) || 0
+        playerGuesses.forEach(function (guesses, key) {
+          var correct = playerCorrect.get(key) || 0
+          var revealed = playerRevealed.get(key) || 0
           var contribution = Math.floor((revealed / word.length) * 100)
           var won = (reason == 'win') ? 1 : 0
           incrementStatScore(key, guesses, correct, revealed, won, contribution)

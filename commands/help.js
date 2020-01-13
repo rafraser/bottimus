@@ -1,5 +1,3 @@
-const discord = require('discord.js')
-
 const helpMessage = `
 Collect coins by playing the fun Bottimus games and then exchange them for amazing prizes!
 

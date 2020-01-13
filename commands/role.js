@@ -14,57 +14,57 @@ module.exports = {
     }
 
     var user = message.member
-    var message_stack = ''
+    var messageStack = ''
 
     // Add roles where appropiate
     // Todo: simplify this
     for (var role of args) {
       if (role.includes('event')) {
         // Assign the events related role
-        var role_id = '535346825423749120'
-        var role = message.guild.roles.get(role_id)
-        if (user.roles.has(role_id)) {
+        var roleID = '535346825423749120'
+        var role = message.guild.roles.get(roleID)
+        if (user.roles.has(roleID)) {
           user.removeRole(role)
-          message_stack += 'You won\'t get event notifications anymore. :(\n'
+          messageStack += 'You won\'t get event notifications anymore. :(\n'
         } else {
           user.addRole(role)
-          message_stack += 'Thanks for signing up for events!\n'
+          messageStack += 'Thanks for signing up for events!\n'
         }
       } else if (role.includes('map') || role.includes('hammer')) {
         // Assign the mapping related role
-        var role_id = '514727746006679552'
-        var role = message.guild.roles.get(role_id)
-        if (user.roles.has(role_id)) {
+        var roleID = '514727746006679552'
+        var role = message.guild.roles.get(roleID)
+        if (user.roles.has(roleID)) {
           user.removeRole(role)
-          message_stack += 'Sorry to see you leave #mapping :(\n'
+          messageStack += 'Sorry to see you leave #mapping :(\n'
         } else {
           user.addRole(role)
-          message_stack += 'Welcome to #mapping!\n'
+          messageStack += 'Welcome to #mapping!\n'
         }
       } else if (role.includes('mini')) {
         // Assign the mapping related role
-        var role_id = '621421798478839819'
-        var role = message.guild.roles.get(role_id)
-        if (user.roles.has(role_id)) {
+        var roleID = '621421798478839819'
+        var role = message.guild.roles.get(roleID)
+        if (user.roles.has(roleID)) {
           user.removeRole(role)
-          message_stack += 'Sorry to see you leave Minigames :(\n'
+          messageStack += 'Sorry to see you leave Minigames :(\n'
         } else {
           user.addRole(role)
-          message_stack += 'Thanks for joining the Minigames beta!\n'
+          messageStack += 'Thanks for joining the Minigames beta!\n'
         }
       } else if (role.includes('scp')) {
-        var role_id = '653083644256190485'
-        var role = message.guild.roles.get(role_id)
-        if (user.roles.has(role_id)) {
+        var roleID = '653083644256190485'
+        var role = message.guild.roles.get(roleID)
+        if (user.roles.has(roleID)) {
           user.removeRole(role)
-          message_stack += 'Sorry to see you leave #scp :(\n'
+          messageStack += 'Sorry to see you leave #scp :(\n'
         } else {
           user.addRole(role)
-          message_stack += 'Welcome to the SCP Foundation!\n'
+          messageStack += 'Welcome to the SCP Foundation!\n'
         }
       }
     }
 
-    message.channel.send(message_stack)
+    message.channel.send(messageStack)
   }
 }

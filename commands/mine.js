@@ -3,8 +3,8 @@ const pool = require('../database')
 const discord = require('discord.js')
 
 function incrementStatScore (userid, amount) {
-  var query_string = 'INSERT INTO arcade_mining VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE number = number + 1, diamonds = diamonds + VALUES(diamonds)'
-  pool.query(query_string, [userid, amount])
+  var queryString = 'INSERT INTO arcade_mining VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE number = number + 1, diamonds = diamonds + VALUES(diamonds)'
+  pool.query(queryString, [userid, amount])
 }
 
 function generateMiningEmbed (msg, name, amount, over = false) {

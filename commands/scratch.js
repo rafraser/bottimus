@@ -3,8 +3,8 @@ const pool = require('../database')
 const discord = require('discord.js')
 
 function updateScratch (id, amount) {
-  var query_string = 'INSERT INTO arcade_scratchcard VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE winnings = winnings + VALUES(winnings), number = number + VALUES(number)'
-  pool.query(query_string, [id, amount])
+  var queryString = 'INSERT INTO arcade_scratchcard VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE winnings = winnings + VALUES(winnings), number = number + VALUES(number)'
+  pool.query(queryString, [id, amount])
 }
 
 const prizes = [

@@ -1,4 +1,3 @@
-const discord = require('discord.js')
 const events = require('../events')
 
 const approvalChannel = '374834858821812234'

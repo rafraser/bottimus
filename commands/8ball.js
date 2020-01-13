@@ -1,5 +1,4 @@
 const discord = require('discord.js')
-const path = require('path')
 
 function getRandomInt (min, max) {
   return Math.floor(Math.random() * (max - min)) + min

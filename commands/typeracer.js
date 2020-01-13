@@ -5,20 +5,20 @@ const discord = require('discord.js')
 
 // Stores results for players that complete the Type Race
 function incrementStatScore (userid, speed) {
-  var query_one = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1), completed = completed + 1;'
-  var query_two = 'SELECT speed_best FROM arcade_typeracer WHERE discordid = ?;'
-  var query_three = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
+  var queryOne = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1), completed = completed + 1;'
+  var queryTwo = 'SELECT speed_best FROM arcade_typeracer WHERE discordid = ?;'
+  var queryThree = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
 
   // callback hell I know
   var p = new Promise(function (resolve, reject) {
-    pool.query(query_one, [userid, speed], function (err, results) {
+    pool.query(queryOne, [userid, speed], function (err, results) {
       if (err) { console.log(err); return }
-      pool.query(query_two, [userid], function (err, results) {
+      pool.query(queryTwo, [userid], function (err, results) {
         if (err) { console.log(err); return }
         var best = results[0].speed_best
 
         if (speed > best) {
-          pool.query(query_three, [speed, new Date(), userid], function (err) {
+          pool.query(queryThree, [speed, new Date(), userid], function (err) {
             if (err) console.log(err)
           })
           resolve([true, userid, speed])
@@ -34,20 +34,20 @@ function incrementStatScore (userid, speed) {
 // UNUSED Function
 // Stores results for players that complete the Type Race on mobile
 function incrementStatScoreMobile (userid, speed) {
-  var query_one = 'INSERT INTO arcade_typeracer_mobile (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE completed = completed + 1, speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1);'
-  var query_two = 'SELECT speed_best FROM arcade_typeracer_mobile WHERE discordid = ?;'
-  var query_three = 'UPDATE arcade_typeracer_mobile SET speed_best = ?, date_best = ? WHERE discordid = ?;'
+  var queryOne = 'INSERT INTO arcade_typeracer_mobile (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE completed = completed + 1, speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1);'
+  var queryTwo = 'SELECT speed_best FROM arcade_typeracer_mobile WHERE discordid = ?;'
+  var queryThree = 'UPDATE arcade_typeracer_mobile SET speed_best = ?, date_best = ? WHERE discordid = ?;'
 
   // callback hell I know
   var p = new Promise(function (resolve, reject) {
-    pool.query(query_one, [userid, speed], function (err, results) {
+    pool.query(queryOne, [userid, speed], function (err, results) {
       if (err) { console.log(err); return }
-      pool.query(query_two, [userid], function (err, results) {
+      pool.query(queryTwo, [userid], function (err, results) {
         if (err) { console.log(err); return }
         var best = results[0].speed_best
 
         if (speed > best) {
-          pool.query(query_three, [speed, new Date(), userid], function (err) {
+          pool.query(queryThree, [speed, new Date(), userid], function (err) {
             if (err) console.log(err)
           })
           resolve(true)

@@ -1,5 +1,4 @@
 const arcade = require('../arcade')
-const discord = require('discord.js')
 
 module.exports = {
   name: 'balance',
