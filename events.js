@@ -13,11 +13,11 @@ const eventIcons = {
 }
 
 function findEventIcon (event) {
-  var words = event.title.split(' ').concat(event.description.split(' '))
-  var gmod = false
+  const words = event.title.split(' ').concat(event.description.split(' '))
+  let gmod = false
 
   // Scan all the words to spot the first category
-  for (var word of words) {
+  for (let word of words) {
     word = word.toLowerCase()
     if (eventIcons[word]) {
       return eventIcons[word]
@@ -35,9 +35,9 @@ function findEventIcon (event) {
 }
 
 function generateEventEmbed (event, timeLeft) {
-  var formattedTime = formatEventDate(event.time)
-  var image = findEventIcon(event)
-  var embed = new discord.RichEmbed()
+  const formattedTime = formatEventDate(event.time)
+  const image = findEventIcon(event)
+  const embed = new discord.RichEmbed()
     .setColor('#f0932b')
     .setTitle(event.title)
     .setDescription(event.description)
@@ -50,9 +50,9 @@ function generateEventEmbed (event, timeLeft) {
 }
 
 function generateCompletedEventEmbed (event) {
-  var formattedTime = formatEventDate(event.time)
-  var image = findEventIcon(event)
-  var embed = new discord.RichEmbed()
+  const formattedTime = formatEventDate(event.time)
+  const image = findEventIcon(event)
+  const embed = new discord.RichEmbed()
     .setColor('#f0932b')
     .setTitle(event.title)
     .setThumbnail(image)
@@ -63,7 +63,7 @@ function generateCompletedEventEmbed (event) {
 }
 
 function generateEvent (member, title, description, time) {
-  var event = {}
+  const event = {}
   event.scheduler = member.displayName
   event.title = title
   event.description = description

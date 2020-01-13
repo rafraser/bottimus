@@ -11,8 +11,8 @@ require('dotenv').config()
 
 // Create the directories for submodules if they don't exist
 client.createDirectories = function () {
-  var directories = ['commands', 'scanners', 'updaters', 'startup', 'data']
-  for (var directory of directories) {
+  const directories = ['commands', 'scanners', 'updaters', 'startup', 'data']
+  for (const directory of directories) {
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory)
     }
@@ -37,13 +37,13 @@ client.loadCommands = function () {
   client.commands = new discord.Collection()
   client.cooldowns = new Map()
 
-  for (var file of fs.readdirSync('./commands')) {
-    var command = require('./commands/' + file)
+  for (const file of fs.readdirSync('./commands')) {
+    const command = require('./commands/' + file)
     client.commands.set(command.name, command)
 
     // Link aliases
     if (command.aliases) {
-      for (var alias of command.aliases) {
+      for (const alias of command.aliases) {
         client.commands.set(alias, command)
       }
     }
@@ -54,7 +54,7 @@ client.loadCommands = function () {
 client.loadScanners = function () {
   client.scanners = []
 
-  for (var file of fs.readdirSync('./scanners')) {
+  for (const file of fs.readdirSync('./scanners')) {
     client.scanners.push(require('./scanners/' + file))
   }
 }
@@ -63,21 +63,21 @@ client.loadScanners = function () {
 client.loadUpdaters = function () {
   client.updaters = []
 
-  for (var file of fs.readdirSync('./updaters')) {
+  for (const file of fs.readdirSync('./updaters')) {
     client.updaters.push(require('./updaters/' + file))
   }
 }
 
 // Run all startup commands
 client.loadStartup = function () {
-  for (var file of fs.readdirSync('./startup')) {
+  for (const file of fs.readdirSync('./startup')) {
     require('./startup/' + file).execute(client)
   }
 }
 
 client.update = function () {
   // Run every updating function as required
-  for (var update of client.updaters) {
+  for (const update of client.updaters) {
     if ((client.minute % update.frequency) === 0) {
       update.execute(client)
     }
@@ -119,10 +119,10 @@ client.on('message', function (message) {
 
   // Scanners are applied to every message
   // This can be used to stop messages from sending
-  for (var scanner of client.scanners) {
+  for (const scanner of client.scanners) {
     try {
       // Run the scanner
-      var result = scanner.execute(message, client)
+      const result = scanner.execute(message, client)
 
       // Abort processing if a scanner returns false
       if (result === false) {
@@ -133,9 +133,9 @@ client.on('message', function (message) {
 
   // Check for commands
   // This supports multiple prefixes now
-  var isCommand = false
-  var args
-  for (var prefix of prefixes) {
+  let isCommand = false
+  let args
+  for (const prefix of prefixes) {
     if (message.content.startsWith(prefix)) {
       isCommand = true
       args = message.content.slice(prefix.length)
@@ -152,24 +152,24 @@ client.on('message', function (message) {
   args = args.match(/[^"“” \n]+|["“][^"”]+["”]/g)
 
   // Strip any quotes at the start and end of an argument
-  args = args.map(a => a.replace(/^["“]|["”]$/g, ''))
+  args = args.map((a) => a.replace(/^["“]|["”]$/g, ''))
 
   // Check the command name
-  var cmd = args.shift().toLowerCase()
+  const cmd = args.shift().toLowerCase()
   if (!client.commands.has(cmd)) return
 
   // Check for cooldowns
-  var command = client.commands.get(cmd)
+  const command = client.commands.get(cmd)
   if (command.cooldown) {
-    var user = message.member.id
+    const user = message.member.id
     if (client.cooldowns.get(cmd)) {
-      var cools = client.cooldowns.get(cmd)
+      const cools = client.cooldowns.get(cmd)
       if (cools.has(user)) {
-        var elapsed = Date.now() - cools.get(user)
+        const elapsed = Date.now() - cools.get(user)
 
         // Cooldown is still active: send a warning message
         if (elapsed < command.cooldown * 1000) {
-          var timeleft = (command.cooldown * 1000) - elapsed
+          const timeleft = (command.cooldown * 1000) - elapsed
           message.channel.send('Slow down! Try again in ' + client.timeToString(timeleft))
           return
         }
@@ -196,7 +196,7 @@ client.on('guildMemberAdd', function (member) {
   if (member.guild.id !== '309951255575265280') return
   if (client.testingMode) return
 
-  var chan = member.guild.channels.find(ch => ch.name === 'general')
+  const chan = member.guild.channels.find((ch) => ch.name === 'general')
   chan.send(`Welcome to Fluffy Servers, ${member.displayName}! Please check out <#528849382196379650>`)
   member.addRole('535346825423749120')
 })
@@ -209,11 +209,11 @@ client.on('messageDelete', function (message) {
   if (message.channel.name === 'bottimus') return
   if (message.channel.name === 'administration') return
 
-  var channel = message.guild.channels.find(ch => ch.name === 'junkyard')
+  const channel = message.guild.channels.find((ch) => ch.name === 'junkyard')
 
   // todo: fix this to work for messages with multiple attachments
   // Not sure if this is even possible; but it's a real pain to deal with
-  var attachment = message.attachments.first()
+  const attachment = message.attachments.first()
   if (attachment) {
     channel.send(`Deleted message by **${message.member.displayName}** in **#${message.channel.name}**:\n${message.cleanContent}`, { files: [attachment.proxyURL] })
   } else {
@@ -227,7 +227,7 @@ client.login(process.env.DISCORD)
 // Helper utility functions
 client.timeToString = function (ms) {
   // Determine number and units
-  var time = [1, 'second']
+  let time = [1, 'second']
   if (ms < 1000) {
     time = [1, 'second']
   } else if (ms < 60 * 1000) {
@@ -306,8 +306,8 @@ client.findUser = function (message, args, retself = false) {
   }
 
   // Search the list of users for matching names
-  var search = args.shift().toLowerCase()
-  var results = message.guild.members.filter(function (u) {
+  const search = args.shift().toLowerCase()
+  const results = message.guild.members.filter(function (u) {
     return u.displayName.toLowerCase().includes(search) || u.user.username.toLowerCase().includes(search)
   })
 
@@ -335,9 +335,9 @@ client.executePython = function (script, args) {
   }
   args.unshift('python/' + script + '.py')
 
-  var p = new Promise(function (resolve, reject) {
-    var python = spawn('python3', args)
-    var data = ''
+  const p = new Promise(function (resolve, reject) {
+    const python = spawn('python3', args)
+    let data = ''
 
     // Log print statements and errors to the data
     python.stdout.on('data', function (d) {
