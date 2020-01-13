@@ -28,7 +28,7 @@ const prizeList = {
 const prizeRarities = ['Common', 'Uncommon', 'Rare', 'Legendary']
 
 function incrementArcadeCredits (userid, amount) {
-  var queryString = 'INSERT INTO arcade_currency VALUES(?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);'
+  const queryString = 'INSERT INTO arcade_currency VALUES(?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);'
   pool.query(queryString, [userid, amount], function (err, results) {
     if (err) {
       console.log(err)
@@ -37,8 +37,8 @@ function incrementArcadeCredits (userid, amount) {
 }
 
 function getArcadeCredits (userid) {
-  var p = new Promise(function (resolve, reject) {
-    var queryString = 'SELECT * FROM arcade_currency WHERE userid = ?;'
+  const p = new Promise(function (resolve, reject) {
+    const queryString = 'SELECT * FROM arcade_currency WHERE userid = ?;'
     pool.query(queryString, [userid], function (err, results) {
       if (err) {
         resolve(0)
@@ -55,8 +55,8 @@ function getArcadeCredits (userid) {
 function unlockArcadePrize (userid, prize) {
   if (!prizeList[prize]) return false
 
-  var p = new Promise(function (resolve, reject) {
-    var queryString = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
+  const p = new Promise(function (resolve, reject) {
+    const queryString = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
     pool.query(queryString, [userid, prize], function (err, results) {
       if (err) {
         console.log(err)
@@ -68,16 +68,16 @@ function unlockArcadePrize (userid, prize) {
 }
 
 function getArcadePrizes (userid) {
-  var p = new Promise(function (resolve, reject) {
-    var queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
+  const p = new Promise(function (resolve, reject) {
+    const queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
     pool.query(queryString, [userid], function (err, results) {
       if (err) {
         reject(err)
       } else {
-        var prizes = {}
-        for (var i = 0; i < results.length; i++) {
-          var name = results[i].prize
-          var amount = results[i].amount
+        const prizes = {}
+        for (let i = 0; i < results.length; i++) {
+          const name = results[i].prize
+          const amount = results[i].amount
           prizes[name] = amount
         }
 
