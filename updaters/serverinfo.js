@@ -33,22 +33,6 @@ function updateMinigames (message) {
   })
 }
 
-function updateMinecraft (message) {
-  const ip = '139.180.168.161'
-  gamedig.query({ type: 'minecraft', host: ip }).then(function (result) {
-    // Generate a nice looking embed
-    var embed = new discord.RichEmbed()
-      .setColor('#44bd32')
-      .setTitle('🕹️ Minecraft')
-      .setDescription('Map: http://139.180.168.161:8123')
-      .addField('Players', `${result.players.length || 0}/${result.maxplayers || 0}`, true)
-      .addField('IP', '139.180.168.161', true)
-      .setThumbnail('https://fluffyservers.com/img/minecraft.png')
-      .setTimestamp()
-    message.edit(embed)
-  })
-}
-
 const serverChannel = '528849382196379650'
 const murderMessage = '644776579809017877'
 const minigamesMessage = '644776606451367962'
