@@ -11,11 +11,4 @@ var pool = mysql.createPool({
   database: 'bottimus'
 })
 
-// Function to get a connection to the database
-// This function is what is found when this file is imported
-var getConnection = function (callback) {
-  pool.getConnection(function (err, connection) {
-    callback(err, connection)
-  })
-}
 module.exports = pool

@@ -5,9 +5,9 @@ const words = require('../hangman_words')
 
 function incrementStatScore (userid, guesses, correct, revealed, won, contribution) {
   // Sorry
-  var query_string = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
+  var queryString = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
 
-  pool.query(query_string, [userid, guesses, correct, revealed, won, contribution], function (err, results) {
+  pool.query(queryString, [userid, guesses, correct, revealed, won, contribution], function (err, results) {
     if (err) {
       console.log(err)
     }
@@ -31,7 +31,7 @@ function generateEmbed (attempts, guesses, fails) {
 function hangmanFilter (msg) {
   if (msg.member.user.bot) return false
   if (msg.content.length > 1) return false
-  if (msg.content == '' || msg.content == ' ') return false
+  if (msg.content === '' || msg.content === ' ') return false
   return ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(msg.content) > -1)
 }
 
@@ -55,8 +55,8 @@ module.exports = {
     var playerCorrect = new Map()
     var playerRevealed = new Map()
 
-    message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails)).then(function (game_msg) {
-      var collector = game_msg.channel.createMessageCollector(hangmanFilter, { time: 60000 })
+    message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails)).then(function (gameMsg) {
+      var collector = gameMsg.channel.createMessageCollector(hangmanFilter, { time: 60000 })
       collector.on('collect', function (m) {
         // Check words for valid guesses
         var letter = m.content
@@ -64,15 +64,15 @@ module.exports = {
 
         // Don't count guesses twice
         if (attempts.includes(letter)) {
-          game_msg.channel.send(letter + ' has already been guessed!').then(function (msg) { msg.delete(1000) })
+          gameMsg.channel.send(letter + ' has already been guessed!').then(function (msg) { msg.delete(1000) })
           m.delete()
           return
         }
 
         attempts.push(letter)
-        if (word.indexOf(letter) == -1) {
+        if (word.indexOf(letter) === -1) {
           // Incorrect guess, oh no :(
-          game_msg.channel.send('Uh oh! ' + letter + ' is not in the word!').then(function (msg) { msg.delete(1000) })
+          gameMsg.channel.send('Uh oh! ' + letter + ' is not in the word!').then(function (msg) { msg.delete(1000) })
           fails++
 
           // Track guesses per user
@@ -83,13 +83,13 @@ module.exports = {
           }
         } else {
           // Correct guess!
-          game_msg.channel.send('Good guess! ' + letter + ' is in the word!').then(function (msg) { msg.delete(1000) })
+          gameMsg.channel.send('Good guess! ' + letter + ' is in the word!').then(function (msg) { msg.delete(1000) })
           arcade.incrementArcadeCredits(user.id, 1)
 
           // Reveal letters in the word
           var revealed = 0
           for (var i = 0; i < word.length; i++) {
-            if (word.charAt(i) == letter) {
+            if (word.charAt(i) === letter) {
               guesses[i] = letter
               revealed++
             }
@@ -115,15 +115,15 @@ module.exports = {
         m.delete()
 
         // Update the embed
-        game_msg.edit(generateEmbed(attempts, guesses, fails))
+        gameMsg.edit(generateEmbed(attempts, guesses, fails))
 
         // End the game if the word is complete
-        if (correct == word.length) {
+        if (correct === word.length) {
           collector.stop('win')
         }
 
         // End the game if there have been 8 failures
-        if (fails == 8) {
+        if (fails === 8) {
           collector.stop('lose')
         }
       })
@@ -132,13 +132,13 @@ module.exports = {
         client.playingHangman = null
 
         // Send a message depending on how the game ended
-        if (reason == 'win') {
-          game_msg.channel.send('You win! The word was ' + word)
-        } else if (reason == 'lose') {
-          game_msg.channel.send('Oh no! :(')
-          game_msg.channel.send('The word was ' + word)
+        if (reason === 'win') {
+          gameMsg.channel.send('You win! The word was ' + word)
+        } else if (reason === 'lose') {
+          gameMsg.channel.send('Oh no! :(')
+          gameMsg.channel.send('The word was ' + word)
         } else {
-          game_msg.channel.send('Time\s up! The word was ' + word)
+          gameMsg.channel.send('Time\'s up! The word was ' + word)
         }
 
         // Increment stats data for all players
@@ -147,7 +147,7 @@ module.exports = {
           var correct = playerCorrect.get(key) || 0
           var revealed = playerRevealed.get(key) || 0
           var contribution = Math.floor((revealed / word.length) * 100)
-          var won = (reason == 'win') ? 1 : 0
+          var won = (reason === 'win') ? 1 : 0
           incrementStatScore(key, guesses, correct, revealed, won, contribution)
         })
       })

@@ -6,7 +6,7 @@ function calculateTriviaTotals (results) {
   var totalGuesses = 0
   var totalCorrect = 0
 
-  for (result of results) {
+  for (const result of results) {
     totalGuesses = totalGuesses + result.attempted
     totalCorrect = totalCorrect + result.correct
   }
@@ -140,14 +140,14 @@ module.exports = {
   aliases: ['gamestats'],
   execute (message, args, client) {
     var user = client.findUser(message, args, true)
-    var game = args.shift()
+    var game = args.shift().toLowerCase()
 
     // Get stats for all games, or a single game if given
     var promises = []
-    if (game && embedFunctions.hasOwnProperty(game.toLowerCase())) {
+    if (game && Object.prototype.hasOwnProperty.call(embedFunctions, game)) {
       promises.push(embedFunctions[game](user))
     } else {
-      for (var game in embedFunctions) {
+      for (const game in embedFunctions) {
         promises.push(embedFunctions[game](user))
       }
     }

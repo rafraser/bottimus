@@ -1,4 +1,3 @@
-const discord = require('discord.js')
 const mute = require('../commands/mute.js')
 
 module.exports = {

@@ -1,4 +1,3 @@
-const pool = require('./database')
 const discord = require('discord.js')
 
 function formatEventDate (date) {
@@ -22,7 +21,7 @@ function findEventIcon (event) {
     word = word.toLowerCase()
     if (eventIcons[word]) {
       return eventIcons[word]
-    } else if (word == 'gmod') {
+    } else if (word === 'gmod') {
       gmod = true
     }
   }

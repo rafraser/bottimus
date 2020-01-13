@@ -27,7 +27,7 @@ function startMiningTrip (msg, member, client) {
   generateMiningEmbed(msg, member.displayName, amount)
 
   const filter = function (reaction, u) {
-    return u.id == member.id && reaction.emoji.name == '⛏' && collecting
+    return u.id === member.id && reaction.emoji.name === '⛏' && collecting
   }
 
   msg.clearReactions().then(function () {
@@ -78,7 +78,7 @@ module.exports = {
         message.channel.send('Going on a mining expedition costs 25 coins: react to confirm').then(function (msg) {
           msg.react('✅')
           const filter = function (reaction, user) {
-            return user.id == message.member.id && reaction.emoji.name == '✅'
+            return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
           var collector = msg.createReactionCollector(filter, { time: 10000 })

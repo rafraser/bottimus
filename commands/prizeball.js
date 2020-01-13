@@ -64,7 +64,7 @@ module.exports = {
         message.channel.send('Redeeming a prize costs 1000 coins: react to confirm').then(function (msg) {
           msg.react('✅')
           const filter = function (reaction, user) {
-            return user.id == message.member.id && reaction.emoji.name == '✅'
+            return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
           var collector = msg.createReactionCollector(filter, { time: 5000 })

@@ -1,4 +1,3 @@
-const discord = require('discord.js')
 const events = require('../events')
 const fs = require('fs')
 
@@ -42,7 +41,7 @@ module.exports = {
         } else {
           // Update the time remaining
           var timeLeft = client.timeToString(event.time - Date.now())
-          var embed = events.generateEventEmbed(event, timeLeft)
+          const embed = events.generateEventEmbed(event, timeLeft)
           message.edit(embed)
         }
       })

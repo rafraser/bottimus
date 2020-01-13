@@ -32,7 +32,7 @@ function incrementStatScore (userid, speed) {
 }
 
 // UNUSED Function
-// Stores results for players that complete the Type Race on mobile
+/*
 function incrementStatScoreMobile (userid, speed) {
   var queryOne = 'INSERT INTO arcade_typeracer_mobile (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE completed = completed + 1, speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1);'
   var queryTwo = 'SELECT speed_best FROM arcade_typeracer_mobile WHERE discordid = ?;'
@@ -59,6 +59,7 @@ function incrementStatScoreMobile (userid, speed) {
   })
   return p
 }
+*/
 
 function shuffle (a) {
   var j, x, i
@@ -105,7 +106,7 @@ function startTypeRacer (client, message, display) {
         // They are allowed 2 mistakes out of 50 words (96% accuracy)
         var wrong = 0
         for (var i = 0; i < n; i++) {
-          if (attempt[i].toLowerCase() == list[i].toLowerCase()) continue
+          if (attempt[i].toLowerCase() === list[i].toLowerCase()) continue
 
           // Wrong word, oh no!
           wrong++

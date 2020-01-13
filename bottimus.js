@@ -78,7 +78,7 @@ client.loadStartup = function () {
 client.update = function () {
   // Run every updating function as required
   for (var update of client.updaters) {
-    if ((client.minute % update.frequency) == 0) {
+    if ((client.minute % update.frequency) === 0) {
       update.execute(client)
     }
   }
@@ -125,7 +125,7 @@ client.on('message', function (message) {
       var result = scanner.execute(message, client)
 
       // Abort processing if a scanner returns false
-      if (result == false) {
+      if (result === false) {
         return
       }
     } catch (error) {}
@@ -193,7 +193,7 @@ client.on('message', function (message) {
 // Greet new users to the server
 // Welcome new users
 client.on('guildMemberAdd', function (member) {
-  if (member.guild.id != '309951255575265280') return
+  if (member.guild.id !== '309951255575265280') return
   if (client.testingMode) return
 
   var chan = member.guild.channels.find(ch => ch.name === 'general')
@@ -203,7 +203,7 @@ client.on('guildMemberAdd', function (member) {
 
 // Log any deleted messages into a moderation logging channel
 client.on('messageDelete', function (message) {
-  if (message.guild.id != '309951255575265280') return
+  if (message.guild.id !== '309951255575265280') return
   if (client.testingMode) return
   if (message.member.user.bot) return
   if (message.channel.name === 'bottimus') return
@@ -250,7 +250,7 @@ client.timeToString = function (ms) {
 
 // Check for Administrator status
 client.isAdministrator = function (member) {
-  if (member.guild.id != '309951255575265280') return false
+  if (member.guild.id !== '309951255575265280') return false
 
   if (member.roles.some(function (role) {
     return role.name.endsWith('Administrator')
@@ -263,7 +263,7 @@ client.isAdministrator = function (member) {
 
 // Check for Moderator status
 client.isModerator = function (member) {
-  if (member.guild.id != '309951255575265280') return false
+  if (member.guild.id !== '309951255575265280') return false
   if (client.isAdministrator(member)) return true
 
   if (member.roles.some(function (role) {
@@ -277,7 +277,7 @@ client.isModerator = function (member) {
 
 // Check for Community Star status
 client.isCommunityStar = function (member) {
-  if (member.guild.id != '309951255575265280') return false
+  if (member.guild.id !== '309951255575265280') return false
   if (client.isModerator(member)) return true
 
   if (member.roles.some(function (role) {
@@ -352,7 +352,7 @@ client.executePython = function (script, args) {
     // 0 is a success, any other code is a failure
     python.on('close', function (code) {
       data = data.trim() // remove any whitespace at the end
-      if (code == 0) {
+      if (code === 0) {
         resolve(data)
       } else {
         reject(data)

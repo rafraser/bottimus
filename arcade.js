@@ -28,8 +28,8 @@ const prizeList = {
 const prizeRarities = ['Common', 'Uncommon', 'Rare', 'Legendary']
 
 function incrementArcadeCredits (userid, amount) {
-  var query_string = 'INSERT INTO arcade_currency VALUES(?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);'
-  pool.query(query_string, [userid, amount], function (err, results) {
+  var queryString = 'INSERT INTO arcade_currency VALUES(?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);'
+  pool.query(queryString, [userid, amount], function (err, results) {
     if (err) {
       console.log(err)
     }
@@ -38,8 +38,8 @@ function incrementArcadeCredits (userid, amount) {
 
 function getArcadeCredits (userid) {
   var p = new Promise(function (resolve, reject) {
-    var query_string = 'SELECT * FROM arcade_currency WHERE userid = ?;'
-    pool.query(query_string, [userid], function (err, results) {
+    var queryString = 'SELECT * FROM arcade_currency WHERE userid = ?;'
+    pool.query(queryString, [userid], function (err, results) {
       if (err) {
         resolve(0)
       } else {
@@ -56,8 +56,8 @@ function unlockArcadePrize (userid, prize) {
   if (!prizeList[prize]) return false
 
   var p = new Promise(function (resolve, reject) {
-    var query_string = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
-    pool.query(query_string, [userid, prize], function (err, results) {
+    var queryString = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
+    pool.query(queryString, [userid, prize], function (err, results) {
       if (err) {
         console.log(err)
       }
@@ -69,8 +69,8 @@ function unlockArcadePrize (userid, prize) {
 
 function getArcadePrizes (userid) {
   var p = new Promise(function (resolve, reject) {
-    var query_string = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
-    pool.query(query_string, [userid], function (err, results) {
+    var queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
+    pool.query(queryString, [userid], function (err, results) {
       if (err) {
         reject(err)
       } else {

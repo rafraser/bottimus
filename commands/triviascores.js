@@ -15,9 +15,9 @@ module.exports = {
     }
 
     var queryString
-    if (args[0].toLowerCase() == 'percentage') {
+    if (args[0].toLowerCase() === 'percentage') {
       queryString = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia GROUP BY discordid HAVING SUM(attempted) >= 10 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
-    } else if (args[0].toLowerCase() == 'total') {
+    } else if (args[0].toLowerCase() === 'total') {
       queryString = 'SELECT discordid, SUM(correct) AS score FROM arcade_trivia GROUP BY discordid ORDER BY score DESC LIMIT 10;'
     } else {
       queryString = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia WHERE category = ? GROUP BY discordid HAVING SUM(attempted) >= 5 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"

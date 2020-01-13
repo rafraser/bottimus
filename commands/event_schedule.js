@@ -7,7 +7,7 @@ module.exports = {
   description: 'Request an event to be scheduled',
   aliases: ['planevent', 'requestevent'],
   execute (message, args, client) {
-    if (message.guild.id != '309951255575265280') return
+    if (message.guild.id !== '309951255575265280') return
 
     if (!client.isCommunityStar(message.member)) {
       message.channel.send('You need to be a Moderator to use this!')
@@ -73,7 +73,7 @@ module.exports = {
     message.channel.send('Is this correct?', embed).then(function (msg) {
       msg.react('✅')
       const filter = function (reaction, user) {
-        return user.id == message.member.id && reaction.emoji.name == '✅'
+        return user.id === message.member.id && reaction.emoji.name === '✅'
       }
 
       var collector = msg.createReactionCollector(filter, { time: 15000 })

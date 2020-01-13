@@ -42,14 +42,14 @@ function shuffle (a) {
 
 function getPrizeList () {
   var winner = weightedRandom()
-  if (winner == 0) {
+  if (winner === 0) {
     return [shuffle(icons).slice(0, 9), 0]
   } else {
     var ic = winner[0]
     var selection = shuffle(icons).slice(0, 6)
     var matches = 0
     var replacement = ['🍎', '🍍']
-    while (selection.indexOf(ic) != -1) {
+    while (selection.indexOf(ic) !== -1) {
       selection[selection.indexOf(ic)] = replacement[matches]
       matches++
     }
@@ -66,7 +66,7 @@ function generateScratchCard (msg, user, client) {
   var message = ''
   for (var i = 0; i < prizes.length; i++) {
     message += '||' + prizes[i] + '||'
-    if ((i + 1) % 3 == 0) {
+    if ((i + 1) % 3 === 0) {
       message += '\n'
     }
   }
@@ -108,7 +108,7 @@ module.exports = {
         message.channel.send('Scratch cards cost 250 coins: react to confirm').then(function (msg) {
           msg.react('✅')
           const filter = function (reaction, user) {
-            return user.id == message.member.id && reaction.emoji.name == '✅'
+            return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
           var collector = msg.createReactionCollector(filter, { time: 10000 })

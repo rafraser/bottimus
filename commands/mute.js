@@ -20,7 +20,7 @@ function muteUser (client, member, duration, muter, channel) {
 
   // Remove all roles, then add muted role
   roles.forEach(function (role) {
-    if (role.id == mutedid) return
+    if (role.id === mutedid) return
     member.removeRole(role).catch(function (e) {})
   })
   member.addRole(member.guild.roles.get(mutedid))
@@ -66,7 +66,7 @@ module.exports = {
   mute: muteUser,
   unmute: unmuteUser,
   execute (message, args, client) {
-    if (message.guild.id != '309951255575265280') return
+    if (message.guild.id !== '309951255575265280') return
 
     // Check that the user has permission
     if (!client.isModerator(message.member)) {

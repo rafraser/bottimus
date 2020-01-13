@@ -2,7 +2,8 @@ const discord = require('discord.js')
 const https = require('https')
 const pool = require('../database')
 const arcade = require('../arcade')
-const entities = new require('html-entities').AllHtmlEntities
+const HtmlEntities = require('html-entities')
+const entities = new HtmlEntities().AllHtmlEntities
 
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 }
@@ -82,7 +83,7 @@ module.exports = {
         // Filter out any reactions that aren't guesses
         var filter = function (r) {
           var n = r.emoji.name
-          return (n == '🇦' || n == '🇧' || n == '🇨' || n == '🇩')
+          return (n === '🇦' || n === '🇧' || n === '🇨' || n === '🇩')
         }
 
         // Wait 15 seconds for reactions
@@ -106,7 +107,7 @@ module.exports = {
           // From all the guesses, determine who won
           var winners = []
           guesses.forEach(function (guess, id) {
-            var c = (guess == data.correct) ? 1 : 0
+            var c = (guess === data.correct) ? 1 : 0
             if (c) {
               var username = message.guild.members.get(id).displayName
               winners.push(username)

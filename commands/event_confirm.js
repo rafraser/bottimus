@@ -4,7 +4,7 @@ const events = require('../events')
 // Channel where approved events should be displayed
 const eventChannel = '621422264251973664'
 
-function approveEvent (event, channel, client) {
+function approveEvent (event, client) {
   if (client.eventsData == null) {
     client.eventsData = new discord.Collection()
   }
@@ -28,7 +28,7 @@ module.exports = {
   description: 'Confirm a scheduled event',
   aliases: ['requestedevents', 'eventqueue'],
   execute (message, args, client) {
-    if (message.guild.id != '309951255575265280') return
+    if (message.guild.id !== '309951255575265280') return
 
     // Restrict this command to administrators
     if (!client.isAdministrator(message.member)) {
@@ -56,17 +56,17 @@ module.exports = {
       })
 
       const filter = function (reaction, user) {
-        return user.id == message.member.id && (reaction.emoji.name == '✅' || reaction.emoji.name == '❎')
+        return user.id === message.member.id && (reaction.emoji.name === '✅' || reaction.emoji.name === '❎')
       }
 
       var collector = msg.createReactionCollector(filter, { time: 15000 })
       collector.on('collect', function (r) {
         // Approve or deny the event
-        if (r.emoji.name == '✅') {
-          approveEvent(event, message.channel, client)
+        if (r.emoji.name === '✅') {
+          approveEvent(event, client)
           msg.delete()
           msg.channel.send('Event approved!')
-        } else if (r.emoji.name == '❎') {
+        } else if (r.emoji.name === '❎') {
           msg.delete()
           msg.channel.send('Event denied!')
         }

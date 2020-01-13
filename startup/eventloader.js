@@ -7,7 +7,9 @@ module.exports = {
     client.eventsData = new discord.Collection()
     try {
       fs.readdir('data/events/', function (err, files) {
-        if (!files) return
+        if (err || !files) {
+          return
+        }
 
         for (var event of files) {
           // Load each event data file
