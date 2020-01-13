@@ -26,10 +26,10 @@ __Miscellaneous__
 `
 
 module.exports = {
-    name: 'help',
-    description: 'Sends a help message',
-    aliases: ['helpme', 'bottimushelp'],
-    execute(message, args, client) {
-        message.author.send(helpMessage)
-    }
+  name: 'help',
+  description: 'Sends a help message',
+  aliases: ['helpme', 'bottimushelp'],
+  execute (message, args, client) {
+    message.author.send(helpMessage)
+  }
 }
