@@ -7,8 +7,6 @@ function splitTime (ms, unit, timestack) {
   const quotient = Math.floor(ms / unit[0])
   const remainder = ms % unit[0]
 
-  console.log(ms, unit, quotient, remainder, unit[1])
-
   let str = quotient + ' ' + unit[1]
   if (quotient > 1) {
     str += 's'
