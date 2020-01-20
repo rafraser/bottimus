@@ -1,6 +1,7 @@
 const fs = require('fs')
 const discord = require('discord.js')
 const spawn = require('child_process').spawn
+const timehelper = require('./timehelper')
 
 // Create a new Discord client
 const client = new discord.Client()
@@ -225,28 +226,7 @@ client.on('messageDelete', function (message) {
 client.login(process.env.DISCORD)
 
 // Helper utility functions
-client.timeToString = function (ms) {
-  // Determine number and units
-  let time = [1, 'second']
-  if (ms < 1000) {
-    time = [1, 'second']
-  } else if (ms < 60 * 1000) {
-    time = [Math.floor(ms / 1000), 'second']
-  } else if (ms < 3600 * 1000) {
-    time = [Math.floor(ms / (60 * 1000)), 'minute']
-  } else if (ms < 24 * 3600 * 1000) {
-    time = [Math.floor(ms / (3600 * 1000)), 'hour']
-  } else {
-    time = [Math.floor(ms / (24 * 3600 * 1000)), 'day']
-  }
-
-  // Plurals
-  if (time[0] > 1) {
-    return time[0] + ' ' + time[1] + 's'
-  } else {
-    return time[0] + ' ' + time[1]
-  }
-}
+client.timeToString = timehelper.timeToString
 
 // Check for Administrator status
 client.isAdministrator = function (member) {
