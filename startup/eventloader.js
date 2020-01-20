@@ -11,7 +11,7 @@ module.exports = {
           return
         }
 
-        for (var event of files) {
+        for (const event of files) {
           // Load each event data file
           fs.readFile('data/events/' + event, function (err, data) {
             if (err) return
