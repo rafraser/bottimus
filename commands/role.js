@@ -7,7 +7,7 @@ module.exports = {
 
     // Handle no arguments with some help text
     if (!args.length || args.length < 1) {
-      message.channel.send('Please select at least one role:```yaml\nevent\nmapping\nminigames\nscp```')
+      message.channel.send('Please select at least one role:```yaml\nevent\nmapping\nminigames```')
       return
     }
 
@@ -16,6 +16,8 @@ module.exports = {
 
     // Add roles where appropiate
     // Todo: simplify this
+    // Todo but bolder: simplify this
+    // seriously this could just be a dictionary or something
     for (var role of args) {
       if (role.includes('event')) {
         // Assign the events related role
@@ -49,16 +51,6 @@ module.exports = {
         } else {
           user.addRole(role)
           messageStack += 'Thanks for joining the Minigames beta!\n'
-        }
-      } else if (role.includes('scp')) {
-        const roleID = '653083644256190485'
-        const role = message.guild.roles.get(roleID)
-        if (user.roles.has(roleID)) {
-          user.removeRole(role)
-          messageStack += 'Sorry to see you leave #scp :(\n'
-        } else {
-          user.addRole(role)
-          messageStack += 'Welcome to the SCP Foundation!\n'
         }
       }
     }
