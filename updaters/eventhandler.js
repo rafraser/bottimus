@@ -40,7 +40,7 @@ module.exports = {
           } catch (e) {}
         } else {
           // Update the time remaining
-          var timeLeft = client.timeToString(event.time - Date.now())
+          var timeLeft = client.timeToString(event.time - Date.now(), 2)
           const embed = events.generateEventEmbed(event, timeLeft)
           message.edit(embed)
         }

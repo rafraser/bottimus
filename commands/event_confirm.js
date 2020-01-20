@@ -10,7 +10,7 @@ function approveEvent (event, client) {
   }
 
   // Generate an initial event embed
-  var timeLeft = client.timeToString(event.time - Date.now())
+  var timeLeft = client.timeToString(event.time - Date.now(), 2)
   var embed = events.generateEventEmbed(event, timeLeft)
   var channel = client.channels.get(eventChannel)
 
@@ -44,7 +44,7 @@ module.exports = {
 
     // Display the oldest scheduled event
     var event = client.requestedEventsData[0]
-    var timeLeft = client.timeToString(event.time - Date.now())
+    var timeLeft = client.timeToString(event.time - Date.now(), 2)
     var embed = events.generateEventEmbed(event, timeLeft)
 
     // Send the message and await administrator action
