@@ -66,7 +66,7 @@ module.exports = {
 
     // Generate an initial event embed
     var event = events.generateEvent(message.member, title, description, when)
-    var timeLeft = client.timeToString(event.time - Date.now())
+    var timeLeft = client.timeToString(event.time - Date.now(), 2)
     var embed = events.generateEventEmbed(event, timeLeft)
 
     // Check that the event is correct before sending
