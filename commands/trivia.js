@@ -2,8 +2,8 @@ const discord = require('discord.js')
 const https = require('https')
 const pool = require('../database')
 const arcade = require('../arcade')
-const HtmlEntities = require('html-entities')
-const entities = new HtmlEntities().AllHtmlEntities
+const HtmlEntities = require('html-entities').AllHtmlEntities
+const entities = new HtmlEntities()
 
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 }
