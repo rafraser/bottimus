@@ -22,10 +22,21 @@ function updateLastSpin (id, date) {
 
 function pickWheel () {
   var wheels = [
+    // These wheels have an average payout of 200
     ['#coin 100', '#coin 200', '#coin 400', '#coin 200', '#coin 400', '#coin 100'],
     ['#coin 100', '#coin 100', '#coin 100', '#coin 100', '#coin 100', '#coin 100', '#coin 100', '#coin 100', '#coin 1000'],
-    ['ZERO', '#coin 200', '#coin 400'],
-    ['ZERO', '#coin 400', 'ZERO', '#coin 400', 'ZERO', '#coin 400', 'ZERO', '#coin 400']
+    ['#coin 100', '#coin 200', '#coin 300'],
+    ['#coin 100', '#coin 300', '#coin 100', '#coin 300', '#coin 100', '#coin 300', '#coin 100', '#coin 300'],
+    ['#coin 100', '#coin 300', '#coin 100', '#coin 300', '#coin 100', '#coin 300', '#coin 100', '#coin 300'],
+    ['#coin 25', '#coin 50', '#coin 300', '#coin 425', '#coin 425', '#coin 300', '#coin 50', '#coin 25'],
+    // These wheels have an average payout of 300
+    ['#coin 125', '#coin 125', '#coin 1000', '#coin 125', '#coin 125'],
+    ['#coin 42', '#coin 42', '#coin 42', '#coin 42', '#coin 42', '#coin 1590'],
+    ['#coin 100', '#coin 200', '#coin 300', '#coin 400', '#coin 500'],
+    ['#coin 125', '#coin 125', '#coin 1000', '#coin 125', '#coin 125'],
+    // These wheels have an average payout of 400
+    ['#coin 600', '#coin 200'],
+    ['#coin 325', '#coin 350', '#coin 400', '#coin 450', '#coin 475']
   ]
 
   return wheels[Math.floor(Math.random() * wheels.length)]
