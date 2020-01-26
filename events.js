@@ -5,11 +5,11 @@ function formatEventDate (date) {
 }
 
 const eventIcons = {
-  scp: 'https://fluffyservers.com/img/events/scp.png',
-  sandbox: 'https://fluffyservers.com/img/events/sandbox.png',
-  jackbox: 'https://fluffyservers.com/img/events/jackbox.png',
-  murder: 'https://fluffyservers.com/img/events/murder.png',
-  minigames: 'https://fluffyservers.com/img/events/minigames.png'
+  sandbox: 'https://fluffyservers.com/img/events/sandbox.gif',
+  jackbox: 'https://fluffyservers.com/img/events/jackbox.gif',
+  murder: 'https://fluffyservers.com/img/events/murder.gif',
+  minigames: 'https://fluffyservers.com/img/events/minigames.gif',
+  testing: 'https://fluffyservers.com/img/events/testing.gif'
 }
 
 function findEventIcon (event) {
@@ -28,9 +28,9 @@ function findEventIcon (event) {
 
   // No specific event mentioned; check if Garry's Mod or generic event
   if (gmod) {
-    return 'https://fluffyservers.com/img/events/gmod.png'
+    return 'https://fluffyservers.com/img/events/gmod.gif'
   } else {
-    return 'https://fluffyservers.com/img/events/generic.png'
+    return 'https://fluffyservers.com/img/events/generic.gif'
   }
 }
 
