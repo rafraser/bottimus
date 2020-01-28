@@ -3,6 +3,7 @@ const events = require('../events')
 
 // Channel where approved events should be displayed
 const eventChannel = '621422264251973664'
+const testingChannel = '583635933585342466'
 
 function approveEvent (event, client) {
   if (client.eventsData == null) {
@@ -10,10 +11,14 @@ function approveEvent (event, client) {
   }
 
   // Generate an initial event embed
-  var timeLeft = client.timeToString(event.time - Date.now(), 2)
-  var embed = events.generateEventEmbed(event, timeLeft)
-  var channel = client.channels.get(eventChannel)
+  const timeLeft = client.timeToString(event.time - Date.now(), 2)
+  const embed = events.generateEventEmbed(event, timeLeft)
 
+  // Choose a channel based on testing mode
+  const channelId = client.testingMode ? testingChannel : eventChannel
+  const channel = client.channels.get(channelId)
+
+  // Send the event embed to the channel
   channel.send(embed).then(function (msg) {
     msg.react('🔔')
     client.eventsData.set(channel.id + ',' + msg.id, event)

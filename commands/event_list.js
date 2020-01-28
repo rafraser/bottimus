@@ -9,8 +9,6 @@ module.exports = {
       return
     }
 
-    console.log(client.eventsData.size)
-
     // Sort the events by whichever is soonest
     const sortedEvents = client.eventsData.sort(function (a, b) {
       return a.time - b.time

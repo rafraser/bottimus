@@ -3,35 +3,45 @@ const discord = require('discord.js')
 function formatEventDate (date) {
   return date.toLocaleString('en-GB', { timezone: 'AEDT', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', '\n') + ' AEDT'
 }
+// https://fluffyservers.com/img/events/
 
-const eventIcons = {
-  sandbox: 'https://fluffyservers.com/img/events/sandbox.gif',
-  jackbox: 'https://fluffyservers.com/img/events/jackbox.gif',
-  murder: 'https://fluffyservers.com/img/events/murder.gif',
-  minigames: 'https://fluffyservers.com/img/events/minigames.gif',
-  testing: 'https://fluffyservers.com/img/events/testing.gif'
+const eventList = {
+  sandbox: true,
+  jackbox: true,
+  murder: true,
+  minigames: true,
+  testing: true,
+  mapping: true,
+  music: true,
+  streaming: true,
+  hidden: true
 }
 
-function findEventIcon (event) {
+function getEventCategory (event) {
   const words = event.title.split(' ').concat(event.description.split(' '))
   let gmod = false
 
   // Scan all the words to spot the first category
   for (let word of words) {
     word = word.toLowerCase()
-    if (eventIcons[word]) {
-      return eventIcons[word]
+    if (eventList[word]) {
+      return word
     } else if (word === 'gmod') {
       gmod = true
     }
   }
 
-  // No specific event mentioned; check if Garry's Mod or generic event
+  // If no specific event was mentioned;
+  // check if it's a Garry's Mod or a generic event
   if (gmod) {
-    return 'https://fluffyservers.com/img/events/gmod.gif'
+    return 'gmod'
   } else {
-    return 'https://fluffyservers.com/img/events/generic.gif'
+    return 'generic'
   }
+}
+
+function findEventIcon (event) {
+  return `https://fluffyservers.com/img/events/${event.category}.gif`
 }
 
 function generateEventEmbed (event, timeLeft) {
@@ -68,6 +78,7 @@ function generateEvent (member, title, description, time) {
   event.title = title
   event.description = description
   event.time = time
+  event.category = getEventCategory(event)
 
   return event
 }
