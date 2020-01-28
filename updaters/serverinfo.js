@@ -14,7 +14,7 @@ function updateMurder (message) {
       .setThumbnail(`https://fluffyservers.com/mapicons/${result.map}.jpg`)
       .setTimestamp()
     message.edit(embed)
-  })
+  }).catch(function (e) {})
 }
 
 function updateMinigames (message) {
@@ -30,7 +30,7 @@ function updateMinigames (message) {
       .setThumbnail(`https://fluffyservers.com/mg/maps/${result.map}.jpg`)
       .setTimestamp()
     message.edit(embed)
-  })
+  }).catch(function (e) {})
 }
 
 const serverChannel = '528849382196379650'
