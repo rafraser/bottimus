@@ -6,15 +6,15 @@ module.exports = {
   description: 'Get a random number fact',
   cooldown: 10,
   execute (message, args) {
-    var url
-    args[0] = args[0].replace('.', '').replace(',', '')
+    let url
+    const number = args[0] ? args[0].replace('.', '').replace(',', '') : null
 
     // Get the url to search
-    if (args.length >= 1 && !isNaN(args[0])) {
+    if (number) {
       if (Math.random() < 0.8) {
-        url = 'http://numbersapi.com/' + args[0] + '/trivia'
+        url = 'http://numbersapi.com/' + number + '/trivia'
       } else {
-        url = 'http://numbersapi.com/' + args[0] + '/math'
+        url = 'http://numbersapi.com/' + number + '/math'
       }
     } else {
       if (Math.random() < 0.8) {
