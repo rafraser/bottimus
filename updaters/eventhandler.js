@@ -36,6 +36,11 @@ function updateEvent(client) {
       const timeLeft = client.timeToString(event.time - Date.now(), 2)
       const embed = events.generateEventEmbed(event, timeLeft)
       displayMessage.edit(embed)
+
+      // Add a bell icon if one doesn't exist
+      if (!displayMessage.reactions.get('🔔')) {
+        displayMessage.react('🔔')
+      }
     }
   }).catch(console.error)
 }

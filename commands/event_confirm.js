@@ -1,38 +1,24 @@
 const discord = require('discord.js')
 const events = require('../events')
 
-// Channel where approved events should be displayed
-const eventChannel = '621422264251973664'
-const testingChannel = '583635933585342466'
-
-function approveEvent (event, client) {
+function approveEvent(event, client) {
   if (client.eventsData == null) {
     client.eventsData = new discord.Collection()
   }
 
-  // Generate an initial event embed
-  const timeLeft = client.timeToString(event.time - Date.now(), 2)
-  const embed = events.generateEventEmbed(event, timeLeft)
+  const snowflake = discord.SnowflakeUtil.generate()
+  client.eventsData.set(snowflake, event)
+  client.writeDataFile('events', snowflake, event)
 
-  // Choose a channel based on testing mode
-  const channelId = client.testingMode ? testingChannel : eventChannel
-  const channel = client.channels.get(channelId)
-
-  // Send the event embed to the channel
-  channel.send(embed).then(function (msg) {
-    msg.react('🔔')
-    client.eventsData.set(channel.id + ',' + msg.id, event)
-
-    // Write a data file in case of restarting
-    client.writeDataFile('events', channel.id + ',' + msg.id, event)
-  })
+  // Update the next upcoming event (if applicable)
+  client.upcomingEvent = events.getNextEvent(client)
 }
 
 module.exports = {
   name: 'confirmevent',
   description: 'Confirm a scheduled event',
   aliases: ['requestedevents', 'eventqueue'],
-  execute (message, args, client) {
+  execute(message, args, client) {
     if (message.guild.id !== '309951255575265280') return
 
     // Restrict this command to administrators

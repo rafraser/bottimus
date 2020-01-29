@@ -27,7 +27,19 @@ day_names = [
 ]
 
 # Background colours for the events
-background_colors = {"music": "#f368e0", "generic": "#00a8ff", "jackbox": "#9c88ff"}
+background_colors = {
+    "sandbox": "#4cd137",
+    "jackbox": "#9c88ff",
+    "murder": "#e84118",
+    "minigames": "#e1b12c",
+    "testing": "#4cd137",
+    "mapping": "#4cd137",
+    "music": "#f368e0",
+    "streaming": "#f368e0",
+    "hidden": "#e84118",
+    "generic": "#00a8ff",
+    "gmod": "#00a8ff",
+}
 
 
 def centered_text(draw, x, y, text, font):
