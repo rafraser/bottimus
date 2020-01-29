@@ -129,7 +129,7 @@ client.on('message', function (message) {
       if (result === false) {
         return
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   // Check for commands
@@ -267,6 +267,13 @@ client.isCommunityStar = function (member) {
   } else {
     return false
   }
+}
+
+// Useful function to get a channel with a default case for testing mode
+client.channelWithTesting = function (channel) {
+  const testing = '583635933585342466'
+  const channelID = client.testingMode ? testing : channel
+  return client.channels.get(channelID)
 }
 
 // Helper utility function to find a user
