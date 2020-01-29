@@ -209,6 +209,8 @@ client.on('messageDelete', function (message) {
   if (message.member.user.bot) return
   if (message.channel.name === 'bottimus') return
   if (message.channel.name === 'administration') return
+  if (message.channel.name === 'bottimus-test-track') return
+  if (message.content.startsWith('!say')) return
 
   const channel = message.guild.channels.find((ch) => ch.name === 'junkyard')
 
