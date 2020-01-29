@@ -3,7 +3,7 @@ const fs = require('fs')
 
 module.exports = {
   description: 'Loads any stored event data into the immediate memory',
-  execute (client) {
+  execute(client) {
     client.eventsData = new discord.Collection()
     try {
       fs.readdir('data/events/', function (err, files) {
@@ -19,10 +19,19 @@ module.exports = {
             var id = event.replace('.json', '')
             data = JSON.parse(data)
             data.time = new Date(data.time)
+            if (Date.now() > data.time) {
+              data.complete = true
+              if (Date.now() - 3600 * 24 * 32 > data.time) {
+                // Delete any events older than 32 days
+                try {
+                  fs.unlink('data/events/' + event, function (e) { })
+                } catch (e) { }
+              }
+            }
             client.eventsData.set(id, data)
           })
         }
       })
-    } catch (e) {}
+    } catch (e) { }
   }
 }

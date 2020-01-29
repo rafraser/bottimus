@@ -1,6 +1,6 @@
 const discord = require('discord.js')
 
-function formatEventDate (date) {
+function formatEventDate(date) {
   return date.toLocaleString('en-GB', { timezone: 'AEDT', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', '\n') + ' AEDT'
 }
 // https://fluffyservers.com/img/events/
@@ -17,7 +17,7 @@ const eventList = {
   hidden: true
 }
 
-function getEventCategory (event) {
+function getEventCategory(event) {
   const words = event.title.split(' ').concat(event.description.split(' '))
   let gmod = false
 
@@ -40,11 +40,11 @@ function getEventCategory (event) {
   }
 }
 
-function findEventIcon (event) {
+function findEventIcon(event) {
   return `https://fluffyservers.com/img/events/${event.category}.gif`
 }
 
-function generateEventEmbed (event, timeLeft) {
+function generateEventEmbed(event, timeLeft) {
   const formattedTime = formatEventDate(event.time)
   const image = findEventIcon(event)
   const embed = new discord.RichEmbed()
@@ -59,7 +59,7 @@ function generateEventEmbed (event, timeLeft) {
   return embed
 }
 
-function generateCompletedEventEmbed (event) {
+function generateCompletedEventEmbed(event) {
   const formattedTime = formatEventDate(event.time)
   const image = findEventIcon(event)
   const embed = new discord.RichEmbed()
@@ -72,7 +72,7 @@ function generateCompletedEventEmbed (event) {
   return embed
 }
 
-function generateEvent (member, title, description, time) {
+function generateEvent(member, title, description, time) {
   const event = {}
   event.scheduler = member.displayName
   event.title = title
@@ -83,6 +83,20 @@ function generateEvent (member, title, description, time) {
   return event
 }
 
+function getSortedEvents(client) {
+  // Sort the events by whichever is soonest
+  return client.eventsData.sort(function (a, b) {
+    return a.time - b.time
+  }).array()
+}
+
+function getNextEvent(client) {
+  const events = getSortedEvents(client)
+  return events.find(e => !e.complete)
+}
+
 module.exports.generateEventEmbed = generateEventEmbed
 module.exports.generateCompletedEventEmbed = generateCompletedEventEmbed
 module.exports.generateEvent = generateEvent
+module.exports.getSortedEvents = getSortedEvents
+module.exports.getNextEvent = getNextEvent

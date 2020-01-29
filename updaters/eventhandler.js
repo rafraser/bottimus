@@ -1,50 +1,47 @@
 const events = require('../events')
-const fs = require('fs')
 
-const output = '309951255575265280'
+const notificationChannel = '309951255575265280'
+const displayChannel = '621422264251973664'
+const historicalChannel = '672037357242810378'
+
+function updateEvent(client) {
+  if (!client.eventsData) return
+
+  if (!client.upcomingEvent) {
+    client.upcomingEvent = events.getNextEvent(client)
+  }
+
+  // Find the event display message
+  const eventChannel = client.channelWithTesting(displayChannel)
+  const event = client.upcomingEvent
+
+  eventChannel.fetchMessages({ limit: 10 }).then(messages => {
+    const displayMessage = messages.find(m => m.author.bot)
+
+    if (Date.now() > event.time) {
+      // Start the event!
+      const reaction = displayMessage.reactions.get('🔔')
+      const users = reaction ? reaction.users : []
+      const pingString = users.filter(user => !user.bot).map(user => user.toString()).join(' ')
+      const channel = client.channelWithTesting(notificationChannel)
+
+      channel.send(`Event **${event.title}** is now starting!\n${pingString}`)
+
+      // Cleanup the event
+      event.complete = true
+      client.channels.get(historicalChannel).send(events.generateCompletedEventEmbed(event))
+      client.upcomingEvent = events.getNextEvent(client)
+      updateEvent(client)
+    } else {
+      const timeLeft = client.timeToString(event.time - Date.now(), 2)
+      const embed = events.generateEventEmbed(event, timeLeft)
+      displayMessage.edit(embed)
+    }
+  }).catch(console.error)
+}
 
 module.exports = {
   description: 'Handles updating event details',
   frequency: 3,
-  execute (client) {
-    if (!client.eventsData) return
-
-    client.eventsData.forEach(function (event, location) {
-      // Get the message from the given location
-      var locationSplit = location.split(',')
-      var channel = client.channels.get(locationSplit[0])
-
-      channel.fetchMessage(locationSplit[1]).then(function (message) {
-        // Update the message
-        if (Date.now() > event.time) {
-          // Get a list of messages who hit the bell reaction
-          var users = message.reactions.get('🔔').users
-          var pingString = ''
-          for (var user of users.values()) {
-            if (user.bot) continue
-            pingString += user.toString() + ' '
-          }
-
-          // Send the starting message notification
-          var outChannel = client.channels.get(output)
-          outChannel.send(`Event **${event.title}** is now starting!\n${pingString}`)
-
-          // Replace the message with a completed embed
-          var embed = events.generateCompletedEventEmbed(event)
-          message.edit(embed)
-          client.eventsData.delete(location)
-
-          // Delete the event data file (if it exists)
-          try {
-            fs.unlink('data/events/' + location + '.json', function (e) {})
-          } catch (e) {}
-        } else {
-          // Update the time remaining
-          var timeLeft = client.timeToString(event.time - Date.now(), 2)
-          const embed = events.generateEventEmbed(event, timeLeft)
-          message.edit(embed)
-        }
-      })
-    })
-  }
+  execute: updateEvent
 }
