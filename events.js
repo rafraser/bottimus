@@ -95,8 +95,26 @@ function getNextEvent(client) {
   return events.find(e => !e.complete)
 }
 
+function generateCalendar(client) {
+  return new Promise((resolve, reject) => {
+    if (!client.eventsData || client.eventsData.size < 1) {
+      reject(new Error('No events are currently scheduled'))
+    }
+
+    var events2 = []
+    for (var event of client.eventsData.values()) {
+      events2.push(`${event.time.toUTCString()}.${event.category}.${event.title}`)
+    }
+
+    client.executePython('calendar_display', events2).then(function () {
+      resolve('./img/calendar.png')
+    })
+  })
+}
+
 module.exports.generateEventEmbed = generateEventEmbed
 module.exports.generateCompletedEventEmbed = generateCompletedEventEmbed
 module.exports.generateEvent = generateEvent
 module.exports.getSortedEvents = getSortedEvents
 module.exports.getNextEvent = getNextEvent
+module.exports.generateCalendar = generateCalendar
