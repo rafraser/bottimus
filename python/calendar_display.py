@@ -8,12 +8,14 @@ import sys
 font_bold = ImageFont.truetype("./img/font/Montserrat-Black.ttf", 48)
 font_medium = ImageFont.truetype("./img/font/Montserrat-Black.ttf", 32)
 font_light = ImageFont.truetype("./img/font/Montserrat-Regular.ttf", 24)
+font_header = ImageFont.truetype("./img/font/lemonmilk-light.ttf", 128)
 
 # Sizing properties
 box_width = 250
 box_height = 150
 padding = 12
 margin = 128
+top_size = 112
 
 # Day names for the header
 day_names = [
@@ -45,6 +47,10 @@ background_colors = {
 def centered_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
     w, h = font.getsize(text)
     draw.text((x - (w / 2), y), text, font=font, fill=fill)
+    
+def right_aligned_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
+    w, h = font.getsize(text)
+    draw.text((x - w, y), text, font=font, fill=fill)
 
 
 def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
@@ -69,16 +75,19 @@ def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
         yy -= h + 4
 
 
-def create_canvas():
+def create_canvas(month):
     total_width = (box_width * 7) + (padding * 6) + (margin * 2)
-    total_height = (box_height * 5) + (padding * 4) + (margin * 2)
+    total_height = top_size + (box_height * 5) + (padding * 4) + (margin * 2)
 
     canvas = Image.new("RGBA", (total_width, total_height), "#dcdde1")
     draw = ImageDraw.Draw(canvas)
+    
+    month_name = calendar.month_name[month]
+    right_aligned_text(draw, total_width - margin, 6, month_name, font_header, (87, 101, 116))
 
     for idx, day in enumerate(day_names):
         xx = margin + (box_width * (idx)) + (padding * (idx - 1))
-        yy = margin / 2
+        yy = top_size + margin / 2
         centered_text(draw, xx + (box_width / 2), yy, day, font_medium, (87, 101, 116))
 
     return canvas
@@ -117,12 +126,12 @@ def box_position(position):
 
     return (
         margin + (box_width * xx) + (padding * (xx - 1)),
-        margin + (box_height * yy) + (padding * (yy - 1)),
+        top_size + margin + (box_height * yy) + (padding * (yy - 1)),
     )
 
 
 def iterate_month(year, month, events):
-    canvas = create_canvas()
+    canvas = create_canvas(month)
 
     start_day, month_length = calendar.monthrange(year, month)
     for i in range(month_length):
