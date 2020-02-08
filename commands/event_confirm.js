@@ -1,5 +1,6 @@
 const discord = require('discord.js')
 const events = require('../events')
+const updater = require('../updaters/eventhandler')
 
 function approveEvent(event, client) {
   if (client.eventsData == null) {
@@ -12,6 +13,9 @@ function approveEvent(event, client) {
 
   // Update the next upcoming event (if applicable)
   client.upcomingEvent = events.getNextEvent(client)
+  if(client.upcomingEvent.title == event.title && client.upcomingEvent.description == event.description) {
+    updater.execute(client, true)
+  }
 }
 
 module.exports = {

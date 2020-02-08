@@ -42,9 +42,9 @@ background_colors = {
 }
 
 
-def centered_text(draw, x, y, text, font):
+def centered_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
     w, h = font.getsize(text)
-    draw.text((x - (w / 2), y), text, font=font)
+    draw.text((x - (w / 2), y), text, font=font, fill=fill)
 
 
 def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
@@ -79,7 +79,7 @@ def create_canvas():
     for idx, day in enumerate(day_names):
         xx = margin + (box_width * (idx)) + (padding * (idx - 1))
         yy = margin / 2
-        centered_text(draw, xx + (box_width / 2), yy, day, font_medium)
+        centered_text(draw, xx + (box_width / 2), yy, day, font_medium, (87, 101, 116))
 
     return canvas
 
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     sys.stdout = f
 
     for arg in args:
-        arg = arg.split(".")
+        arg = arg.split("|")
         print(arg)
 
         date = datetime.datetime.strptime(arg[0], "%a, %d %b %Y %H:%M:%S %Z")

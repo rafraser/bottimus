@@ -10,10 +10,13 @@ function updateEvent(client, sendNew = false) {
   if (!client.upcomingEvent) {
     client.upcomingEvent = events.getNextEvent(client)
   }
-
+  
   // Find the event display message
   const eventChannel = client.channelWithTesting(displayChannel)
   const event = client.upcomingEvent
+  if(!event) {
+      return
+  }
 
   // Send a new message for the next event (if applicable)
   if (sendNew) {

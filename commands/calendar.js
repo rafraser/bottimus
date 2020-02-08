@@ -12,7 +12,7 @@ module.exports = {
 
     var events2 = []
     for (var event of client.eventsData.values()) {
-      events2.push(`${event.time.toUTCString()}.${event.category}.${event.title}`)
+      events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
     }
 
     client.executePython('calendar_display', events2).then(function () {

@@ -21,7 +21,7 @@ module.exports = {
             data.time = new Date(data.time)
             if (Date.now() > data.time) {
               data.complete = true
-              if (Date.now() - 3600 * 24 * 32 > data.time) {
+              if (Date.now() - (1000 * 3600 * 24 * 32) > data.time) {
                 // Delete any events older than 32 days
                 try {
                   fs.unlink('data/events/' + event, function (e) { })
