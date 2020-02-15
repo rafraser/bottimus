@@ -39,6 +39,4 @@ module.exports.setup = function (client) {
   loadUpdaters(client)
   loadWelcome(client)
   loadStartup(client)
-
-  console.log(client.welcomes)
 }

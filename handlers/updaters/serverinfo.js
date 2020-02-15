@@ -1,7 +1,7 @@
 const gamedig = require('gamedig')
 const discord = require('discord.js')
 
-function updateMurder (message) {
+function updateMurder(message) {
   const ip = '35.244.106.238'
   gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
     // Generate a nice looking embed
@@ -14,10 +14,10 @@ function updateMurder (message) {
       .setThumbnail(`https://fluffyservers.com/mapicons/${result.map}.jpg`)
       .setTimestamp()
     message.edit(embed)
-  }).catch(function (e) {})
+  }).catch(function (e) { })
 }
 
-function updateMinigames (message) {
+function updateMinigames(message) {
   const ip = '139.180.168.161'
   gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
     // Generate a nice looking embed
@@ -30,23 +30,21 @@ function updateMinigames (message) {
       .setThumbnail(`https://fluffyservers.com/mg/maps/${result.map}.jpg`)
       .setTimestamp()
     message.edit(embed)
-  }).catch(function (e) {})
+  }).catch(function (e) { })
 }
 
 const serverChannel = '528849382196379650'
 const murderMessage = '644776579809017877'
 const minigamesMessage = '644776606451367962'
-// const minecraftMessage = '621400728321392641'
 
 module.exports = {
   description: 'Update the server information in the welcome channel',
   frequency: 5,
-  execute (client) {
+  execute(client) {
     try {
       var channel = client.channels.get(serverChannel)
       channel.fetchMessage(murderMessage).then(function (m) { updateMurder(m) })
       channel.fetchMessage(minigamesMessage).then(function (m) { updateMinigames(m) })
-      // channel.fetchMessage(minecraftMessage).then(function(m) { updateMinecraft(m) })
     } catch (e) {
       console.log('Failed to update server info')
     }
