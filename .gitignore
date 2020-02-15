@@ -1,6 +1,14 @@
 .env
 .testmode
+data/
 node_modules/
+python/__pycache__/
+.vscode/
+
 package-lock.json
 hangman_words.js
 typeracer_words.js
+py_logging.txt
+
+img/calendar.png
+img/inventory.png

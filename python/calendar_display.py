@@ -157,8 +157,8 @@ if __name__ == "__main__":
     tz = datetime.timezone(datetime.timedelta(hours=10))
     today = datetime.datetime.now(tz)
 
-    f = open("out.txt", "w")
-    sys.stdout = f
+    #f = open("py_logging.txt", "w")
+    #sys.stdout = f
 
     for arg in args:
         arg = arg.split("|")
