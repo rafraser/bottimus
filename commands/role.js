@@ -31,17 +31,6 @@ module.exports = {
           user.addRole(role)
           messageStack += 'Thanks for signing up for events!\n'
         }
-      } else if (role.includes('map') || role.includes('hammer')) {
-        // Assign the mapping related role
-        const roleID = '514727746006679552'
-        const role = message.guild.roles.get(roleID)
-        if (user.roles.has(roleID)) {
-          user.removeRole(role)
-          messageStack += 'Sorry to see you leave #mapping :(\n'
-        } else {
-          user.addRole(role)
-          messageStack += 'Welcome to #mapping!\n'
-        }
       } else if (role.includes('mini')) {
         // Assign the mapping related role
         const roleID = '621421798478839819'
