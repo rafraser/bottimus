@@ -54,31 +54,6 @@ client.loadCommands = function () {
   }
 }
 
-// Scanner loading function
-client.loadScanners = function () {
-  client.scanners = []
-
-  for (const file of fs.readdirSync('./handlers/scanners')) {
-    client.scanners.push(require('./handlers/scanners/' + file))
-  }
-}
-
-// Updater loading function
-client.loadUpdaters = function () {
-  client.updaters = []
-
-  for (const file of fs.readdirSync('./handlers/updaters')) {
-    client.updaters.push(require('./handlers/updaters/' + file))
-  }
-}
-
-// Run all startup commands
-client.loadStartup = function () {
-  for (const file of fs.readdirSync('./handlers/startup')) {
-    require('./handlers/startup/' + file).execute(client)
-  }
-}
-
 client.update = function () {
   // Run every updating function as required
   for (const update of client.updaters) {
@@ -102,14 +77,12 @@ client.on('ready', function () {
     console.log('Testing Mode: ' + client.testingMode)
   })
 
-  // Load all required files
+  // Load commands
   // client.createDirectories()
   client.loadCommands()
-  client.loadScanners()
-  client.loadUpdaters()
 
-  // Run startup files
-  client.loadStartup()
+  // Setup things like scanners, updaters, etc.
+  handlerSetup.setup(client)
 
   // Start the update loop
   client.minute = 0
