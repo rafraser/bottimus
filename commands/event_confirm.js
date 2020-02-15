@@ -1,6 +1,6 @@
 const discord = require('discord.js')
-const events = require('../events')
-const updater = require('../updaters/eventhandler')
+const events = require('../util/events')
+const updater = require('../handlers/updaters/eventhandler')
 
 function approveEvent(event, client) {
   if (client.eventsData == null) {

@@ -1,7 +1,8 @@
 const fs = require('fs')
 const discord = require('discord.js')
 const spawn = require('child_process').spawn
-const timehelper = require('./timehelper')
+const timeHelper = require('./util/timehelper')
+const handlerSetup = require('./util/handler_setup')
 
 // Create a new Discord client
 const client = new discord.Client()
@@ -11,6 +12,7 @@ const prefixes = ['!', 'Bottimus, ']
 require('dotenv').config()
 
 // Create the directories for submodules if they don't exist
+/*
 client.createDirectories = function () {
   const directories = ['commands', 'scanners', 'updaters', 'startup', 'data']
   for (const directory of directories) {
@@ -19,6 +21,7 @@ client.createDirectories = function () {
     }
   }
 }
+*/
 
 // Helper function for writing a .json file
 client.writeDataFile = function (directory, name, data) {
@@ -55,8 +58,8 @@ client.loadCommands = function () {
 client.loadScanners = function () {
   client.scanners = []
 
-  for (const file of fs.readdirSync('./scanners')) {
-    client.scanners.push(require('./scanners/' + file))
+  for (const file of fs.readdirSync('./handlers/scanners')) {
+    client.scanners.push(require('./handlers/scanners/' + file))
   }
 }
 
@@ -64,15 +67,15 @@ client.loadScanners = function () {
 client.loadUpdaters = function () {
   client.updaters = []
 
-  for (const file of fs.readdirSync('./updaters')) {
-    client.updaters.push(require('./updaters/' + file))
+  for (const file of fs.readdirSync('./handlers/updaters')) {
+    client.updaters.push(require('./handlers/updaters/' + file))
   }
 }
 
 // Run all startup commands
 client.loadStartup = function () {
-  for (const file of fs.readdirSync('./startup')) {
-    require('./startup/' + file).execute(client)
+  for (const file of fs.readdirSync('./handlers/startup')) {
+    require('./handlers/startup/' + file).execute(client)
   }
 }
 
@@ -100,7 +103,7 @@ client.on('ready', function () {
   })
 
   // Load all required files
-  client.createDirectories()
+  // client.createDirectories()
   client.loadCommands()
   client.loadScanners()
   client.loadUpdaters()
@@ -234,7 +237,7 @@ client.on('messageDelete', function (message) {
 client.login(process.env.DISCORD)
 
 // Helper utility functions
-client.timeToString = timehelper.timeToString
+client.timeToString = timeHelper.timeToString
 
 // Check for Administrator status
 client.isAdministrator = function (member) {

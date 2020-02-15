@@ -1,14 +1,14 @@
 const discord = require('discord.js')
 const https = require('https')
-const pool = require('../database')
-const arcade = require('../arcade')
+const pool = require('../util/database')
+const arcade = require('../util/arcade')
 const HtmlEntities = require('html-entities').AllHtmlEntities
 const entities = new HtmlEntities()
 
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 }
 
-function incrementStatScore (userid, category, correct) {
+function incrementStatScore(userid, category, correct) {
   var queryString = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
 
   pool.query(queryString, [userid, category, correct], function (err, results) {
@@ -18,7 +18,7 @@ function incrementStatScore (userid, category, correct) {
   })
 }
 
-function getQuestionData () {
+function getQuestionData() {
   var p = new Promise(function (resolve, reject) {
     // Query the data from OpenTDB
     https.get('https://opentdb.com/api.php?amount=1&type=multiple', function (resp) {
@@ -62,7 +62,7 @@ module.exports = {
   name: 'trivia',
   description: 'Play a trivia question',
   cooldown: 12,
-  execute (message, args, client) {
+  execute(message, args, client) {
     getQuestionData().then(function (data) {
       // Create an embed for the question
       var embed = new discord.RichEmbed()

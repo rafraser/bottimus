@@ -1,10 +1,10 @@
-const words = require('../typeracer_words')
-const arcade = require('../arcade')
-const pool = require('../database')
+const words = require('../util/typeracer_words')
+const arcade = require('../util/arcade')
+const pool = require('../util/database')
 const discord = require('discord.js')
 
 // Stores results for players that complete the Type Race
-function incrementStatScore (userid, speed) {
+function incrementStatScore(userid, speed) {
   var queryOne = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1), completed = completed + 1;'
   var queryTwo = 'SELECT speed_best FROM arcade_typeracer WHERE discordid = ?;'
   var queryThree = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
@@ -61,7 +61,7 @@ function incrementStatScoreMobile (userid, speed) {
 }
 */
 
-function shuffle (a) {
+function shuffle(a) {
   var j, x, i
   for (i = a.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1))
@@ -73,13 +73,13 @@ function shuffle (a) {
   return a
 }
 
-function messageFilter (m) {
+function messageFilter(m) {
   // Return all messages
   // These get proccessed when collected
   return (!m.member.user.bot)
 }
 
-function startTypeRacer (client, message, display) {
+function startTypeRacer(client, message, display) {
   var n = 30
   var hard = 5
   var list = shuffle(words.easy).slice(0, n - hard).concat(shuffle(words.hard).slice(0, hard))
@@ -166,7 +166,7 @@ module.exports = {
   name: 'typeracer',
   description: 'Play a game of Type Racer',
   aliases: ['typerace'],
-  execute (message, args, client) {
+  execute(message, args, client) {
     // Only allow a single game of hangman
     if (client.playingTyperacer) return
 

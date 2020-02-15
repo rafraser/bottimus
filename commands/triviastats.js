@@ -1,7 +1,7 @@
-const pool = require('../database')
+const pool = require('../util/database')
 const discord = require('discord.js')
 
-function calculateTotals (results) {
+function calculateTotals(results) {
   var totalGuesses = 0
   var totalCorrect = 0
 
@@ -13,7 +13,7 @@ function calculateTotals (results) {
   return [totalGuesses, totalCorrect]
 }
 
-function fetchStatistics (id) {
+function fetchStatistics(id) {
   return new Promise(function (resolve, reject) {
     var queryString = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
     pool.query(queryString, [id], function (err, results) {
@@ -29,7 +29,7 @@ function fetchStatistics (id) {
 module.exports = {
   name: 'triviastats',
   description: 'Fetchs statistics from Trivia',
-  execute (message, args, client) {
+  execute(message, args, client) {
     var user = client.findUser(message, args, true)
 
     fetchStatistics(user.id).then(function (results) {

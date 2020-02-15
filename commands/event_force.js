@@ -1,4 +1,4 @@
-const updater = require('../updaters/eventhandler')
+const updater = require('../handlers/updaters/eventhandler')
 
 module.exports = {
   name: 'forceevent',

@@ -1,11 +1,11 @@
-const arcade = require('../arcade')
+const arcade = require('../util/arcade')
 
 module.exports = {
   name: 'balance',
   description: 'Get Arcade points information',
   cooldown: 10,
   aliases: ['credits'],
-  execute (message, args, client) {
+  execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
       var coin = client.emojis.get('631834832300670976')
       if (amount > 0) {

@@ -1,8 +1,8 @@
-const arcade = require('../arcade')
-const pool = require('../database')
+const arcade = require('../util/arcade')
+const pool = require('../util/database')
 const discord = require('discord.js')
 
-function updateScratch (id, amount) {
+function updateScratch(id, amount) {
   var queryString = 'INSERT INTO arcade_scratchcard VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE winnings = winnings + VALUES(winnings), number = number + VALUES(number)'
   pool.query(queryString, [id, amount])
 }
@@ -18,7 +18,7 @@ const prizes = [
 
 const icons = ['💰', '💰', '🍉', '🍉', '🍒', '🍒', '🍋', '🍋', '🍓', '🍓', '🍇', '🍇']
 
-function weightedRandom () {
+function weightedRandom() {
   var r = Math.random()
   for (var i = 0; i < prizes.length; i++) {
     var p = prizes[i][2]
@@ -28,7 +28,7 @@ function weightedRandom () {
   return 0
 }
 
-function shuffle (a) {
+function shuffle(a) {
   var j, x, i
   for (i = a.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1))
@@ -40,7 +40,7 @@ function shuffle (a) {
   return a
 }
 
-function getPrizeList () {
+function getPrizeList() {
   var winner = weightedRandom()
   if (winner === 0) {
     return [shuffle(icons).slice(0, 9), 0]
@@ -59,7 +59,7 @@ function getPrizeList () {
   }
 }
 
-function generateScratchCard (msg, user, client) {
+function generateScratchCard(msg, user, client) {
   var [prizes, amount] = getPrizeList()
 
   // Generate the grid of squares
@@ -99,7 +99,7 @@ module.exports = {
   description: 'Scratch a prize card for 250 coins',
   aliases: ['scratch'],
   cooldown: 45,
-  execute (message, args, client) {
+  execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
       if (amount < 250) {
         message.channel.send('You need at least 250 coins for this!')

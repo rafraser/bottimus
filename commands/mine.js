@@ -1,13 +1,13 @@
-const arcade = require('../arcade')
-const pool = require('../database')
+const arcade = require('../util/arcade')
+const pool = require('../util/database')
 const discord = require('discord.js')
 
-function incrementStatScore (userid, amount) {
+function incrementStatScore(userid, amount) {
   var queryString = 'INSERT INTO arcade_mining VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE number = number + 1, diamonds = diamonds + VALUES(diamonds)'
   pool.query(queryString, [userid, amount])
 }
 
-function generateMiningEmbed (msg, name, amount, over = false) {
+function generateMiningEmbed(msg, name, amount, over = false) {
   var embed = new discord.RichEmbed()
     .setTitle(name + '\'s Mining Expedition')
     .setColor('#5352ed')
@@ -19,7 +19,7 @@ function generateMiningEmbed (msg, name, amount, over = false) {
   msg.edit(embed)
 }
 
-function startMiningTrip (msg, member, client) {
+function startMiningTrip(msg, member, client) {
   // Update the message with the scratchcard
   var amount = 0
   var collecting = true
@@ -69,7 +69,7 @@ module.exports = {
   name: 'mine',
   description: '-',
   cooldown: 180,
-  execute (message, args, client) {
+  execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
       if (amount < 25) {
         message.channel.send('You need at least 25 coins for this!')

@@ -1,8 +1,8 @@
-const arcade = require('../arcade')
-const pool = require('../database')
+const arcade = require('../util/arcade')
+const pool = require('../util/database')
 const discord = require('discord.js')
 
-function getLastSpin (id) {
+function getLastSpin(id) {
   return new Promise(function (resolve, reject) {
     var queryString = 'SELECT lastspin FROM arcade_dailyspin WHERE discordid = ?'
     pool.query(queryString, [id], function (err, results) {
@@ -15,12 +15,12 @@ function getLastSpin (id) {
   })
 }
 
-function updateLastSpin (id, date) {
+function updateLastSpin(id, date) {
   var queryString = 'INSERT INTO arcade_dailyspin VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE lastspin = VALUES(lastspin), number = number + VALUES(number)'
   pool.query(queryString, [id, date])
 }
 
-function pickWheel () {
+function pickWheel() {
   var wheels = [
     // These wheels have an average payout of 200
     ['#coin 100', '#coin 200', '#coin 400', '#coin 200', '#coin 400', '#coin 100'],
@@ -45,7 +45,7 @@ function pickWheel () {
 module.exports = {
   name: 'dailyspin',
   description: 'Spin a prize wheel once a day!',
-  execute (message, args, client) {
+  execute(message, args, client) {
     getLastSpin(message.member.id).then(function (results) {
       var lastspin = results[0]
       // If the user has previously spun the wheel, check that it's been 24 hours

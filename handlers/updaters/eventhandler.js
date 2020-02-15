@@ -1,4 +1,4 @@
-const events = require('../events')
+const events = require('../../util/events')
 
 const notificationChannel = '309951255575265280'
 const displayChannel = '621422264251973664'
