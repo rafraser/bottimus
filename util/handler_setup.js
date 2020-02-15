@@ -1,4 +1,5 @@
 const fs = require('fs')
+const discord = require('discord.js')
 
 // Scanner loading function
 function loadScanners(client) {
@@ -18,6 +19,14 @@ function loadUpdaters(client) {
   }
 }
 
+// Setup welcome messages
+function loadWelcome(client) {
+  client.welcomes = new discord.Collection()
+  for (const file of fs.readdirSync('./handlers/welcome')) {
+    client.welcomes.set(file.replace('.js', ''), require('../handlers/welcome/' + file))
+  }
+}
+
 // Run all startup commands
 function loadStartup(client) {
   for (const file of fs.readdirSync('./handlers/startup')) {
@@ -28,5 +37,8 @@ function loadStartup(client) {
 module.exports.setup = function (client) {
   loadScanners(client)
   loadUpdaters(client)
+  loadWelcome(client)
   loadStartup(client)
+
+  console.log(client.welcomes)
 }
