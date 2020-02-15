@@ -1,6 +1,7 @@
 .env
 .testmode
-data/
+data/events/
+data/mutes/
 node_modules/
 python/__pycache__/
 .vscode/

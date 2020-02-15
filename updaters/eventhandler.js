@@ -2,7 +2,6 @@ const events = require('../events')
 
 const notificationChannel = '309951255575265280'
 const displayChannel = '621422264251973664'
-const historicalChannel = '672037357242810378'
 
 function updateEvent(client, sendNew = false) {
   if (!client.eventsData) return
@@ -10,12 +9,12 @@ function updateEvent(client, sendNew = false) {
   if (!client.upcomingEvent) {
     client.upcomingEvent = events.getNextEvent(client)
   }
-  
+
   // Find the event display message
   const eventChannel = client.channelWithTesting(displayChannel)
   const event = client.upcomingEvent
-  if(!event) {
-      return
+  if (!event) {
+    return
   }
 
   // Send a new message for the next event (if applicable)
