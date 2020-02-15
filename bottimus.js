@@ -68,20 +68,25 @@ client.update = function () {
 
 // Load all the required functionality when the bot is connected
 client.on('ready', function () {
-  console.log('Connected to Discord successfully')
+  // Initialise important directories
+  handlerSetup.createDirectories()
 
   // Run a quick check to see if this is a test bot
   // Testing mode is enabled if a .testmode file exists
   fs.access('.testmode', fs.constants.F_OK, function (err) {
     client.testingMode = !err
+
+    // Setup logging
+    if (!client.testingMode) {
+      let logFile = fs.createWriteStream(`logs/${Date.now()}.txt`)
+      process.stdout.write = process.stderr.write = logFile.write.bind(logFile)
+    }
+
+    console.log('Connected to Discord successfully')
     console.log('Testing Mode: ' + client.testingMode)
   })
 
-  // Load commands
-  // client.createDirectories()
-  client.loadCommands()
-
-  // Setup things like scanners, updaters, etc.
+  // Start initialisation
   handlerSetup.setup(client)
 
   // Start the update loop
