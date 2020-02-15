@@ -11,18 +11,6 @@ const prefixes = ['!', 'Bottimus, ']
 // Load the configuration from the .env file
 require('dotenv').config()
 
-// Create the directories for submodules if they don't exist
-/*
-client.createDirectories = function () {
-  const directories = ['commands', 'scanners', 'updaters', 'startup', 'data']
-  for (const directory of directories) {
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory)
-    }
-  }
-}
-*/
-
 // Helper function for writing a .json file
 client.writeDataFile = function (directory, name, data) {
   // Create the data subfolder if it doesn't already exist
@@ -34,24 +22,6 @@ client.writeDataFile = function (directory, name, data) {
   fs.writeFile('data/' + directory + '/' + name + '.json', JSON.stringify(data), function (e) {
     if (e) console.error(e)
   })
-}
-
-// Command loading function
-client.loadCommands = function () {
-  client.commands = new discord.Collection()
-  client.cooldowns = new Map()
-
-  for (const file of fs.readdirSync('./commands')) {
-    const command = require('./commands/' + file)
-    client.commands.set(command.name, command)
-
-    // Link aliases
-    if (command.aliases) {
-      for (const alias of command.aliases) {
-        client.commands.set(alias, command)
-      }
-    }
-  }
 }
 
 client.update = function () {
