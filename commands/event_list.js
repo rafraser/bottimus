@@ -2,8 +2,9 @@ module.exports = {
   name: 'eventlist',
   description: 'Get a brief list of what events are upcoming',
   aliases: ['events'],
+  guilds: ['309951255575265280'],
   cooldown: 10,
-  execute (message, args, client) {
+  execute(message, args, client) {
     if (!client.eventsData || client.eventsData.size < 1) {
       message.channel.send('No events are currently scheduled!')
       return

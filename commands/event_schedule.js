@@ -6,7 +6,8 @@ module.exports = {
   name: 'schedule',
   description: 'Request an event to be scheduled',
   aliases: ['planevent', 'requestevent'],
-  execute (message, args, client) {
+  guilds: ['309951255575265280'],
+  execute(message, args, client) {
     if (message.guild.id !== '309951255575265280') return
 
     if (!client.isCommunityStar(message.member)) {

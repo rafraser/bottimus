@@ -3,6 +3,7 @@ const discord = require('discord.js')
 module.exports = {
   name: 'calendar',
   description: 'Display the current event calendar',
+  guilds: ['309951255575265280'],
   cooldown: 30,
   execute(message, args, client) {
     if (!client.eventsData || client.eventsData.size < 1) {

@@ -1,7 +1,7 @@
 const discord = require('discord.js')
 
 // Return a sorted array of when users joined the server
-function getUserRankings (guild) {
+function getUserRankings(guild) {
   var p = new Promise(function (resolve, reject) {
     guild.fetchMembers().then(function (g) {
       const members = Array.from(g.members.values())
@@ -25,9 +25,8 @@ function getUserRankings (guild) {
 module.exports = {
   name: 'user',
   description: 'Get information about when a user joined',
-  execute (message, args, client) {
-    if (message.guild.id !== '309951255575265280') return
-
+  guilds: ['309951255575265280'],
+  execute(message, args, client) {
     getUserRankings(message.guild).then(function (rankings) {
       var user
       var ranking

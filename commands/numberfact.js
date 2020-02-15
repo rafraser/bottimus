@@ -5,7 +5,8 @@ module.exports = {
   name: 'numberfact',
   description: 'Get a random number fact',
   cooldown: 10,
-  execute (message, args) {
+  guilds: ['309951255575265280'],
+  execute(message, args) {
     let url
     const number = args[0] ? args[0].replace('.', '').replace(',', '') : null
 

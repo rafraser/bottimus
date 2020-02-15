@@ -158,9 +158,15 @@ client.on('message', function (message) {
   // Check the command name
   const cmd = args.shift().toLowerCase()
   if (!client.commands.has(cmd)) return
+  const command = client.commands.get(cmd)
+
+  // Check for guild restrictions
+  const guild = message.channel.guild.id
+  if (command.guilds) {
+    if (!command.guilds.includes(guild)) return
+  }
 
   // Check for cooldowns
-  const command = client.commands.get(cmd)
   if (command.cooldown) {
     const user = message.member.id
     if (client.cooldowns.get(cmd)) {
