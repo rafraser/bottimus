@@ -44,12 +44,43 @@ function loadWelcome(client) {
     }
 
     for (const file of files) {
-      client.welcomes.set(file.replace('.js', ''), require('../handlers/welcome/' + file))
+      let server = file.replace('.js', '')
+      client.welcomes.set(server, require('../handlers/welcome/' + file))
     }
   })
 }
 
-// Run all startup commands
+// Load per-server role information
+function loadRoles(client) {
+  client.serverRoles = new discord.Collection()
+
+  fs.readdir('./handlers/roles', (err, files) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+
+    for (const file of files) {
+      let server = file.replace('.json', '')
+      fs.readFile(file, 'utf8', function (err, data) {
+        if (err) {
+          console.error(err)
+          return
+        }
+
+        // Try parsing the server role information as JSON
+        try {
+          client.serverRoles.set(server, JSON.parse(data))
+        } catch (err) {
+          console.error(err)
+          return
+        }
+      })
+    }
+  })
+}
+
+// Run all startup scripts
 function loadStartup(client) {
   fs.readdir('./handlers/startup', (err, files) => {
     if (err) {
@@ -63,6 +94,7 @@ function loadStartup(client) {
   })
 }
 
+// Load commands
 function loadCommands(client) {
   client.commands = new discord.Collection()
   client.cooldowns = new Map()
@@ -103,6 +135,7 @@ module.exports.createDirectories = function () {
   fs.mkdir('handlers/updaters', { recursive: true }, errorHandler)
   fs.mkdir('handlers/startup', { recursive: true }, errorHandler)
   fs.mkdir('handlers/welcome', { recursive: true }, errorHandler)
+  fs.mkdir('handlers/roles', { recursive: true }, errorHandler)
 }
 
 module.exports.setup = function (client) {
