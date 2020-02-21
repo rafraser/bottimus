@@ -54,7 +54,7 @@ function loadWelcome(client) {
 function loadRoles(client) {
   client.serverRoles = new discord.Collection()
 
-  fs.readdir('./handlers/roles', (err, files) => {
+  fs.readdir('./data/roles', (err, files) => {
     if (err) {
       console.error(err)
       return
@@ -62,7 +62,7 @@ function loadRoles(client) {
 
     for (const file of files) {
       let server = file.replace('.json', '')
-      fs.readFile(file, 'utf8', function (err, data) {
+      fs.readFile('./data/roles/' + file, 'utf8', function (err, data) {
         if (err) {
           console.error(err)
           return
@@ -127,15 +127,21 @@ function errorHandler(e) {
 
 // Create useful directories
 module.exports.createDirectories = function () {
+  // Top level directories
   fs.mkdir('commands', { recursive: true }, errorHandler)
-  fs.mkdir('data', { recursive: true }, errorHandler)
   fs.mkdir('logs', { recursive: true }, errorHandler)
 
+  // Data directories
+  fs.mkdir('data/events', { recursive: true }, errorHandler)
+  fs.mkdir('data/help', { recursive: true }, errorHandler)
+  fs.mkdir('data/mutes', { recursive: true }, errorHandler)
+  fs.mkdir('data/roles', { recursive: true }, errorHandler)
+
+  // Handler directories
   fs.mkdir('handlers/scanners', { recursive: true }, errorHandler)
   fs.mkdir('handlers/updaters', { recursive: true }, errorHandler)
   fs.mkdir('handlers/startup', { recursive: true }, errorHandler)
   fs.mkdir('handlers/welcome', { recursive: true }, errorHandler)
-  fs.mkdir('handlers/roles', { recursive: true }, errorHandler)
 }
 
 module.exports.setup = function (client) {
@@ -143,5 +149,6 @@ module.exports.setup = function (client) {
   loadUpdaters(client)
   loadWelcome(client)
   loadStartup(client)
+  loadRoles(client)
   loadCommands(client)
 }

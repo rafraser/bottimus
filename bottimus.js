@@ -188,43 +188,38 @@ client.timeToString = timeHelper.timeToString
 
 // Check for Administrator status
 client.isAdministrator = function (member) {
-  if (member.guild.id !== '309951255575265280') return false
+  const roleData = client.serverRoles.get(member.guild.id)
+  if (!roleData) return false
+  if (!roleData.admin) return false
 
-  if (member.roles.some(function (role) {
-    return role.name.endsWith('Administrator')
-  })) {
-    return true
-  } else {
-    return false
-  }
+  return member.roles.some(role => {
+    return role.name.endsWith(roleData.admin)
+  })
 }
 
 // Check for Moderator status
 client.isModerator = function (member) {
-  if (member.guild.id !== '309951255575265280') return false
   if (client.isAdministrator(member)) return true
 
-  if (member.roles.some(function (role) {
-    return role.name.endsWith('Moderator')
-  })) {
-    return true
-  } else {
-    return false
-  }
+  const roleData = client.serverRoles.get(member.guild.id)
+  if (!roleData) return false
+  if (!roleData.mod) return false
+
+  return member.roles.some(role => {
+    return role.name.endsWith(roleData.mod)
+  })
 }
 
 // Check for Community Star status
+// This function is *only* used in Fluffy Servers
+// so we can safely hard code some guild checking stuff
 client.isCommunityStar = function (member) {
   if (member.guild.id !== '309951255575265280') return false
   if (client.isModerator(member)) return true
 
-  if (member.roles.some(function (role) {
+  return member.roles.some(role => {
     return role.name.endsWith('Community Star')
-  })) {
-    return true
-  } else {
-    return false
-  }
+  })
 }
 
 // Useful function to get a channel with a default case for testing mode

@@ -1,0 +1,20 @@
+{
+  "mod": "Moderator",
+  "admin": "Administrator",
+  "toggles": [
+    {
+      "many": true,
+      "choices": {
+        "event": "535346825423749120",
+        "minigames": "621421798478839819"
+      }
+    },
+    {
+      "many": false,
+      "choices": {
+        "red": "675671735928094731",
+        "orange": "675671735928094731"
+      }
+    }
+  ]
+}
