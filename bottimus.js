@@ -192,9 +192,17 @@ client.isAdministrator = function (member) {
   if (!roleData) return false
   if (!roleData.admin) return false
 
-  return member.roles.some(role => {
-    return role.name.endsWith(roleData.admin)
-  })
+  if (roleData.admin instanceof Array) {
+    // Treat arrays as a list of role IDs
+    return member.roles.some(role => {
+      return roleData.admin.includes(role.id)
+    })
+  } else {
+    // Treat strings as a role suffix
+    return member.roles.some(role => {
+      return role.name.endsWith(roleData.admin)
+    })
+  }
 }
 
 // Check for Moderator status
@@ -205,9 +213,17 @@ client.isModerator = function (member) {
   if (!roleData) return false
   if (!roleData.mod) return false
 
-  return member.roles.some(role => {
-    return role.name.endsWith(roleData.mod)
-  })
+  if (roleData.mod instanceof Array) {
+    // Treat arrays as a list of role IDs
+    return member.roles.some(role => {
+      return roleData.mod.includes(role.id)
+    })
+  } else {
+    // Treat strings as a role suffix
+    return member.roles.some(role => {
+      return role.name.endsWith(roleData.mod)
+    })
+  }
 }
 
 // Check for Community Star status
