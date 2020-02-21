@@ -42,7 +42,7 @@ module.exports = {
   name: 'role',
   description: 'Assign a role to yourself',
   aliases: ['roleme', 'assign', 'setrole'],
-  cooldown: 15,
+  cooldown: 5,
   execute(message, args, client) {
     const user = message.member
     const roleData = client.serverRoles.get(user.guild.id)
@@ -65,6 +65,10 @@ module.exports = {
 
     const userRoles = message.member.roles
     let messageStack = ''
+    let addStack = []
+    let removeStack = []
+
+
     for (let group of roleData.choices) {
       const name = (group.name || "Basic")
       const groupRoles = Object.values(group.options)
@@ -87,36 +91,26 @@ module.exports = {
         continue
       }
 
-      // Everything is going smoothly, add and remove roles as required
-      const rolesToRemove = intersection(requestedRoles, currentRoles)
-      const rolesToAdd = monoDifference(requestedRoles, currentRoles)
+      // Track changes in the stacks
+      // We have to apply changes all at once or else some information will get lost
+      removeStack = removeStack.concat(intersection(requestedRoles, currentRoles))
+      addStack = addStack.concat(monoDifference(requestedRoles, currentRoles))
 
-      if (rolesToAdd && rolesToRemove && rolesToAdd.length >= 1 && rolesToRemove.length >= 1) {
-        // This bit frustrates me, but without doing things this way Discord throws in phantom roles
-        user.removeRoles(rolesToRemove.map(id => user.guild.roles.get(id))).then(function () {
-          user.addRoles(rolesToAdd.map(id => user.guild.roles.get(id)))
-        })
-      } else if (rolesToRemove && rolesToRemove.length >= 1) {
-        // Remove roles (no roles are added)
-        user.removeRoles(rolesToRemove.map(id => user.guild.roles.get(id)))
-      } else if (rolesToAdd && rolesToAdd.length >= 1) {
-        // Add roles (no roles are removed)
-        user.addRoles(rolesToAdd.map(id => user.guild.roles.get(id)))
+      // Check for category role situations and ensure this gets added and removed when needed
+      if (group.category) {
+        const hasCategory = userRoles.some(role => role.id == group.category)
+        if (hasCategory && resultRoles.length === 0) {
+          removeStack.push(group.category)
+        } else if (!hasCategory && resultRoles.length >= 1) {
+          addStack.push(group.category)
+        }
       }
 
-      // If applicable, add and remove the category role as required
-      // Catch exceptions instead of checking for the role because it's faster
-      if (group.category && resultRoles.length >= 1) {
-        const categoryRole = message.guild.roles.get(group.category)
-        user.addRole(categoryRole).catch()
-      } else if (group.category && resultRoles.length < 1) {
-        const categoryRole = message.guild.roles.get(group.category)
-        user.removeRole(categoryRole).catch()
-      }
-
-      messageStack += `Updated your ${name} role(s).\n`
+      messageStack += `Updated your **${name}** role(s).\n`
     }
 
+    // Roles have been processed, now apply our changes
+    user.removeRoles(removeStack).then(function () { user.addRoles(addStack) })
     message.channel.send(messageStack)
   }
 }
