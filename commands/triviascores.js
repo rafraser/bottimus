@@ -1,9 +1,9 @@
-const pool = require('../database')
+const pool = require('../util/database')
 
 module.exports = {
   name: 'triviascores',
   description: 'Generates a Trivia leaderboard',
-  execute (message, args, client) {
+  execute(message, args, client) {
     // Friendly join multiple arguments for the name
     if (args.length > 1) {
       args[0] = args.slice(0).join(' ')

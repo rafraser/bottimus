@@ -1,8 +1,8 @@
-const pool = require('../database')
+const pool = require('../util/database')
 const discord = require('discord.js')
 
 // Calculate the totals across all trivia categories
-function calculateTriviaTotals (results) {
+function calculateTriviaTotals(results) {
   var totalGuesses = 0
   var totalCorrect = 0
 
@@ -15,7 +15,7 @@ function calculateTriviaTotals (results) {
 }
 
 // Retrieve Hangman statistics for a given ID from the database
-function fetchHangmanStatistics (id) {
+function fetchHangmanStatistics(id) {
   return new Promise(function (resolve, reject) {
     var queryString = 'SELECT guesses, correct, revealed, words, contribution, (correct/guesses) AS percent FROM arcade_hangman WHERE discordid = ?;'
     pool.query(queryString, [id], function (err, results) {
@@ -29,7 +29,7 @@ function fetchHangmanStatistics (id) {
 }
 
 // Retrieve Trivia statistics for a given ID from the database
-function fetchTriviaStatistics (id) {
+function fetchTriviaStatistics(id) {
   return new Promise(function (resolve, reject) {
     var queryString = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
     pool.query(queryString, [id], function (err, results) {
@@ -43,7 +43,7 @@ function fetchTriviaStatistics (id) {
 }
 
 // Retrieve Typeracer statistics for a given ID from the database
-function fetchTyperacerStatistics (id) {
+function fetchTyperacerStatistics(id) {
   return new Promise(function (resolve, reject) {
     var queryString = 'SELECT completed, speed_average, speed_best, date_best FROM arcade_typeracer WHERE discordid = ?;'
     pool.query(queryString, [id], function (err, results) {
@@ -138,7 +138,7 @@ module.exports = {
   name: 'arcadestats',
   description: 'Fetchs statistics for arcade games',
   aliases: ['gamestats'],
-  execute (message, args, client) {
+  execute(message, args, client) {
     var user = client.findUser(message, args, true)
     var game = args.shift().toLowerCase()
 

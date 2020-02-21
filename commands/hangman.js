@@ -1,9 +1,9 @@
 const discord = require('discord.js')
-const arcade = require('../arcade')
-const pool = require('../database')
-const words = require('../hangman_words')
+const arcade = require('../util/arcade')
+const pool = require('../util/database')
+const words = require('../util/hangman_words')
 
-function incrementStatScore (userid, guesses, correct, revealed, won, contribution) {
+function incrementStatScore(userid, guesses, correct, revealed, won, contribution) {
   // Sorry
   var queryString = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
 
@@ -14,11 +14,11 @@ function incrementStatScore (userid, guesses, correct, revealed, won, contributi
   })
 }
 
-function getRandomWord () {
+function getRandomWord() {
   return words[Math.floor(Math.random() * words.length)]
 }
 
-function generateEmbed (attempts, guesses, fails) {
+function generateEmbed(attempts, guesses, fails) {
   var embed = new discord.RichEmbed()
     .setTitle('Hangman')
     .setDescription((8 - fails) + ' mistakes left!')
@@ -28,7 +28,7 @@ function generateEmbed (attempts, guesses, fails) {
   return embed
 }
 
-function hangmanFilter (msg) {
+function hangmanFilter(msg) {
   if (msg.member.user.bot) return false
   if (msg.content.length > 1) return false
   if (msg.content === '' || msg.content === ' ') return false
@@ -38,7 +38,7 @@ function hangmanFilter (msg) {
 module.exports = {
   name: 'hangman',
   description: 'Play a game of Hangman',
-  execute (message, args, client) {
+  execute(message, args, client) {
     // Only allow a single game of hangman
     if (client.playingHangman) return
 

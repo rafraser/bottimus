@@ -1,11 +1,11 @@
-const arcade = require('../arcade')
+const arcade = require('../util/arcade')
 const discord = require('discord.js')
 
 module.exports = {
   name: 'inventory',
   description: 'Display the prize inventory',
   cooldown: 30,
-  execute (message, args, client) {
+  execute(message, args, client) {
     arcade.getArcadePrizes(message.member.id).then(function (prizes) {
       var prizes2 = []
       for (var prize in prizes) {

@@ -1,6 +1,6 @@
 const discord = require('discord.js')
-const events = require('../events')
-const updater = require('../updaters/eventhandler')
+const events = require('../util/events')
+const updater = require('../handlers/updaters/eventhandler')
 
 function approveEvent(event, client) {
   if (client.eventsData == null) {
@@ -13,7 +13,7 @@ function approveEvent(event, client) {
 
   // Update the next upcoming event (if applicable)
   client.upcomingEvent = events.getNextEvent(client)
-  if(client.upcomingEvent.title == event.title && client.upcomingEvent.description == event.description) {
+  if (client.upcomingEvent.title === event.title && client.upcomingEvent.description === event.description) {
     updater.execute(client, true)
   }
 }
@@ -22,9 +22,8 @@ module.exports = {
   name: 'confirmevent',
   description: 'Confirm a scheduled event',
   aliases: ['requestedevents', 'eventqueue'],
+  guilds: ['309951255575265280'],
   execute(message, args, client) {
-    if (message.guild.id !== '309951255575265280') return
-
     // Restrict this command to administrators
     if (!client.isAdministrator(message.member)) {
       message.channel.send('You need to be an Administrator to use this!')

@@ -1,7 +1,8 @@
 const fs = require('fs')
 const discord = require('discord.js')
 const spawn = require('child_process').spawn
-const timehelper = require('./timehelper')
+const timeHelper = require('./util/timehelper')
+const handlerSetup = require('./util/handler_setup')
 
 // Create a new Discord client
 const client = new discord.Client()
@@ -9,16 +10,6 @@ const prefixes = ['!', 'Bottimus, ']
 
 // Load the configuration from the .env file
 require('dotenv').config()
-
-// Create the directories for submodules if they don't exist
-client.createDirectories = function () {
-  const directories = ['commands', 'scanners', 'updaters', 'startup', 'data']
-  for (const directory of directories) {
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory)
-    }
-  }
-}
 
 // Helper function for writing a .json file
 client.writeDataFile = function (directory, name, data) {
@@ -31,49 +22,6 @@ client.writeDataFile = function (directory, name, data) {
   fs.writeFile('data/' + directory + '/' + name + '.json', JSON.stringify(data), function (e) {
     if (e) console.error(e)
   })
-}
-
-// Command loading function
-client.loadCommands = function () {
-  client.commands = new discord.Collection()
-  client.cooldowns = new Map()
-
-  for (const file of fs.readdirSync('./commands')) {
-    const command = require('./commands/' + file)
-    client.commands.set(command.name, command)
-
-    // Link aliases
-    if (command.aliases) {
-      for (const alias of command.aliases) {
-        client.commands.set(alias, command)
-      }
-    }
-  }
-}
-
-// Scanner loading function
-client.loadScanners = function () {
-  client.scanners = []
-
-  for (const file of fs.readdirSync('./scanners')) {
-    client.scanners.push(require('./scanners/' + file))
-  }
-}
-
-// Updater loading function
-client.loadUpdaters = function () {
-  client.updaters = []
-
-  for (const file of fs.readdirSync('./updaters')) {
-    client.updaters.push(require('./updaters/' + file))
-  }
-}
-
-// Run all startup commands
-client.loadStartup = function () {
-  for (const file of fs.readdirSync('./startup')) {
-    require('./startup/' + file).execute(client)
-  }
 }
 
 client.update = function () {
@@ -90,23 +38,26 @@ client.update = function () {
 
 // Load all the required functionality when the bot is connected
 client.on('ready', function () {
-  console.log('Connected to Discord successfully')
+  // Initialise important directories
+  handlerSetup.createDirectories()
 
   // Run a quick check to see if this is a test bot
   // Testing mode is enabled if a .testmode file exists
   fs.access('.testmode', fs.constants.F_OK, function (err) {
     client.testingMode = !err
+
+    // Setup logging
+    if (!client.testingMode) {
+      let logFile = fs.createWriteStream(`logs/${Date.now()}.txt`)
+      process.stdout.write = process.stderr.write = logFile.write.bind(logFile)
+    }
+
+    console.log('Connected to Discord successfully')
     console.log('Testing Mode: ' + client.testingMode)
   })
 
-  // Load all required files
-  client.createDirectories()
-  client.loadCommands()
-  client.loadScanners()
-  client.loadUpdaters()
-
-  // Run startup files
-  client.loadStartup()
+  // Start initialisation
+  handlerSetup.setup(client)
 
   // Start the update loop
   client.minute = 0
@@ -158,9 +109,15 @@ client.on('message', function (message) {
   // Check the command name
   const cmd = args.shift().toLowerCase()
   if (!client.commands.has(cmd)) return
+  const command = client.commands.get(cmd)
+
+  // Check for guild restrictions
+  const guild = message.channel.guild.id
+  if (command.guilds) {
+    if (!command.guilds.includes(guild)) return
+  }
 
   // Check for cooldowns
-  const command = client.commands.get(cmd)
   if (command.cooldown) {
     const user = message.member.id
     if (client.cooldowns.get(cmd)) {
@@ -191,15 +148,14 @@ client.on('message', function (message) {
   }
 })
 
-// Greet new users to the server
-// Welcome new users
+// Welcome new users to the server where applicable
 client.on('guildMemberAdd', function (member) {
-  if (member.guild.id !== '309951255575265280') return
   if (client.testingMode) return
 
-  const chan = member.guild.channels.find((ch) => ch.name === 'general')
-  chan.send(`Welcome to Fluffy Servers, ${member.displayName}! Please check out <#528849382196379650>`)
-  member.addRole('535346825423749120')
+  const guild = member.guild.id
+  if (client.welcomes.has(guild)) {
+    client.welcomes.get(guild)(member)
+  }
 })
 
 // Log any deleted messages into a moderation logging channel
@@ -228,47 +184,58 @@ client.on('messageDelete', function (message) {
 client.login(process.env.DISCORD)
 
 // Helper utility functions
-client.timeToString = timehelper.timeToString
+client.timeToString = timeHelper.timeToString
 
 // Check for Administrator status
 client.isAdministrator = function (member) {
-  if (member.guild.id !== '309951255575265280') return false
+  const roleData = client.serverRoles.get(member.guild.id)
+  if (!roleData) return false
+  if (!roleData.admin) return false
 
-  if (member.roles.some(function (role) {
-    return role.name.endsWith('Administrator')
-  })) {
-    return true
+  if (roleData.admin instanceof Array) {
+    // Treat arrays as a list of role IDs
+    return member.roles.some(role => {
+      return roleData.admin.includes(role.id)
+    })
   } else {
-    return false
+    // Treat strings as a role suffix
+    return member.roles.some(role => {
+      return role.name.endsWith(roleData.admin)
+    })
   }
 }
 
 // Check for Moderator status
 client.isModerator = function (member) {
-  if (member.guild.id !== '309951255575265280') return false
   if (client.isAdministrator(member)) return true
 
-  if (member.roles.some(function (role) {
-    return role.name.endsWith('Moderator')
-  })) {
-    return true
+  const roleData = client.serverRoles.get(member.guild.id)
+  if (!roleData) return false
+  if (!roleData.mod) return false
+
+  if (roleData.mod instanceof Array) {
+    // Treat arrays as a list of role IDs
+    return member.roles.some(role => {
+      return roleData.mod.includes(role.id)
+    })
   } else {
-    return false
+    // Treat strings as a role suffix
+    return member.roles.some(role => {
+      return role.name.endsWith(roleData.mod)
+    })
   }
 }
 
 // Check for Community Star status
+// This function is *only* used in Fluffy Servers
+// so we can safely hard code some guild checking stuff
 client.isCommunityStar = function (member) {
   if (member.guild.id !== '309951255575265280') return false
   if (client.isModerator(member)) return true
 
-  if (member.roles.some(function (role) {
+  return member.roles.some(role => {
     return role.name.endsWith('Community Star')
-  })) {
-    return true
-  } else {
-    return false
-  }
+  })
 }
 
 // Useful function to get a channel with a default case for testing mode

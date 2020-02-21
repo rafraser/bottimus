@@ -1,33 +1,19 @@
-const helpMessage = `
-Collect coins by playing the fun Bottimus games and then exchange them for amazing prizes!
-
-__Games__
-\`\`\`
-!hangman        Guess the word
-!trivia         Answer a fun trivia question
-!typeracer      Type the words as fast as you can
-\`\`\`
-__Gambling__
-\`\`\`
-!balance        Check how many tokens you have
-!dailyspin      Spin for free coins every 12 hours
-!scratchcard    Try your luck with a scratchcard
-!prizeball      Exchange 1000 coins for a rare prize
-!inventory      View your current prize inventory
-\`\`\`
-__Miscellaneous__
-\`\`\`
-!8ball          Ask the magic 8ball a question
-!catfact        Get a random fact about cats
-!numberfact     Get a random fact about numbers
-\`\`\`
-`
+const fs = require('fs')
+const errorMessage = 'No help text is defined for this server!'
 
 module.exports = {
   name: 'help',
   description: 'Sends a help message',
   aliases: ['helpme', 'bottimushelp'],
-  execute (message, args, client) {
-    message.author.send(helpMessage)
+  execute(message, args, client) {
+    const server = message.channel.guild.id
+    fs.readFile(`data/help/${server}.txt`, 'utf8', (err, data) => {
+      console.log(err, data)
+      if (err) {
+        message.author.send(errorMessage).catch(_ => message.channel.send(errorMessage))
+      } else {
+        message.author.send(data).catch(_ => message.channel.send(data))
+      }
+    })
   }
 }

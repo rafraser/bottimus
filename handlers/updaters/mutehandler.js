@@ -1,9 +1,9 @@
-const mute = require('../commands/mute.js')
+const mute = require('../../commands/mute.js')
 
 module.exports = {
   description: 'Handles unmuting after a given amount of time',
   frequency: 1,
-  execute (client) {
+  execute(client) {
     if (!client.mutesData) return
 
     client.mutesData.forEach(function (data, id) {

@@ -2,9 +2,8 @@ module.exports = {
   name: 'clean',
   description: '🛡️ Delete the last X messages from the channel',
   aliases: ['cleanup'],
-  execute (message, args, client) {
-    if (message.guild.id !== '309951255575265280') return
-
+  guilds: ['309951255575265280'],
+  execute(message, args, client) {
     if (!client.isAdministrator(message.member)) {
       message.channel.send('You need to be an Administrator to use this!')
       return
@@ -18,6 +17,6 @@ module.exports = {
       // Bulk delete has a limit of 100
       // Possible todo: expand to allow more than 100?
       message.channel.bulkDelete(num)
-    } catch (e) {}
+    } catch (e) { }
   }
 }

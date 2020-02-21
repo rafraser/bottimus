@@ -1,4 +1,4 @@
-const events = require('../events')
+const events = require('../util/events')
 
 const approvalChannel = '374834858821812234'
 
@@ -6,9 +6,8 @@ module.exports = {
   name: 'schedule',
   description: 'Request an event to be scheduled',
   aliases: ['planevent', 'requestevent'],
-  execute (message, args, client) {
-    if (message.guild.id !== '309951255575265280') return
-
+  guilds: ['309951255575265280'],
+  execute(message, args, client) {
     if (!client.isCommunityStar(message.member)) {
       message.channel.send('You need to be a Moderator to use this!')
       return

@@ -1,7 +1,7 @@
-const arcade = require('../arcade')
+const arcade = require('../util/arcade')
 const discord = require('discord.js')
 
-function getPrizeRarities () {
+function getPrizeRarities() {
   var rarities = {}
   for (var rarity of arcade.rarities) {
     rarities[rarity] = []
@@ -16,7 +16,7 @@ function getPrizeRarities () {
   return rarities
 }
 
-function pickPrize () {
+function pickPrize() {
   var prizelist = getPrizeRarities()
 
   var p = Math.random()
@@ -33,7 +33,7 @@ function pickPrize () {
   return r[Math.floor(Math.random() * r.length)]
 }
 
-function openPrizeBall (msg, prize, user, client) {
+function openPrizeBall(msg, prize, user, client) {
   var p = arcade.prizes[prize]
   var args = ['prizes/' + prize, arcade.rarities[p[1]], arcade.rarities[p[1]] + ' Prize!', arcade.prizes[prize][0]]
   client.executePython('prizeball', args).then(function () {
@@ -42,7 +42,7 @@ function openPrizeBall (msg, prize, user, client) {
   })
 }
 
-function redeemPrize (msg, user, client) {
+function redeemPrize(msg, user, client) {
   msg.clearReactions()
   msg.edit('Get ready!')
   var prize = pickPrize()
@@ -55,7 +55,7 @@ module.exports = {
   description: 'Try your luck at the legendary prize ball machine!',
   cooldown: 60,
   aliases: ['redeemprize', 'prize'],
-  execute (message, args, client) {
+  execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
       if (amount < 1000) {
         message.channel.send('You need at least 1000 coins for this!')
