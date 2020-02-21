@@ -22,9 +22,10 @@ function muteUser(client, member, duration, muter, channel) {
     roles: roleIDs,
     unmute: new Date(Date.now() + duration * 60000),
     muter: muter.id,
-    channel: channel.id
+    channel: channel.id,
+    member: member.id
   }
-  client.mutesData.set(member.id, options)
+  client.mutesData.set(member.guild.id + ',' + member.id, options)
 
   // Remove all roles, then add muted role
   // We need this forEach loop vs removeRoles in the case of un-removable roles
@@ -36,13 +37,13 @@ function muteUser(client, member, duration, muter, channel) {
   member.addRole(member.guild.roles.get(muteID))
 
   // Write a data file in case of restarting
-  client.writeDataFile('mutes', member.id, options)
+  client.writeDataFile('mutes', member.guild.id + ',' + member.id, options)
 }
 
 function unmuteUser(client, id) {
   const settings = client.mutesData.get(id)
   const guild = client.guilds.get(settings.guild)
-  const member = guild.members.get(id)
+  const member = guild.members.get(settings.member)
   const channel = guild.channels.get(settings.channel)
   client.mutesData.delete(id)
 
@@ -54,7 +55,7 @@ function unmuteUser(client, id) {
 
   // Delete the mute data file (if it exists)
   try {
-    fs.unlink('data/mutes/' + member.id + '.json', function (e) { })
+    fs.unlink('data/mutes/' + member.guild.id + ',' + member.id + '.json', function (e) { })
   } catch (e) { }
 
   // Abort if the member doesn't exist
@@ -91,16 +92,16 @@ module.exports = {
 
     try {
       // Don't mute administrators
-      var target = client.findUser(message, args)
+      const target = client.findUser(message, args)
       if (client.isAdministrator(target)) {
         message.channel.send('You cannot mute Administrators!')
         return
       }
 
       // Search the arguments until a duration is found
-      var duration = null
-      for (var i = 0; i < args.length; i++) {
-        var a = args[i]
+      let duration = null
+      for (let i = 0; i < args.length; i++) {
+        let a = args[i]
         a = parseInt(a, 10)
 
         if (!isNaN(a)) {
@@ -115,13 +116,13 @@ module.exports = {
       }
 
       // Handle muting process in the above functions
-      if (client.mutesData.has(target.id)) {
-        unmuteUser(client, target.id)
+      if (client.mutesData.has(message.guild.id + ',' + target.id)) {
+        unmuteUser(client, message.guild.id + ',' + target.id)
       } else {
         muteUser(client, target, duration, message.member, message.channel)
 
         // Send a cool mute embed
-        var embed = new discord.RichEmbed()
+        let embed = new discord.RichEmbed()
           .setColor('#c0392b')
           .setTitle('🦀 ' + target.displayName + ' is gone 🦀')
           .setDescription('They have been banished to the void for ' + client.timeToString(duration * 60 * 1000))
