@@ -1,19 +1,21 @@
 {
   "mod": "Moderator",
   "admin": "Administrator",
-  "toggles": [
+  "choices": [
     {
       "many": true,
-      "choices": {
-        "event": "535346825423749120",
-        "minigames": "621421798478839819"
+      "category": "680330815648825354",
+      "options": {
+        "minigames": "680330840898666496"
       }
     },
     {
+      "name": "Color",
       "many": false,
-      "choices": {
-        "red": "675671735928094731",
-        "orange": "675671735928094731"
+      "required": true,
+      "options": {
+        "red": "680330791078723605",
+        "yellow": "680330844757688335"
       }
     }
   ]
