@@ -1,18 +1,29 @@
-// 
+function limitString(min, max) {
+  if (min && max) {
+    if (min == max) {
+      return `exactly ${max}`
+    } else {
+      return `${min}-${max}`
+    }
+  } else if (max) {
+    return `up to ${max}`
+  } else if (min) {
+    return `at least ${min}`
+  } else {
+    return `any number of`
+  }
+}
+
 function generateHelpText(message, roleData) {
   let helpString = ''
 
   // Add help text for each role group
   for (let group of roleData.choices) {
     // Description based on group settings
-    const name = "**" + (group.name || "Basic") + "**"
-    if (group.many && group.required) {
-      helpString += `Choose at least one ${name} role`
-    } else if (group.many) {
-      helpString += `Choose any number of ${name} roles:`
-    } else {
-      helpString += `Choose only one ${name} role:`
-    }
+    const name = (group.name || "Basic")
+
+    // Display sizing guidelines
+    helpString += `Choose ${limitString(group.min, group.max)} *${name}* role(s):`
 
     // List roles in group
     let roleOptions = Object.keys(group.options).join(" ")
@@ -68,7 +79,6 @@ module.exports = {
     let addStack = []
     let removeStack = []
 
-
     for (let group of roleData.choices) {
       const name = (group.name || "Basic")
       const groupRoles = Object.values(group.options)
@@ -83,11 +93,8 @@ module.exports = {
 
       // Check that we don't end up in an invalid condition!
       const resultRoles = symmetricDifference(currentRoles, requestedRoles)
-      if (resultRoles.length < 1 && group.required) {
-        messageStack += `You need to have at least one ${name} role.\n`
-        continue
-      } else if (resultRoles.length > 1 && !group.many) {
-        messageStack += `You can only have one ${name} role.\n`
+      if ((group.max && resultRoles.length > group.max) || (group.min && resultRoles.length < group.min)) {
+        messageStack += `You need ${limitString(group.min, group.max)} *${name}* role(s).\n`
         continue
       }
 

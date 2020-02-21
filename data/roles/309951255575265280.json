@@ -3,7 +3,6 @@
   "admin": "Administrator",
   "choices": [
     {
-      "many": true,
       "category": "680330815648825354",
       "options": {
         "minigames": "680330840898666496"
@@ -11,11 +10,22 @@
     },
     {
       "name": "Color",
-      "many": false,
-      "required": true,
+      "min": 1,
+      "max": 1,
       "options": {
         "red": "680330791078723605",
         "yellow": "680330844757688335"
+      }
+    },
+    {
+      "name": "Purple Crew",
+      "min": 1,
+      "max": 3,
+      "options": {
+        "p1": "680360345013059652",
+        "p2": "680360375681548288",
+        "p3": "680360402160320542",
+        "p4": "680360435693649938"
       }
     }
   ]
