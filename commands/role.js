@@ -94,26 +94,43 @@ module.exports = {
       // Check that we don't end up in an invalid condition!
       const resultRoles = symmetricDifference(currentRoles, requestedRoles)
       if ((group.max && resultRoles.length > group.max) || (group.min && resultRoles.length < group.min)) {
-        messageStack += `You need ${limitString(group.min, group.max)} *${name}* role(s).\n`
-        continue
-      }
+        // We're hitting limits - let's try looking at this a different way
+        // Instead of toggling roles, let's assume we're entirely replacing the group
+        const intersectionRoles = intersection(requestedRoles, currentRoles)
+        console.log(intersectionRoles, intersectionRoles.length, intersectionRoles.length === 0)
+        if (intersectionRoles.length === 0 && !((group.max && requestedRoles.length > group.max) || (group.min && requestedRoles.length < group.min))) {
+          // Replace role group
+          removeStack = removeStack.concat(currentRoles)
+          addStack = addStack.concat(requestedRoles)
 
-      // Track changes in the stacks
-      // We have to apply changes all at once or else some information will get lost
-      removeStack = removeStack.concat(intersection(requestedRoles, currentRoles))
-      addStack = addStack.concat(monoDifference(requestedRoles, currentRoles))
-
-      // Check for category role situations and ensure this gets added and removed when needed
-      if (group.category) {
-        const hasCategory = userRoles.some(role => role.id == group.category)
-        if (hasCategory && resultRoles.length === 0) {
-          removeStack.push(group.category)
-        } else if (!hasCategory && resultRoles.length >= 1) {
-          addStack.push(group.category)
+          messageStack += `Replaced your **${name}** role(s).\n`
+        } else {
+          messageStack += `You need ${limitString(group.min, group.max)} *${name}* role(s).\n`
         }
-      }
+      } else {
+        // Track changes in the stacks
+        // We have to apply changes all at once or else some information will get lost
+        removeStack = removeStack.concat(intersection(requestedRoles, currentRoles))
+        addStack = addStack.concat(monoDifference(requestedRoles, currentRoles))
 
-      messageStack += `Updated your **${name}** role(s).\n`
+        // Check for category role situations and ensure this gets added and removed when needed
+        if (group.category) {
+          const hasCategory = userRoles.some(role => role.id == group.category)
+          if (hasCategory && resultRoles.length === 0) {
+            removeStack.push(group.category)
+          } else if (!hasCategory && resultRoles.length >= 1) {
+            addStack.push(group.category)
+          }
+        }
+
+        messageStack += `Updated your **${name}** role(s).\n`
+      }
+    }
+
+    // Error message if no valid roles are given
+    if (!messageStack) {
+      message.channel.send('Please specify valid roles.')
+      return
     }
 
     // Roles have been processed, now apply our changes
