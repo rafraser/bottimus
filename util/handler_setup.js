@@ -72,6 +72,7 @@ function loadRoles(client) {
         try {
           client.serverRoles.set(server, JSON.parse(data))
         } catch (err) {
+          console.log('Error occured in', file)
           console.error(err)
           return
         }
