@@ -69,8 +69,8 @@ module.exports = {
     // Make sure we don't get a whole bunch of roles given
     // We use a pretty messy for loop in this command
     // and we don't want things to get out of hand
-    if (args.length > 5) {
-      message.channel.send('Please limit role changes to 5 at a time')
+    if (args.length > 10) {
+      message.channel.send('Please limit role changes to 10 at a time')
       return
     }
 
