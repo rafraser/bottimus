@@ -43,12 +43,11 @@ def render_prize(prizes, ang, i, font):
 
 
 # Render the emblem
-def render_emblem(logo):
+def render_emblem(logo, insize=288):
     canvas = Image.new("RGBA", (1024, 1024))
     draw = ImageDraw.Draw(canvas)
 
     # Render the inner wheel
-    insize = 288
     left = math.floor((1024 - insize) / 2)
     draw.pieslice(
         (left - 8, left - 8, left + insize + 8, left + insize + 8),
@@ -79,14 +78,12 @@ def render_background():
 
 
 # Render the wheel
-def render_spinner(prizes, n, colors, font):
+def render_spinner(prizes, n, colors, font, radius=448, linewidth=8):
     canvas = Image.new("RGBA", (1024, 1024))
     draw = ImageDraw.Draw(canvas)
     width = 360 / n
     offset = width / 2
     ang = -offset
-
-    radius = 448
 
     for i in range(n):
         color = colors[i]
@@ -97,7 +94,7 @@ def render_spinner(prizes, n, colors, font):
         draw.line(
             (512, 512, 512 + radius * math.cos(rad), 512 + radius * math.sin(rad)),
             (245, 246, 250),
-            8,
+            linewidth,
         )
 
         # Render the prize information
@@ -110,7 +107,7 @@ def render_spinner(prizes, n, colors, font):
     draw.line(
         (512, 512, 512 + radius * math.cos(rad), 512 + radius * math.sin(rad)),
         (245, 246, 250),
-        8,
+        linewidth,
     )
 
     return canvas
@@ -126,7 +123,17 @@ def render_frame(background, emblem, spinner, rotation):
     return canvas
 
 
-def generate_animation(count, n, prizes, colors, logo, font=DEFAULT_FONT):
+def generate_animation(
+    count,
+    n,
+    prizes,
+    colors,
+    logo,
+    font=DEFAULT_FONT,
+    innerwidth=288,
+    outerwidth=448,
+    linewidth=8,
+):
     frames = []
     velocity = random.uniform(8, 20)
     acceleration = -velocity / count
@@ -134,8 +141,9 @@ def generate_animation(count, n, prizes, colors, logo, font=DEFAULT_FONT):
 
     # Render the important parts only once
     background = render_background().resize((512, 512), Image.BICUBIC)
-    emblem = render_emblem(logo).resize((512, 512), Image.BICUBIC)
-    spinner = render_spinner(prizes, n, colors, font).resize((512, 512), Image.BICUBIC)
+    emblem = render_emblem(logo, innerwidth).resize((512, 512), Image.BICUBIC)
+    spinner = render_spinner(prizes, n, colors, font, outerwidth, linewidth)
+    spinner = spinner.resize((512, 512), Image.BICUBIC)
 
     # Spin the wheel!
     for i in range(count - 1):
