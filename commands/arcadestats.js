@@ -3,8 +3,8 @@ const discord = require('discord.js')
 
 // Calculate the totals across all trivia categories
 function calculateTriviaTotals(results) {
-  var totalGuesses = 0
-  var totalCorrect = 0
+  const totalGuesses = 0
+  const totalCorrect = 0
 
   for (const result of results) {
     totalGuesses = totalGuesses + result.attempted
@@ -14,10 +14,9 @@ function calculateTriviaTotals(results) {
   return [totalGuesses, totalCorrect]
 }
 
-// Retrieve Hangman statistics for a given ID from the database
-function fetchHangmanStatistics(id) {
+// Helper function to get statistics
+function queryHelper(queryString, id) {
   return new Promise(function (resolve, reject) {
-    var queryString = 'SELECT guesses, correct, revealed, words, contribution, (correct/guesses) AS percent FROM arcade_hangman WHERE discordid = ?;'
     pool.query(queryString, [id], function (err, results) {
       if (err) {
         reject(err)
@@ -26,48 +25,50 @@ function fetchHangmanStatistics(id) {
       }
     })
   })
+}
+
+// Retrieve Hangman statistics for a given ID from the database
+function fetchHangmanStatistics(id) {
+  return queryHelper('SELECT guesses, correct, revealed, words, contribution, (correct/guesses) AS percent FROM arcade_hangman WHERE discordid = ?;', id)
 }
 
 // Retrieve Trivia statistics for a given ID from the database
 function fetchTriviaStatistics(id) {
-  return new Promise(function (resolve, reject) {
-    var queryString = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
-    pool.query(queryString, [id], function (err, results) {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(results)
-      }
-    })
-  })
+  return queryHelper('SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;', id)
 }
 
 // Retrieve Typeracer statistics for a given ID from the database
 function fetchTyperacerStatistics(id) {
-  return new Promise(function (resolve, reject) {
-    var queryString = 'SELECT completed, speed_average, speed_best, date_best FROM arcade_typeracer WHERE discordid = ?;'
-    pool.query(queryString, [id], function (err, results) {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(results)
-      }
-    })
-  })
+  return queryHelper('SELECT completed, speed_average, speed_best, date_best FROM arcade_typeracer WHERE discordid = ?;', id)
+}
+
+// Retrieve Scratchcard statistics for a given ID from the database
+function fetchScratchcardStatistics(id) {
+  return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS average FROM arcade_scratchcard WHERE discordid = ?;', id)
+}
+
+// Retrieve Mining statistics for a given ID from the database
+function fetchMiningStatistics(id) {
+  return queryHelper('SELECT number, diamonds, FLOOR(diamonds/number) AS average FROM arcade_mining WHERE discordid = ?;', id)
+}
+
+// Retrieve Prize statistics for a given ID from the database
+function fetchPrizeStatistics(id) {
+  return queryHelper('SELECT SUM(amount) AS total, COUNT(amount) AS collected FROM arcade_prizes WHERE discordid = ?;', id)
 }
 
 // Keep the embed functions in an object for modular lookup
-var embedFunctions = {}
+let embedFunctions = {}
 
 // Generate a nice embed for Hangman information
 embedFunctions.hangman = function (user) {
   return new Promise(function (resolve, reject) {
     fetchHangmanStatistics(user.id).then(function (results) {
-      var username = user.displayName
-      var r = results[0]
+      const username = user.displayName
+      const r = results[0]
 
       // Generate a nice embed for details
-      var embed = new discord.RichEmbed()
+      const embed = new discord.RichEmbed()
         .setColor('#4cd137')
         .setTitle(`🚷 Hangman -  ${username}`)
         .addField('Letters Guessed', `${r.guesses}`, true)
@@ -87,11 +88,11 @@ embedFunctions.hangman = function (user) {
 embedFunctions.trivia = function (user) {
   return new Promise(function (resolve, reject) {
     fetchTriviaStatistics(user.id).then(function (results) {
-      var username = user.displayName
-      var [totalGuesses, totalCorrect] = calculateTriviaTotals(results)
+      const username = user.displayName
+      const [totalGuesses, totalCorrect] = calculateTriviaTotals(results)
 
       // Generate a nice embed for details
-      var embed = new discord.RichEmbed()
+      const embed = new discord.RichEmbed()
         .setColor('#4cd137')
         .setTitle(`❓ Trivia - ${username}`)
         .addField('Questions Answered', `${totalGuesses}`, true)
@@ -108,19 +109,19 @@ embedFunctions.trivia = function (user) {
 embedFunctions.typeracer = function (user) {
   return new Promise(function (resolve, reject) {
     fetchTyperacerStatistics(user.id).then(function (results) {
-      var username = user.displayName
-      var r = results[0]
+      const username = user.displayName
+      const r = results[0]
 
       // Format the date nicely
       // Who knew this would be the worst part of all this
-      var d = r.date_best
-      var day = (d.getDate()).toString().padStart(2, '0')
-      var month = (d.getMonth() + 1).toString().padStart(2, '0')
-      var year = d.getFullYear().toString()
-      var best = day + '-' + month + '-' + year
+      const d = r.date_best
+      const day = (d.getDate()).toString().padStart(2, '0')
+      const month = (d.getMonth() + 1).toString().padStart(2, '0')
+      const year = d.getFullYear().toString()
+      const best = day + '-' + month + '-' + year
 
       // Generate a nice embed for details
-      var embed = new discord.RichEmbed()
+      const embed = new discord.RichEmbed()
         .setColor('#4cd137')
         .setTitle(`🏎 Type Racer - ${username}`)
         .addField('Races Completed', `${r.completed}`, true)
@@ -134,37 +135,104 @@ embedFunctions.typeracer = function (user) {
   })
 }
 
+embedFunctions.scratchcard = function (user) {
+  return new Promise(function (resolve, reject) {
+    fetchScratchcardStatistics(user.id).then(function (results) {
+      const username = user.displayName
+      const r = results[0]
+
+      // Generate a nice embed for details
+      const embed = new discord.RichEmbed()
+        .setColor('#4cd137')
+        .setTitle(`💸 Scratch Cards - ${username}`)
+        .addField('Number', `${r.number}`, true)
+        .addField('Total Winnings', `${r.winnings}`, true)
+        .addField('Profit', `${r.winnings - r.number * 250}`, true)
+        .addField('Average Income', `${r.average}`, true)
+      resolve(embed)
+    }).catch(function (err) {
+      reject(err)
+    })
+  })
+}
+
+embedFunctions.mining = function (user) {
+  return new Promise(function (resolve, reject) {
+    fetchMiningStatistics(user.id).then(function (results) {
+      const username = user.displayName
+      const r = results[0]
+
+      // Generate a nice embed for details
+      const embed = new discord.RichEmbed()
+        .setColor('#4cd137')
+        .setTitle(`💎 Mining - ${username}`)
+        .addField('Expeditions', `${r.number}`, true)
+        .addField('Diamonds', `${r.diamonds}`, true)
+        .addField('Average', `${r.average}`, true)
+        .addField('Earnings', `${r.diamonds * 5}`, true)
+        .addField('Profit', `${r.diamonds * 5 - r.number * 25}`, true)
+      resolve(embed)
+    }).catch(function (err) {
+      reject(err)
+    })
+  })
+}
+
+embedFunctions.prizes = function (user) {
+  return new Promise(function (resolve, reject) {
+    fetchPrizeStatistics(user.id).then(function (results) {
+      const username = user.displayName
+      const r = results[0]
+
+      // Generate a nice embed for details
+      const embed = new discord.RichEmbed()
+        .setColor('#4cd137')
+        .setTitle(`🔮 Prizes - ${username}`)
+        .addField('Total', `${r.total}`, true)
+        .addField('Unique', `${r.collected}`, true)
+      resolve(embed)
+    }).catch(function (err) {
+      reject(err)
+    })
+  })
+}
+
 module.exports = {
   name: 'arcadestats',
   description: 'Fetchs statistics for arcade games',
-  aliases: ['gamestats'],
+  aliases: ['gamestats', 'casinostats'],
   execute(message, args, client) {
-    var user = client.findUser(message, args, true)
-    var game = args.shift().toLowerCase()
+    if (!args || args.length < 1) {
+      const games = Object.keys(embedFunctions).join(' ')
+      message.channel.send('Pick stats to see:```' + games + '```')
+      return
+    }
 
-    // Get stats for all games, or a single game if given
-    var promises = []
-    if (game && Object.prototype.hasOwnProperty.call(embedFunctions, game)) {
-      promises.push(embedFunctions[game](user))
-    } else {
-      for (const game in embedFunctions) {
-        promises.push(embedFunctions[game](user))
+    const user = client.findUser(message, args, true)
+    let promises = []
+
+    // For each argument, attempt to get stats for that game
+    for (let arg of args) {
+      arg = arg.toLowerCase()
+      if (embedFunctions[arg]) {
+        promises.push(embedFunctions[arg](user))
       }
     }
 
     // Fancy promise stuff
     // This runs all of the given promises, ignoring any errors
-    var m = promises.map(function (p) {
+    let m = promises.map(function (p) {
       return p.catch(function (err) {
         console.log(err)
         return null
       })
     })
+
     Promise.all(m).then(function (results) {
       if (results.length < 1) {
-        message.channel.send('This user has not played any arcade games :(')
+        message.channel.send('No data available')
       } else {
-        for (var i = 0; i < results.length; i++) {
+        for (let i = 0; i < results.length; i++) {
           if (results[i] == null) { continue }
           message.channel.send(results[i])
         }
