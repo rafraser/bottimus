@@ -31,36 +31,6 @@ function incrementStatScore(userid, speed) {
   return p
 }
 
-// UNUSED Function
-/*
-function incrementStatScoreMobile (userid, speed) {
-  var queryOne = 'INSERT INTO arcade_typeracer_mobile (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE completed = completed + 1, speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1);'
-  var queryTwo = 'SELECT speed_best FROM arcade_typeracer_mobile WHERE discordid = ?;'
-  var queryThree = 'UPDATE arcade_typeracer_mobile SET speed_best = ?, date_best = ? WHERE discordid = ?;'
-
-  // callback hell I know
-  var p = new Promise(function (resolve, reject) {
-    pool.query(queryOne, [userid, speed], function (err, results) {
-      if (err) { console.log(err); return }
-      pool.query(queryTwo, [userid], function (err, results) {
-        if (err) { console.log(err); return }
-        var best = results[0].speed_best
-
-        if (speed > best) {
-          pool.query(queryThree, [speed, new Date(), userid], function (err) {
-            if (err) console.log(err)
-          })
-          resolve(true)
-        } else {
-          resolve(false)
-        }
-      })
-    })
-  })
-  return p
-}
-*/
-
 function shuffle(a) {
   var j, x, i
   for (i = a.length - 1; i > 0; i--) {
@@ -71,6 +41,29 @@ function shuffle(a) {
   }
 
   return a
+}
+
+function isPlayingTyperacer(client, guild) {
+  // Create the structure if it doesn't exist
+  if (!client.typeracerSessions) {
+    client.typeracerSessions = new discord.Collection()
+  }
+
+  return client.typeracerSessions.has(guild.id)
+}
+
+function setPlayingTyperacer(client, guild, active) {
+  // Create the structure if it doesn't exist
+  if (!client.typeracerSessions) {
+    client.typeracerSessions = new discord.Collection()
+  }
+
+  // Update the collection
+  if (active) {
+    client.typeracerSessions.set(guild.id, true)
+  } else {
+    client.typeracerSessions.delete(guild.id)
+  }
 }
 
 function messageFilter(m) {
@@ -156,7 +149,7 @@ function startTypeRacer(client, message, display) {
         }
 
         message.channel.send(string)
-        client.playingTyperacer = false
+        setPlayingTyperacer(client, message.guild, false)
       })
     })
   }).catch(function (e) { message.channel.send(e) })
@@ -167,13 +160,9 @@ module.exports = {
   description: 'Play a game of Type Racer',
   aliases: ['typerace'],
   execute(message, args, client) {
-    // Only allow a single game of hangman
-    if (client.playingTyperacer) return
-
-    // Generate a list of n words for type racer
-    // Of these words, a certain number are taken from the hard list
-    // while the rest are taken from the easy list
-    client.playingTyperacer = true
+    // Make sure each guild only has a single game going on
+    if (isPlayingTyperacer(client, message.guild)) return
+    setPlayingTyperacer(client, message.guild, true)
 
     message.channel.send('Get ready for Type Racer!').then(function (m) {
       // Small delay before starting to allow players time to prepare

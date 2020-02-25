@@ -28,6 +28,29 @@ function generateEmbed(attempts, guesses, fails) {
   return embed
 }
 
+function isPlayingHangman(client, guild) {
+  // Create the structure if it doesn't exist
+  if (!client.hangmanSessions) {
+    client.hangmanSessions = new discord.Collection()
+  }
+
+  return client.hangmanSessions.has(guild.id)
+}
+
+function setPlayingHangman(client, guild, active) {
+  // Create the structure if it doesn't exist
+  if (!client.hangmanSessions) {
+    client.hangmanSessions = new discord.Collection()
+  }
+
+  // Update the collection
+  if (active) {
+    client.hangmanSessions.set(guild.id, true)
+  } else {
+    client.hangmanSessions.delete(guild.id)
+  }
+}
+
 function hangmanFilter(msg) {
   if (msg.member.user.bot) return false
   if (msg.content.length > 1) return false
@@ -39,8 +62,9 @@ module.exports = {
   name: 'hangman',
   description: 'Play a game of Hangman',
   execute(message, args, client) {
-    // Only allow a single game of hangman
-    if (client.playingHangman) return
+    // Make sure each guild only has a single game going on
+    if (isPlayingHangman(client, message.guild)) return
+    setPlayingHangman(client, message.guild, true)
 
     // Setup the game properties
     var word = getRandomWord()
@@ -48,7 +72,6 @@ module.exports = {
     var correct = 0
     var attempts = []
     var guesses = Array(word.length).fill('\\_')
-    client.playingHangman = true
 
     // Setup some collections for player data
     var playerGuesses = new Map()
@@ -129,7 +152,7 @@ module.exports = {
       })
 
       collector.on('end', function (collected, reason) {
-        client.playingHangman = null
+        setPlayingHangman(client, gameMsg.guild, false)
 
         // Send a message depending on how the game ended
         if (reason === 'win') {
