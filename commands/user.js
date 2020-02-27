@@ -25,7 +25,6 @@ function getUserRankings(guild) {
 module.exports = {
   name: 'user',
   description: 'Get information about when a user joined',
-  guilds: ['309951255575265280'],
   execute(message, args, client) {
     getUserRankings(message.guild).then(function (rankings) {
       var user
