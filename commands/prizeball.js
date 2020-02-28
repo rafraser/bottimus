@@ -52,7 +52,7 @@ function redeemPrize(msg, user, client) {
 module.exports = {
   name: 'prizeball',
   description: 'Try your luck at the legendary prize ball machine!',
-  cooldown: 60,
+  cooldown: 45,
   aliases: ['redeemprize', 'prize'],
   execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
@@ -66,7 +66,7 @@ module.exports = {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
-          const collector = msg.createReactionCollector(filter, { time: 5000 })
+          const collector = msg.createReactionCollector(filter, { time: 35000 })
           collector.on('collect', function () {
             // Confirmation received!
             collector.stop()
