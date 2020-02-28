@@ -17,7 +17,7 @@ function muteUser(client, member, duration, muter, channel) {
   }
 
   // Setup the options for the mute
-  var options = {
+  let options = {
     guild: member.guild.id,
     roles: roleIDs,
     unmute: new Date(Date.now() + duration * 60000),

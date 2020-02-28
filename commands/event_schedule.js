@@ -20,18 +20,18 @@ module.exports = {
 
     // Attempt to parse the event format
     try {
-      var title = args.shift()
-      var description = args.shift()
+      const title = args.shift()
+      const description = args.shift()
 
-      var now = new Date(Date.now())
-      var datetime = {
+      const now = new Date(Date.now())
+      let datetime = {
         year: now.getFullYear(),
         month: now.getMonth(),
         day: now.getDate()
       }
 
       while (args.length >= 1) {
-        var arg = args.shift()
+        let arg = args.shift()
         if (arg.includes(':')) {
           // Try parsing this argument as time
           arg = arg.split(':')
@@ -53,7 +53,7 @@ module.exports = {
       }
 
       // Check that the date and time are valid
-      var when = new Date(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.minute)
+      const when = new Date(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.minute)
       if (!(when instanceof Date && !isNaN(when))) {
         message.channel.send('Invalid event structure. Check that the time is the right format (HH:MM)')
         return
@@ -64,9 +64,9 @@ module.exports = {
     }
 
     // Generate an initial event embed
-    var event = events.generateEvent(message.member, title, description, when)
-    var timeLeft = client.timeToString(event.time - Date.now(), 2)
-    var embed = events.generateEventEmbed(event, timeLeft)
+    const event = events.generateEvent(message.member, title, description, when)
+    const timeLeft = client.timeToString(event.time - Date.now(), 2)
+    const embed = events.generateEventEmbed(event, timeLeft)
 
     // Check that the event is correct before sending
     message.channel.send('Is this correct?', embed).then(function (msg) {
@@ -75,13 +75,13 @@ module.exports = {
         return user.id === message.member.id && reaction.emoji.name === '✅'
       }
 
-      var collector = msg.createReactionCollector(filter, { time: 15000 })
+      const collector = msg.createReactionCollector(filter, { time: 15000 })
       collector.on('collect', function () {
         // Confirmation received!
         collector.stop()
         client.requestedEventsData.push(event)
 
-        var channel = client.channels.get(approvalChannel)
+        const channel = client.channels.get(approvalChannel)
         channel.send(`New event requested by **${message.member.displayName}**!`)
 
         msg.delete()

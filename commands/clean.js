@@ -10,7 +10,7 @@ module.exports = {
     }
 
     try {
-      var num = args.shift() || 50
+      let num = args.shift() || 50
       num = Math.min(parseInt(num, 10) + 1, 100)
       if (isNaN(num)) return
 

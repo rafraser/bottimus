@@ -5,7 +5,7 @@ function updateMurder(message) {
   const ip = '35.244.106.238'
   gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
     // Generate a nice looking embed
-    var embed = new discord.RichEmbed()
+    const embed = new discord.RichEmbed()
       .setColor('#e84118')
       .setTitle('🕹️ Murder')
       .setDescription(`Click: steam://connect/${ip} to join`)
@@ -21,7 +21,7 @@ function updateMinigames(message) {
   const ip = '139.180.168.161'
   gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
     // Generate a nice looking embed
-    var embed = new discord.RichEmbed()
+    const embed = new discord.RichEmbed()
       .setColor('#fbc531')
       .setTitle('🕹️ Minigames')
       .setDescription(`Click: steam://connect/${ip} to join`)
@@ -42,7 +42,7 @@ module.exports = {
   frequency: 5,
   execute(client) {
     try {
-      var channel = client.channels.get(serverChannel)
+      const channel = client.channels.get(serverChannel)
       channel.fetchMessage(murderMessage).then(function (m) { updateMurder(m) })
       channel.fetchMessage(minigamesMessage).then(function (m) { updateMinigames(m) })
     } catch (e) {

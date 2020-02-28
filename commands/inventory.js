@@ -7,13 +7,13 @@ module.exports = {
   cooldown: 30,
   execute(message, args, client) {
     arcade.getArcadePrizes(message.member.id).then(function (prizes) {
-      var prizes2 = []
-      for (var prize in prizes) {
+      let prizes2 = []
+      for (const prize in prizes) {
         prizes2.push(prize + ':' + prizes[prize])
       }
 
       client.executePython('inventory', prizes2).then(function () {
-        var attachment = new discord.Attachment('./img/inventory.png')
+        const attachment = new discord.Attachment('./img/inventory.png')
         message.channel.send(attachment)
       })
     })

@@ -2,7 +2,7 @@ const discord = require('discord.js')
 
 // Return a sorted array of when users joined the server
 function getUserRankings(guild) {
-  var p = new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     guild.fetchMembers().then(function (g) {
       const members = Array.from(g.members.values())
 
@@ -18,8 +18,6 @@ function getUserRankings(guild) {
       reject(e)
     })
   })
-
-  return p
 }
 
 module.exports = {
@@ -27,8 +25,8 @@ module.exports = {
   description: 'Get information about when a user joined',
   execute(message, args, client) {
     getUserRankings(message.guild).then(function (rankings) {
-      var user
-      var ranking
+      let user
+      let ranking
       try {
         // Try searching for a user in the args
         user = client.findUser(message, args.slice())
@@ -48,8 +46,8 @@ module.exports = {
       if (ranking < 0 || ranking > rankings.length) return
 
       // Generate the fancy embed
-      var date = user.joinedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-      var embed = new discord.RichEmbed()
+      const date = user.joinedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      const embed = new discord.RichEmbed()
         .setTitle(user.displayName)
         .setDescription(user.user.tag)
         .setThumbnail(user.user.avatarURL)

@@ -101,8 +101,8 @@ function generateCalendar(client) {
       reject(new Error('No events are currently scheduled'))
     }
 
-    var events2 = []
-    for (var event of client.eventsData.values()) {
+    let events2 = []
+    for (let event of client.eventsData.values()) {
       events2.push(`${event.time.toUTCString()}.${event.category}.${event.title}`)
     }
 

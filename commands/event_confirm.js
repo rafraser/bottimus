@@ -37,9 +37,9 @@ module.exports = {
     }
 
     // Display the oldest scheduled event
-    var event = client.requestedEventsData[0]
-    var timeLeft = client.timeToString(event.time - Date.now(), 2)
-    var embed = events.generateEventEmbed(event, timeLeft)
+    const event = client.requestedEventsData[0]
+    const timeLeft = client.timeToString(event.time - Date.now(), 2)
+    const embed = events.generateEventEmbed(event, timeLeft)
 
     // Send the message and await administrator action
     message.channel.send(embed).then(function (msg) {
@@ -53,7 +53,7 @@ module.exports = {
         return user.id === message.member.id && (reaction.emoji.name === '✅' || reaction.emoji.name === '❎')
       }
 
-      var collector = msg.createReactionCollector(filter, { time: 15000 })
+      const collector = msg.createReactionCollector(filter, { time: 15000 })
       collector.on('collect', function (r) {
         // Approve or deny the event
         if (r.emoji.name === '✅') {

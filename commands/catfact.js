@@ -1,14 +1,15 @@
 const discord = require('discord.js')
 const https = require('https')
 
+const CAT_FACT_URL = 'https://catfact.ninja/fact'
+
 module.exports = {
   name: 'catfact',
   description: 'Get a random cat fact',
   cooldown: 10,
-  execute (message, args) {
-    var url = 'https://catfact.ninja/fact'
-
-    https.get(url, function (resp) {
+  execute(message, args) {
+    // Grab a random cat fact from the URL
+    https.get(CAT_FACT_URL, function (resp) {
       let data = ''
 
       resp.on('data', function (chunk) {
@@ -16,9 +17,10 @@ module.exports = {
       })
 
       resp.on('end', function () {
-        var fact = JSON.parse(data).fact
+        // Send the embed
+        const fact = JSON.parse(data).fact
 
-        var embed = new discord.RichEmbed()
+        const embed = new discord.RichEmbed()
           .setColor('#9c88ff')
           .setDescription(fact)
         message.channel.send(embed)

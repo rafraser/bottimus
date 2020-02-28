@@ -16,7 +16,7 @@ module.exports = {
           fs.readFile('data/events/' + event, function (err, data) {
             if (err) return
 
-            var id = event.replace('.json', '')
+            const id = event.replace('.json', '')
             data = JSON.parse(data)
             data.time = new Date(data.time)
             if (Date.now() > data.time) {

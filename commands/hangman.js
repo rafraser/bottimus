@@ -5,7 +5,7 @@ const words = require('../util/hangman_words')
 
 function incrementStatScore(userid, guesses, correct, revealed, won, contribution) {
   // Sorry
-  var queryString = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
+  const queryString = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
 
   pool.query(queryString, [userid, guesses, correct, revealed, won, contribution], function (err, results) {
     if (err) {
@@ -19,7 +19,7 @@ function getRandomWord() {
 }
 
 function generateEmbed(attempts, guesses, fails) {
-  var embed = new discord.RichEmbed()
+  const embed = new discord.RichEmbed()
     .setTitle('Hangman')
     .setDescription((8 - fails) + ' mistakes left!')
     .setFooter(attempts.join(' '))
@@ -67,23 +67,23 @@ module.exports = {
     setPlayingHangman(client, message.guild, true)
 
     // Setup the game properties
-    var word = getRandomWord()
-    var fails = 0
-    var correct = 0
-    var attempts = []
-    var guesses = Array(word.length).fill('\\_')
+    let word = getRandomWord()
+    let fails = 0
+    let correct = 0
+    let attempts = []
+    let guesses = Array(word.length).fill('\\_')
 
     // Setup some collections for player data
-    var playerGuesses = new Map()
-    var playerCorrect = new Map()
-    var playerRevealed = new Map()
+    let playerGuesses = new Map()
+    let playerCorrect = new Map()
+    let playerRevealed = new Map()
 
     message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails)).then(function (gameMsg) {
-      var collector = gameMsg.channel.createMessageCollector(hangmanFilter, { time: 60000 })
+      const collector = gameMsg.channel.createMessageCollector(hangmanFilter, { time: 60000 })
       collector.on('collect', function (m) {
         // Check words for valid guesses
-        var letter = m.content
-        var user = m.member
+        let letter = m.content
+        let user = m.member
 
         // Don't count guesses twice
         if (attempts.includes(letter)) {
@@ -110,8 +110,8 @@ module.exports = {
           arcade.incrementArcadeCredits(user.id, 1)
 
           // Reveal letters in the word
-          var revealed = 0
-          for (var i = 0; i < word.length; i++) {
+          let revealed = 0
+          for (let i = 0; i < word.length; i++) {
             if (word.charAt(i) === letter) {
               guesses[i] = letter
               revealed++
@@ -167,10 +167,10 @@ module.exports = {
         // Increment stats data for all players
         // TODO
         playerGuesses.forEach(function (guesses, key) {
-          var correct = playerCorrect.get(key) || 0
-          var revealed = playerRevealed.get(key) || 0
-          var contribution = Math.floor((revealed / word.length) * 100)
-          var won = (reason === 'win') ? 1 : 0
+          const correct = playerCorrect.get(key) || 0
+          const revealed = playerRevealed.get(key) || 0
+          const contribution = Math.floor((revealed / word.length) * 100)
+          const won = (reason === 'win') ? 1 : 0
           incrementStatScore(key, guesses, correct, revealed, won, contribution)
         })
       })
