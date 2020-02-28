@@ -5,17 +5,17 @@ const discord = require('discord.js')
 
 // Stores results for players that complete the Type Race
 function incrementStatScore(userid, speed) {
-  var queryOne = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1), completed = completed + 1;'
-  var queryTwo = 'SELECT speed_best FROM arcade_typeracer WHERE discordid = ?;'
-  var queryThree = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
+  const queryOne = 'INSERT INTO arcade_typeracer (discordid, completed, speed_average) VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE speed_average = ((speed_average * completed) + VALUES(speed_average))/(completed + 1), completed = completed + 1;'
+  const queryTwo = 'SELECT speed_best FROM arcade_typeracer WHERE discordid = ?;'
+  const queryThree = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
 
   // callback hell I know
-  var p = new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     pool.query(queryOne, [userid, speed], function (err, results) {
       if (err) { console.log(err); return }
       pool.query(queryTwo, [userid], function (err, results) {
         if (err) { console.log(err); return }
-        var best = results[0].speed_best
+        const best = results[0].speed_best
 
         if (speed > best) {
           pool.query(queryThree, [speed, new Date(), userid], function (err) {
@@ -28,11 +28,10 @@ function incrementStatScore(userid, speed) {
       })
     })
   })
-  return p
 }
 
 function shuffle(a) {
-  var j, x, i
+  let j, x, i
   for (i = a.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1))
     x = a[i]
@@ -73,32 +72,32 @@ function messageFilter(m) {
 }
 
 function startTypeRacer(client, message, display) {
-  var n = 30
-  var hard = 5
-  var list = shuffle(words.easy).slice(0, n - hard).concat(shuffle(words.hard).slice(0, hard))
+  const n = 30
+  const hard = 5
+  const list = shuffle(words.easy).slice(0, n - hard).concat(shuffle(words.hard).slice(0, hard))
   display.delete()
 
   client.executePython('typeracer', list.join(' ')).then(function () {
     // Send the image to the channel
-    var attachment = new discord.Attachment('./img/typeracer.png')
+    const attachment = new discord.Attachment('./img/typeracer.png')
     message.channel.send(attachment).then(function () {
-      var starttime = new Date()
-      var winners = new Map()
+      const starttime = new Date()
+      let winners = new Map()
 
-      var collector = message.channel.createMessageCollector(messageFilter, { time: 60000 })
+      const collector = message.channel.createMessageCollector(messageFilter, { time: 60000 })
       collector.on('collect', function (m) {
         // Check the message and see if it's a valid race response
         // Skip message if already won
         if (winners.get(m.member.id)) return
 
-        var endtime = new Date()
-        var attempt = m.content.split(' ')
+        const endtime = new Date()
+        const attempt = m.content.split(' ')
         if (attempt.length < n) return
 
         // Check each word submitted by the user
         // They are allowed 2 mistakes out of 50 words (96% accuracy)
-        var wrong = 0
-        for (var i = 0; i < n; i++) {
+        let wrong = 0
+        for (const i = 0; i < n; i++) {
           if (attempt[i].toLowerCase() === list[i].toLowerCase()) continue
 
           // Wrong word, oh no!
@@ -115,18 +114,18 @@ function startTypeRacer(client, message, display) {
       })
 
       collector.on('end', function () {
-        var letters = list.join(' ').length
-        var place = 1
-        var string = 'The race is over!\n'
+        let letters = list.join(' ').length
+        let place = 1
+        let string = 'The race is over!\n'
         // Announce the winners
-        for (var result of winners) {
-          var member = message.guild.members.get(result[0])
-          var finishtime = result[1]
-          var duration = (finishtime - starttime) / 1000
-          var wpm = Math.floor((letters / 5) * (60 / duration))
+        for (const result of winners) {
+          const member = message.guild.members.get(result[0])
+          const finishtime = result[1]
+          const duration = (finishtime - starttime) / 1000
+          const wpm = Math.floor((letters / 5) * (60 / duration))
 
           // Award credits based on WPM
-          var credits = 20 + Math.ceil(wpm / 2)
+          let credits = 20 + Math.ceil(wpm / 2)
           if (credits <= 25) {
             credits = 25
           } else if (credits >= 75) {
@@ -137,9 +136,9 @@ function startTypeRacer(client, message, display) {
           // Store data, announcing records when applicable
           incrementStatScore(result[0], wpm).then(function (record) {
             if (record[0]) {
-              var id = record[1]
-              var speed = record[2]
-              var member = message.guild.members.get(id).displayName
+              const id = record[1]
+              const speed = record[2]
+              const member = message.guild.members.get(id).displayName
               message.channel.send('⭐ ' + member + ' set a new record of ' + speed + ' WPM!')
             }
           })

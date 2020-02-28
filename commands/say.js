@@ -3,11 +3,10 @@ module.exports = {
   description: '🛡️ Secret admin command',
   guilds: ['309951255575265280'],
   execute(message, args, client) {
-    var user = message.member
+    const user = message.member
     if (client.isAdministrator(user)) {
-      var string = args.join(' ')
       message.delete()
-      message.channel.send(string)
+      message.channel.send(args.join(' '))
     }
   }
 }

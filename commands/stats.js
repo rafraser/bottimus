@@ -15,7 +15,7 @@ module.exports = {
     }
 
     // Query Fluffy Servers API
-    var url = 'https://fluffyservers.com/api/stats/search/' + args[0]
+    const url = 'https://fluffyservers.com/api/stats/search/' + args[0]
     https.get(url, function (resp) {
       let data = ''
 
@@ -25,9 +25,9 @@ module.exports = {
 
       resp.on('end', function () {
         try {
-          var result = JSON.parse(data).results[0]
+          const result = JSON.parse(data).results[0]
           // Generate a fancy looking embed with the user statistics
-          var embed = new discord.RichEmbed()
+          const embed = new discord.RichEmbed()
             .setColor('#e84118')
             .setTitle(`Stats for ${result.username}`)
             .addField('Hours Played', `${Math.floor(result.playtime / 3600) || 0}`, false)

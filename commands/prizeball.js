@@ -2,14 +2,14 @@ const arcade = require('../util/arcade')
 const discord = require('discord.js')
 
 function getPrizeRarities() {
-  var rarities = {}
-  for (var rarity of arcade.rarities) {
+  let rarities = {}
+  for (const rarity of arcade.rarities) {
     rarities[rarity] = []
   }
 
-  for (var prize in arcade.prizes) {
-    var p = arcade.prizes[prize]
-    var r = arcade.rarities[p[1]]
+  for (const prize in arcade.prizes) {
+    const p = arcade.prizes[prize]
+    const r = arcade.rarities[p[1]]
     rarities[r].push(prize)
   }
 
@@ -17,10 +17,10 @@ function getPrizeRarities() {
 }
 
 function pickPrize() {
-  var prizelist = getPrizeRarities()
+  const prizelist = getPrizeRarities()
 
-  var p = Math.random()
-  var rarity = 'Common'
+  const p = Math.random()
+  let rarity = 'Common'
   if (p > 0.9) {
     rarity = 'Legendary'
   } else if (p > 0.7) {
@@ -29,15 +29,15 @@ function pickPrize() {
     rarity = 'Uncommon'
   }
 
-  var r = prizelist[rarity]
+  const r = prizelist[rarity]
   return r[Math.floor(Math.random() * r.length)]
 }
 
 function openPrizeBall(msg, prize, user, client) {
-  var p = arcade.prizes[prize]
-  var args = ['prizes/' + prize, arcade.rarities[p[1]], arcade.rarities[p[1]] + ' Prize!', arcade.prizes[prize][0]]
+  const p = arcade.prizes[prize]
+  const args = ['prizes/' + prize, arcade.rarities[p[1]], arcade.rarities[p[1]] + ' Prize!', arcade.prizes[prize][0]]
   client.executePython('prizeball', args).then(function () {
-    var attachment = new discord.Attachment('./img/prizeball.gif')
+    const attachment = new discord.Attachment('./img/prizeball.gif')
     msg.channel.send(attachment)
   })
 }
@@ -45,7 +45,7 @@ function openPrizeBall(msg, prize, user, client) {
 function redeemPrize(msg, user, client) {
   msg.clearReactions()
   msg.edit('Get ready!')
-  var prize = pickPrize()
+  const prize = pickPrize()
   arcade.unlockArcadePrize(user, prize)
   openPrizeBall(msg, prize, user, client)
 }
@@ -67,7 +67,7 @@ module.exports = {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
-          var collector = msg.createReactionCollector(filter, { time: 5000 })
+          const collector = msg.createReactionCollector(filter, { time: 5000 })
           collector.on('collect', function () {
             // Confirmation received!
             collector.stop()

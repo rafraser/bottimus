@@ -3,7 +3,7 @@ const pool = require('../util/database')
 const discord = require('discord.js')
 
 function updateScratch(id, amount) {
-  var queryString = 'INSERT INTO arcade_scratchcard VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE winnings = winnings + VALUES(winnings), number = number + VALUES(number)'
+  const queryString = 'INSERT INTO arcade_scratchcard VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE winnings = winnings + VALUES(winnings), number = number + VALUES(number)'
   pool.query(queryString, [id, amount])
 }
 
@@ -19,9 +19,9 @@ const prizes = [
 const icons = ['💰', '💰', '🍉', '🍉', '🍒', '🍒', '🍋', '🍋', '🍓', '🍓', '🍇', '🍇']
 
 function weightedRandom() {
-  var r = Math.random()
-  for (var i = 0; i < prizes.length; i++) {
-    var p = prizes[i][2]
+  const r = Math.random()
+  for (const i = 0; i < prizes.length; i++) {
+    const p = prizes[i][2]
     if (r < p) return prizes[i]
     r -= p
   }
@@ -29,7 +29,7 @@ function weightedRandom() {
 }
 
 function shuffle(a) {
-  var j, x, i
+  let j, x, i
   for (i = a.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1))
     x = a[i]
@@ -41,14 +41,14 @@ function shuffle(a) {
 }
 
 function getPrizeList() {
-  var winner = weightedRandom()
+  const winner = weightedRandom()
   if (winner === 0) {
     return [shuffle(icons).slice(0, 9), 0]
   } else {
-    var ic = winner[0]
-    var selection = shuffle(icons).slice(0, 6)
-    var matches = 0
-    var replacement = ['🍎', '🍍']
+    let ic = winner[0]
+    let selection = shuffle(icons).slice(0, 6)
+    let matches = 0
+    let replacement = ['🍎', '🍍']
     while (selection.indexOf(ic) !== -1) {
       selection[selection.indexOf(ic)] = replacement[matches]
       matches++
@@ -60,11 +60,11 @@ function getPrizeList() {
 }
 
 function generateScratchCard(msg, user, client) {
-  var [prizes, amount] = getPrizeList()
+  const [prizes, amount] = getPrizeList()
 
   // Generate the grid of squares
-  var message = ''
-  for (var i = 0; i < prizes.length; i++) {
+  let message = ''
+  for (const i = 0; i < prizes.length; i++) {
     message += '||' + prizes[i] + '||'
     if ((i + 1) % 3 === 0) {
       message += '\n'
@@ -73,7 +73,7 @@ function generateScratchCard(msg, user, client) {
 
   // Update the message with the scratchcard
   msg.clearReactions()
-  var embed = new discord.RichEmbed()
+  const embed = new discord.RichEmbed()
     .setTitle('Scratch Card')
     .setColor('#ff9f43')
     .setDescription(message)
@@ -86,7 +86,7 @@ function generateScratchCard(msg, user, client) {
   // Announce winnings after 5 seconds
   setTimeout(function () {
     if (amount > 0) {
-      var coin = client.emojis.get('631834832300670976')
+      const coin = client.emojis.get('631834832300670976')
       msg.channel.send(`Congrats! You won ${coin} ${amount}`)
     } else {
       msg.channel.send('Better luck next time :(')
@@ -111,7 +111,7 @@ module.exports = {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
-          var collector = msg.createReactionCollector(filter, { time: 10000 })
+          const collector = msg.createReactionCollector(filter, { time: 10000 })
           collector.on('collect', function () {
             // Confirmation received!
             collector.stop()

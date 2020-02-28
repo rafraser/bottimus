@@ -14,7 +14,7 @@ module.exports = {
       args[0] = 'percentage'
     }
 
-    var queryString
+    let queryString
     if (args[0].toLowerCase() === 'percentage') {
       queryString = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia GROUP BY discordid HAVING SUM(attempted) >= 10 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
     } else if (args[0].toLowerCase() === 'total') {
@@ -30,11 +30,11 @@ module.exports = {
         message.channel.send(err.toString())
       } else {
         try {
-          var codestring = '```yaml\nNum  Username                Score\n----------------------------------\n'
-          var i = 1
+          let codestring = '```yaml\nNum  Username                Score\n----------------------------------\n'
+          let i = 1
           for (const result of results) {
-            var u = client.users.get(result.discordid)
-            var display = result.discordid
+            const u = client.users.get(result.discordid)
+            let display = result.discordid
             if (u) { display = u.username }
 
             codestring += String('#' + i + '.').padEnd(5, ' ') + display.padEnd(24, ' ') + String(result.score).padStart(5, ' ') + '\n'

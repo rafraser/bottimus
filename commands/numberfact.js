@@ -34,17 +34,16 @@ module.exports = {
 
       resp.on('end', function () {
         data = data.split(' ')
-        var number = data.shift()
+        const number = data.shift()
         if (isNaN(number)) {
           message.channel.send('Something went wrong fetching a number fact.')
           return
         }
-        var description = data.join(' ')
 
-        var embed = new discord.RichEmbed()
+        const embed = new discord.RichEmbed()
           .setColor('#9c88ff')
           .setTitle(number)
-          .setDescription(description)
+          .setDescription(data.join(' '))
         message.channel.send(embed)
       })
     })

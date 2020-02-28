@@ -3,12 +3,12 @@ const pool = require('../util/database')
 const discord = require('discord.js')
 
 function incrementStatScore(userid, amount) {
-  var queryString = 'INSERT INTO arcade_mining VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE number = number + 1, diamonds = diamonds + VALUES(diamonds)'
+  const queryString = 'INSERT INTO arcade_mining VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE number = number + 1, diamonds = diamonds + VALUES(diamonds)'
   pool.query(queryString, [userid, amount])
 }
 
 function generateMiningEmbed(msg, name, amount, over = false) {
-  var embed = new discord.RichEmbed()
+  const embed = new discord.RichEmbed()
     .setTitle(name + '\'s Mining Expedition')
     .setColor('#5352ed')
   if (over) {
@@ -21,9 +21,9 @@ function generateMiningEmbed(msg, name, amount, over = false) {
 
 function startMiningTrip(msg, member, client) {
   // Update the message with the scratchcard
-  var amount = 0
-  var collecting = true
-  var gameover = false
+  let amount = 0
+  let collecting = true
+  let gameover = false
   generateMiningEmbed(msg, member.displayName, amount)
 
   const filter = function (reaction, u) {
@@ -33,7 +33,7 @@ function startMiningTrip(msg, member, client) {
   msg.clearReactions().then(function () {
     // Start watching for the pickaxe clicking
     msg.react('⛏')
-    var collector = msg.createReactionCollector(filter, { time: 30000 })
+    const collector = msg.createReactionCollector(filter, { time: 30000 })
     collector.on('collect', function (reaction) {
       collecting = false
       reaction.remove(member).then(function () {
@@ -53,13 +53,12 @@ function startMiningTrip(msg, member, client) {
       collecting = false
 
       // Announce results
-      var coin = client.emojis.get('631834832300670976')
-      var coins = amount * 5
+      const coin = client.emojis.get('631834832300670976')
       generateMiningEmbed(msg, member.displayName, amount, true)
-      msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${coins} coins earned`)
+      msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${amount * 5} coins earned`)
 
       // Send results to the database
-      arcade.incrementArcadeCredits(member.id, coins)
+      arcade.incrementArcadeCredits(member.id, amount * 5)
       incrementStatScore(member.id, amount)
     })
   })
@@ -81,7 +80,7 @@ module.exports = {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
-          var collector = msg.createReactionCollector(filter, { time: 10000 })
+          const collector = msg.createReactionCollector(filter, { time: 10000 })
           collector.on('collect', function () {
             // Confirmation received!
             collector.stop()

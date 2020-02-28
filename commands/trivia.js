@@ -9,7 +9,7 @@ const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 }
 
 function incrementStatScore(userid, category, correct) {
-  var queryString = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
+  const queryString = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
 
   pool.query(queryString, [userid, category, correct], function (err, results) {
     if (err) {
@@ -19,7 +19,7 @@ function incrementStatScore(userid, category, correct) {
 }
 
 function getQuestionData() {
-  var p = new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     // Query the data from OpenTDB
     https.get('https://opentdb.com/api.php?amount=1&type=multiple', function (resp) {
       resp.data = ''
@@ -28,7 +28,7 @@ function getQuestionData() {
       })
 
       resp.on('end', function () {
-        var info
+        let info
         try {
           info = JSON.parse(resp.data).results[0]
         } catch (error) {
@@ -36,7 +36,7 @@ function getQuestionData() {
           return
         }
 
-        var data = {}
+        let data = {}
         // Shuffle the correct answer into the other answers
         data.answers = info.incorrect_answers
         data.correct = Math.floor(Math.random() * Math.floor(4))
@@ -44,7 +44,7 @@ function getQuestionData() {
 
         // Format the question and answers
         data.question = entities.decode(info.question)
-        for (var i = 0; i < 4; i++) {
+        for (const i = 0; i < 4; i++) {
           data.answers[i] = entities.decode(data.answers[i])
         }
 
@@ -54,8 +54,6 @@ function getQuestionData() {
       })
     })
   })
-
-  return p
 }
 
 module.exports = {
@@ -65,7 +63,7 @@ module.exports = {
   execute(message, args, client) {
     getQuestionData().then(function (data) {
       // Create an embed for the question
-      var embed = new discord.RichEmbed()
+      const embed = new discord.RichEmbed()
         .setColor('#4cd137')
         .setTitle(data.category)
         .setDescription(data.question)
@@ -81,8 +79,8 @@ module.exports = {
         msg.react('🇦').then(function () { msg.react('🇧').then(function () { msg.react('🇨').then(function () { msg.react('🇩') }) }) })
 
         // Filter out any reactions that aren't guesses
-        var filter = function (r) {
-          var n = r.emoji.name
+        const filter = function (r) {
+          const n = r.emoji.name
           return (n === '🇦' || n === '🇧' || n === '🇨' || n === '🇩')
         }
 
@@ -91,7 +89,7 @@ module.exports = {
           message.channel.send('The correct answer is: ' + arrayOfLetters[data.correct])
 
           // Sort out all the guesses, disqualifying anyone that guessed multiple times
-          var guesses = new Map()
+          let guesses = new Map()
           collected.forEach(function (reaction) {
             reaction.users.forEach(function (user) {
               if (user.bot) return
@@ -105,11 +103,11 @@ module.exports = {
           })
 
           // From all the guesses, determine who won
-          var winners = []
+          let winners = []
           guesses.forEach(function (guess, id) {
-            var c = (guess === data.correct) ? 1 : 0
+            const c = (guess === data.correct) ? 1 : 0
             if (c) {
-              var username = message.guild.members.get(id).displayName
+              const username = message.guild.members.get(id).displayName
               winners.push(username)
             }
 
