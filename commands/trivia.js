@@ -44,7 +44,7 @@ function getQuestionData() {
 
         // Format the question and answers
         data.question = entities.decode(info.question)
-        for (const i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++) {
           data.answers[i] = entities.decode(data.answers[i])
         }
 

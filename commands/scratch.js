@@ -19,8 +19,8 @@ const prizes = [
 const icons = ['💰', '💰', '🍉', '🍉', '🍒', '🍒', '🍋', '🍋', '🍓', '🍓', '🍇', '🍇']
 
 function weightedRandom() {
-  const r = Math.random()
-  for (const i = 0; i < prizes.length; i++) {
+  let r = Math.random()
+  for (let i = 0; i < prizes.length; i++) {
     const p = prizes[i][2]
     if (r < p) return prizes[i]
     r -= p
@@ -64,7 +64,7 @@ function generateScratchCard(msg, user, client) {
 
   // Generate the grid of squares
   let message = ''
-  for (const i = 0; i < prizes.length; i++) {
+  for (let i = 0; i < prizes.length; i++) {
     message += '||' + prizes[i] + '||'
     if ((i + 1) % 3 === 0) {
       message += '\n'

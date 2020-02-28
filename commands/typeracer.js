@@ -97,7 +97,7 @@ function startTypeRacer(client, message, display) {
         // Check each word submitted by the user
         // They are allowed 2 mistakes out of 50 words (96% accuracy)
         let wrong = 0
-        for (const i = 0; i < n; i++) {
+        for (let i = 0; i < n; i++) {
           if (attempt[i].toLowerCase() === list[i].toLowerCase()) continue
 
           // Wrong word, oh no!

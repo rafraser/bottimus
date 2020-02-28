@@ -8,7 +8,6 @@ module.exports = {
   execute(message, args, client) {
     const server = message.channel.guild.id
     fs.readFile(`data/help/${server}.txt`, 'utf8', (err, data) => {
-      console.log(err, data)
       if (err) {
         message.author.send(errorMessage).catch(_ => message.channel.send(errorMessage))
       } else {
