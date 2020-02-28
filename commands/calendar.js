@@ -11,13 +11,13 @@ module.exports = {
       return
     }
 
-    var events2 = []
-    for (var event of client.eventsData.values()) {
+    const events2 = []
+    for (const event of client.eventsData.values()) {
       events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
     }
 
     client.executePython('calendar_display', events2).then(function () {
-      var attachment = new discord.Attachment('./img/calendar.png')
+      const attachment = new discord.Attachment('./img/calendar.png')
       message.channel.send(attachment)
     })
   }
