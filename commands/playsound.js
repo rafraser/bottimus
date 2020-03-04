@@ -9,6 +9,12 @@ module.exports = {
   aliases: ['sound', 'soundeffect'],
   cooldown: 60,
   execute(message, args, client) {
+    // Restrict this command to administrators
+    // this would be bad for everyone to use
+    if (!client.isAdministrator(user)) {
+      return
+    }
+
     const effect = `./img/sound/${args[0]}.mp3`
     if (!fs.existsSync(effect)) {
       message.channel.send('Sound not found')
