@@ -37,7 +37,10 @@ module.exports = {
             let display = result.discordid
             if (u) { display = u.username }
 
-            codestring += String('#' + i + '.').padEnd(5, ' ') + display.padEnd(24, ' ') + String(result.score).padStart(5, ' ') + '\n'
+            const position = client.padOrTrim(`#${i}.`, 5)
+            const name = client.padOrTrim(display, 25)
+            const score = client.padOrTrim(result.score, 5)
+            codestring += `${position}${name}${score}\n`
             i++
           }
 

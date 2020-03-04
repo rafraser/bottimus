@@ -317,3 +317,8 @@ client.executePython = function (script, args) {
   })
   return p
 }
+
+client.padOrTrim = function (string, length) {
+  const trimmed = string.length > length ? string.substring(0, length) : string
+  return trimmed.padEnd(length, ' ')
+}

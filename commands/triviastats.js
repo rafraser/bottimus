@@ -52,7 +52,8 @@ module.exports = {
         for (const result of results) {
           const qstring = (result.correct + '/' + result.attempted).padStart(8, ' ')
           const pcstring = ' (' + Math.floor(result.percent * 100) + '%)'
-          codestring += result.category.padEnd(40, ' ') + qstring + pcstring + '\n'
+          const category = client.padOrTrim(result.category, 35)
+          codestring += category + qstring + pcstring + '\n'
         }
         codestring += '```'
         message.channel.send(codestring)

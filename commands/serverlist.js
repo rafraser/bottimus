@@ -15,7 +15,9 @@ module.exports = {
         // Build a table of server names and owners
         let serverList = '```\n'
         client.guilds.forEach(guild => {
-            serverList += guild.name.padEnd(40, ' ') + guild.owner.displayName + '\n'
+            const name = client.padOrTrim(guild.name, 30)
+            const owner = client.padOrTrim(guild.owner.displayName, 20)
+            serverList += `${name}  ${owner}\n`
         })
 
         // Send the message
