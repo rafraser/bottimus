@@ -18,15 +18,16 @@ function updateMurder(message) {
 }
 
 function updateMinigames(message) {
-  const ip = '139.180.168.161'
+  const ip = '45.76.119.173'
   gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
     // Generate a nice looking embed
     const embed = new discord.RichEmbed()
       .setColor('#fbc531')
       .setTitle('🕹️ Minigames')
-      .setDescription(`Click: steam://connect/${ip} to join`)
+      .setDescription(`Click: steam://connect/${ip} to join\n Type \`!role minigames\` to join the channel`)
       .addField('Players', `${result.players.length || 0}/${result.maxplayers || 0}`, true)
-      .addField('Playing', `${result.raw.game} on ${result.map}`, true)
+      .addField('Password', "`pleaseletmein`", true)
+      .addField('Playing', `${result.raw.game} on ${result.map}`, false)
       .setThumbnail(`https://fluffyservers.com/mg/maps/${result.map}.jpg`)
       .setTimestamp()
     message.edit(embed)
