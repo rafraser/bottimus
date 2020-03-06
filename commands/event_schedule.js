@@ -18,10 +18,13 @@ module.exports = {
       client.requestedEventsData = []
     }
 
+    // Prepare variables
+    let title, description, when
+
     // Attempt to parse the event format
     try {
-      const title = args.shift()
-      const description = args.shift()
+      title = args.shift()
+      description = args.shift()
 
       const now = new Date(Date.now())
       let datetime = {
@@ -53,7 +56,7 @@ module.exports = {
       }
 
       // Check that the date and time are valid
-      const when = new Date(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.minute)
+      when = new Date(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.minute)
       if (!(when instanceof Date && !isNaN(when))) {
         message.channel.send('Invalid event structure. Check that the time is the right format (HH:MM)')
         return
