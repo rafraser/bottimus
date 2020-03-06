@@ -33,9 +33,8 @@ function pickPrize() {
   return r[Math.floor(Math.random() * r.length)]
 }
 
-function openPrizeBall(msg, prize, user, client) {
-  const p = arcade.prizes[prize]
-  const args = ['prizes/' + prize, arcade.rarities[p[1]], arcade.rarities[p[1]] + ' Prize!', arcade.prizes[prize][0]]
+function openPrizeBall(msg, client, key, prize, rarity) {
+  const args = ['prizes/' + key, rarity, rarity + ' Prize!', prize]
   client.executePython('prizeball', args).then(function () {
     const attachment = new discord.Attachment('./img/prizeball.gif')
     msg.channel.send(attachment)
@@ -45,9 +44,9 @@ function openPrizeBall(msg, prize, user, client) {
 function redeemPrize(msg, user, client) {
   msg.clearReactions()
   msg.edit('Get ready!')
-  const prize = pickPrize()
+  const [key, prize, rarity] = arcade.pickPrize()
   arcade.unlockArcadePrize(user, prize)
-  openPrizeBall(msg, prize, user, client)
+  openPrizeBall(msg, client, key, prize, rarity)
 }
 
 module.exports = {
@@ -67,7 +66,7 @@ module.exports = {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
-          const collector = msg.createReactionCollector(filter, { time: 5000 })
+          const collector = msg.createReactionCollector(filter, { time: 35000 })
           collector.on('collect', function () {
             // Confirmation received!
             collector.stop()
