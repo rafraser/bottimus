@@ -48,7 +48,10 @@ client.on('ready', function () {
 
     // Setup logging
     if (!client.testingMode) {
-      let logFile = fs.createWriteStream(`logs/${Date.now()}.txt`)
+      let date = Date.now()
+      let dateString = date.toISOString()
+
+      let logFile = fs.createWriteStream(`logs/${dateString}.txt`)
       process.stdout.write = process.stderr.write = logFile.write.bind(logFile)
     }
 
