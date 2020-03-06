@@ -97,7 +97,6 @@ module.exports = {
         // We're hitting limits - let's try looking at this a different way
         // Instead of toggling roles, let's assume we're entirely replacing the group
         const intersectionRoles = intersection(requestedRoles, currentRoles)
-        console.log(intersectionRoles, intersectionRoles.length, intersectionRoles.length === 0)
         if (intersectionRoles.length === 0 && !((group.max && requestedRoles.length > group.max) || (group.min && requestedRoles.length < group.min))) {
           // Replace role group
           removeStack = removeStack.concat(currentRoles)

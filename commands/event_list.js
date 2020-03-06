@@ -18,7 +18,6 @@ module.exports = {
     // Generate a code block list
     let outputString = '```cs\n# Upcoming Events #'
     sortedEvents.forEach(function (item, index) {
-      console.log(item.time, index)
       outputString += '\n ' + (index + 1) + '. ' + item.title
     })
     outputString += '```'
