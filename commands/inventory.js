@@ -6,7 +6,8 @@ module.exports = {
   description: 'Display the prize inventory',
   cooldown: 30,
   execute(message, args, client) {
-    arcade.getArcadePrizes(message.member.id).then(function (prizes) {
+    const user = client.findUser(message, args, true)
+    arcade.getArcadePrizes(user.id).then(function (prizes) {
       let prizes2 = []
       for (const prize in prizes) {
         prizes2.push(prize + ':' + prizes[prize])

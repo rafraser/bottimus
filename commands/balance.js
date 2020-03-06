@@ -6,7 +6,8 @@ module.exports = {
   cooldown: 10,
   aliases: ['credits', 'bal'],
   execute(message, args, client) {
-    arcade.getArcadeCredits(message.member.id).then(function (amount) {
+    const user = client.findUser(message, args, true)
+    arcade.getArcadeCredits(user.id).then(function (amount) {
       const coin = client.emojis.get('631834832300670976')
       if (amount > 0) {
         message.channel.send(`Balance: ${amount}${coin}`)
