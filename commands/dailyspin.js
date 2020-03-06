@@ -50,6 +50,7 @@ function pickWheel() {
 module.exports = {
   name: 'dailyspin',
   description: 'Spin a prize wheel once a day!',
+  aliases: ['daily'],
   execute(message, args, client) {
     getLastSpin(message.member.id).then(function (results) {
       let lastspin = results[0]

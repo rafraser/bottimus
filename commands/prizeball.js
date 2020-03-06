@@ -53,7 +53,7 @@ function redeemPrize(msg, user, client) {
 module.exports = {
   name: 'prizeball',
   description: 'Try your luck at the legendary prize ball machine!',
-  cooldown: 60,
+  cooldown: 40,
   aliases: ['redeemprize', 'prize'],
   execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {

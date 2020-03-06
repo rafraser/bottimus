@@ -79,7 +79,7 @@ function unmuteUser(client, id) {
 module.exports = {
   name: 'mute',
   description: '🛡️ Mute a specified user',
-  aliases: ['banish', 'void'],
+  aliases: ['banish', 'void', 'kill'],
   mute: muteUser,
   unmute: unmuteUser,
   guilds: ['309951255575265280'],

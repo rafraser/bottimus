@@ -59,6 +59,7 @@ function getQuestionData() {
 module.exports = {
   name: 'trivia',
   description: 'Play a trivia question',
+  aliases: ['quiz'],
   cooldown: 12,
   execute(message, args, client) {
     getQuestionData().then(function (data) {

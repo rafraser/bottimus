@@ -4,7 +4,7 @@ module.exports = {
   name: 'balance',
   description: 'Get Arcade points information',
   cooldown: 10,
-  aliases: ['credits'],
+  aliases: ['credits', 'bal'],
   execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
       const coin = client.emojis.get('631834832300670976')
