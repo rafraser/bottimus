@@ -200,4 +200,5 @@ def main(prizes, filename="./img/wheel.gif"):
 
 if __name__ == "__main__":
     prizes = sys.argv[1:]
+    prizes = [x for x in prizes if not x.startswith("python/")]  # bugfix
     main(prizes, "./img/spinner.gif")
