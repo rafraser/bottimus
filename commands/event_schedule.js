@@ -2,14 +2,30 @@ const events = require('../util/events')
 
 const approvalChannel = '374834858821812234'
 
+const helpString = `
+You can schedule events with the following syntax:
+\`!schedule "Title" "Description" HH:MM YYYY-MM-DD\`
+If no date is specified, it will default to today.
+
+The icon for the event will be automatically detected based on keywords.
+The following events have icons: \`sandbox jackbox murder minigames testing mapping music streaming hidden gmod\`
+`
+
 module.exports = {
   name: 'schedule',
   description: 'Request an event to be scheduled',
   aliases: ['planevent', 'requestevent'],
   guilds: ['309951255575265280'],
+  cooldown: 10,
   execute(message, args, client) {
     if (!client.isCommunityStar(message.member)) {
-      message.channel.send('You need to be a Moderator to use this!')
+      message.channel.send('You need to be a Community Star to use this!')
+      return
+    }
+
+    // Help text if no arguments are provided
+    if (args.length < 1) {
+      message.channel.send(helpString)
       return
     }
 
