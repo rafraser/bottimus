@@ -45,7 +45,7 @@ function redeemPrize(msg, user, client) {
   msg.clearReactions()
   msg.edit('Get ready!')
   const [key, prize, rarity] = arcade.pickPrize()
-  arcade.unlockArcadePrize(user, prize)
+  arcade.unlockArcadePrize(user, key)
   openPrizeBall(msg, client, key, prize, rarity)
 }
 

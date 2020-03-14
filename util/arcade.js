@@ -89,13 +89,14 @@ function getArcadeCredits(userid) {
 }
 
 function unlockArcadePrize(userid, prize) {
-  if (!prizeList[prize]) return false
-
   return new Promise(function (resolve, reject) {
     const queryString = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
     pool.query(queryString, [userid, prize], function (err, results) {
       if (err) {
         console.log(err)
+        reject(err)
+      } else {
+        resolve(results)
       }
     })
   })
