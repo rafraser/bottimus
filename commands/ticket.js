@@ -57,6 +57,7 @@ function unticketUser(client, id) {
 module.exports = {
   name: 'ticket',
   description: '🛡️ Assign a temporary ticket to a user',
+  aliases: ['giveticket', 'admitone'],
   ticket: ticketUser,
   unticket: unticketUser,
   guilds: ['309951255575265280'],
