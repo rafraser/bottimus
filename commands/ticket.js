@@ -88,10 +88,7 @@ module.exports = {
       }
 
       // Handle the ticket role process
-      console.log(message, message.guild.id)
       if (client.ticketData && client.ticketData.has(message.guild.id + ',' + target.id)) {
-        console.log('Revoking ticket')
-        unticketUser(client, message.guild.id + ',' + target.id)
         message.channel.send('Ticket revoked!')
       } else {
         ticketUser(client, target, duration, message.member, message.channel)
