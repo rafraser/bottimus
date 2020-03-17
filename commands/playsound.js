@@ -1,5 +1,5 @@
 const discord = require('discord.js')
-const ffmpeg = require('ffmpeg-static')
+const ffmpeg = require('ffmpeg')
 const fs = require('fs')
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
   execute(message, args, client) {
     // Restrict this command to administrators
     // this would be bad for everyone to use
-    if (!client.isAdministrator(user)) {
+    if (!client.isAdministrator(message.member)) {
       return
     }
 
