@@ -23,6 +23,10 @@ prizes = [
     "redrocket",
     "bluerocket",
     "greenrocket",
+    "tape1",
+    "tape2",
+    "tape3",
+    "tape4"
 ]
 background = Image.open("./img/frame.png").resize((126, 126))
 
@@ -53,7 +57,7 @@ def renderSquare(prize=None, locked=False):
         if locked:
             prize_image = silhoutte(prize_image)
 
-        prize_image = prize_image.resize((96, 96))
+        prize_image = prize_image.resize((96, 96), Image.NEAREST)
         canvas.paste(prize_image, (15, 15), prize_image)
 
     return canvas
@@ -87,7 +91,7 @@ def renderInventory(items):
                     fill=(189, 195, 199),
                 )
 
-    inventory = inventory.resize((inventory.width * 3, inventory.height * 3))
+    inventory = inventory.resize((inventory.width * 3, inventory.height * 3), Image.NEAREST)
     inventory.save("./img/inventory.png")
 
 
