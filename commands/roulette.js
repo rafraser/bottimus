@@ -82,23 +82,31 @@ module.exports = {
       betAmount = amount
     }
 
-    // Send a confirmation message
-    message.channel.send(`Are you sure you want to bet ${betAmount} coins on ${betType}?`).then(function (msg) {
-      msg.react('✅')
-      const filter = function (reaction, user) {
-        return user.id === message.member.id && reaction.emoji.name === '✅'
+    // Check that the user has enough coins
+    arcade.getArcadeCredits(message.member.id).then(function (amount) {
+      if(amount < betAmount) {
+        message.channel.send(`You don't have enough coins for this!`)
+        return
       }
-  
-      const collector = msg.createReactionCollector(filter, { time: 35000 })
-      collector.on('collect', function () {
-        // Confirmation received!
-        collector.stop()
-        msg.edit('Get ready!')
-        msg.clearReactions()
 
-        // Spin the wheel
-        arcade.incrementArcadeCredits(message.member.id, -betAmount)
-        spinRoulette(client, message, betType, betAmount)
+      // Send a confirmation message
+      message.channel.send(`Are you sure you want to bet ${betAmount} coins on ${betType}?`).then(function (msg) {
+        msg.react('✅')
+        const filter = function (reaction, user) {
+          return user.id === message.member.id && reaction.emoji.name === '✅'
+        }
+    
+        const collector = msg.createReactionCollector(filter, { time: 35000 })
+        collector.on('collect', function () {
+          // Confirmation received!
+          collector.stop()
+          msg.edit('Get ready!')
+          msg.clearReactions()
+    
+          // Spin the wheel
+          arcade.incrementArcadeCredits(message.member.id, -betAmount)
+          spinRoulette(client, message, betType, betAmount)
+        })
       })
     })
   }
