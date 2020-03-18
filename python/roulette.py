@@ -1,4 +1,4 @@
-from PIL import Image, ImageFont
+from PIL import Image, ImageFont, ImageDraw
 import spinner
 import math
 import random
@@ -50,6 +50,31 @@ COLOR_RED = (194, 54, 22)
 COLOR_BLACK = (47, 54, 64)
 COLOR_GREEN = (33, 140, 116)
 
+# Render the emblem
+def render_emblem(logo, insize=288):
+    canvas = Image.new("RGBA", (1024, 1024))
+    draw = ImageDraw.Draw(canvas)
+
+    # Render the inner wheel
+    left = math.floor((1024 - insize) / 2)
+    draw.pieslice(
+        (left - 8, left - 8, left + insize + 8, left + insize + 8),
+        0,
+        360,
+        (245, 246, 250),
+    )
+    draw.pieslice((left, left, left + insize, left + insize), 0, 360, (229, 142, 38))
+
+    #p = math.floor(left + (insize - logo.width) / 2)
+    #canvas.paste(logo, (p, p), logo)
+
+    # Render a 'ball' instead of the traditional pointer
+    left = left - 96
+    bradius = 20
+    draw.pieslice((left - bradius, 512 - bradius, left + bradius, 512 + bradius), 0, 360, (189, 195, 199))
+
+    return canvas
+
 
 def main(filename="./img/roulette.gif"):
     # Load resources
@@ -59,7 +84,8 @@ def main(filename="./img/roulette.gif"):
     colors = [COLOR_GREEN] + ([COLOR_BLACK, COLOR_RED] * 18)
     display_numbers = [str(x) for x in NUMBERS]
     frames, durations, ang = spinner.generate_animation(
-        90, 37, display_numbers, colors, logo, ROULETTE_FONT, 416, 448, 4
+        90, 37, display_numbers, colors, logo, ROULETTE_FONT, 416, 448, 4,
+        emblem_func=render_emblem
     )
 
     # Save the GIF

@@ -133,6 +133,9 @@ def generate_animation(
     innerwidth=288,
     outerwidth=448,
     linewidth=8,
+    background_func=render_background,
+    emblem_func=render_emblem,
+    spinner_func=render_spinner,
 ):
     frames = []
     velocity = random.uniform(8, 20)
@@ -140,9 +143,9 @@ def generate_animation(
     ang = random.randint(0, n) * (360 / n)
 
     # Render the important parts only once
-    background = render_background().resize((512, 512), Image.BICUBIC)
-    emblem = render_emblem(logo, innerwidth).resize((512, 512), Image.BICUBIC)
-    spinner = render_spinner(prizes, n, colors, font, outerwidth, linewidth)
+    background = background_func().resize((512, 512), Image.BICUBIC)
+    emblem = emblem_func(logo, innerwidth).resize((512, 512), Image.BICUBIC)
+    spinner = spinner_func(prizes, n, colors, font, outerwidth, linewidth)
     spinner = spinner.resize((512, 512), Image.BICUBIC)
 
     # Spin the wheel!
