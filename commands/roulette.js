@@ -21,6 +21,16 @@ bet_functions['red'] = function(result) {
   return REDS.includes(result)
 }
 
+function updateRouletteStat(userid, winnings, bet) {
+  const queryString = 'INSERT INTO arcade_roulette VALUES(?, 1, ?, ?) ON DUPLICATE KEY UPDATE number = number + 1, winnings = winnings + VALUES(winnings), bet_average = ((bet_average * number) + VALUES(bet_average))/(number + 1);'
+
+  pool.query(queryString, [userid, winnings, bet], function (err, results) {
+    if (err) {
+      console.log(err)
+    }
+  })
+}
+
 function spinRoulette(client, message, betType, betAmount) {
   // Spin the wheel, brent!
   const coin = client.emojis.get('631834832300670976')
@@ -37,16 +47,20 @@ function spinRoulette(client, message, betType, betAmount) {
           if(bet_functions[betType](result)) {
             message.channel.send(`Congratulations! You won ${coin} ${betAmount*2}`)
             arcade.incrementArcadeCredits(message.member.id, betAmount*2)
+            updateRouletteStat(message.member.id, betAmount*2, betAmount)
           } else {
             message.channel.send('Better luck next time!')
+            updateRouletteStat(message.member.id, 0, betAmount)
           }
         } else {
           // Single number bet
           if(betType == result) {
             message.channel.send(`Congratulations! You won ${coin} ${betAmount*35}`)
             arcade.incrementArcadeCredits(message.member.id, betAmount*35)
+            updateRouletteStat(message.member.id, betAmount*35, betAmount)
           } else {
             message.channel.send('Better luck next time!')
+            updateRouletteStat(message.member.id, 0, betAmount)
           }
         }
       }, 6500)
