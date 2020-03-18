@@ -8,6 +8,7 @@ prizes = [
     "dice",
     "coin",
     "mysteryorb",
+    "bowlingpin",
     "oldbarrel",
     "drum",
     "toxicdrum",
@@ -18,19 +19,18 @@ prizes = [
     "gamebrocolor",
     "monitor",
     "goldmonitor",
+    "redhat", 
+    "goldhat",
     "pluto",
-    "bowlingpin",
-    "purplerocket",
+    "mars",
     "redrocket",
-    "bluerocket",
     "greenrocket",
+    "bluerocket",
+    "purplerocket",
     "tape1",
     "tape2",
     "tape3",
     "tape4",
-    "goldhat",
-    "redhat",
-    "yellowhat"
 ]
 background = Image.open("./img/frame.png").resize((126, 126))
 
@@ -68,7 +68,7 @@ def renderSquare(prize=None, locked=False):
 
 
 def renderInventory(items):
-    row_size = 5
+    row_size = 6
     num_rows = math.ceil(len(prizes) / row_size)
 
     # Create the canvas

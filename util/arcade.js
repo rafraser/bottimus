@@ -5,7 +5,6 @@ const prizeList = [
   ['bowlingpin', 'Bowling Pin', 24],
   ['drum', 'Industrial Drum', 24],
   ['chocolate', 'Suspicious Chocolate', 22],
-  ['yellowhat', 'Fancy Hat', 22],
   ['cards', 'Deck of Cards', 20],
   ['dice', 'Fuzzy Dice', 20],
 
@@ -24,6 +23,7 @@ const prizeList = [
   ['goldhat', 'Ringmaster\'s Hat', 11],
   ['tape1', 'Retro Casette', 10],
 
+  ['mars', 'Mars', 9],
   ['fox', 'Plush Fox', 8],
   ['pluto', 'Pluto', 8],
   ['goldmonitor', 'Royal (Broken) Monitor', 7],
