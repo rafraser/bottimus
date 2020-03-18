@@ -31,6 +31,8 @@ prizes = [
     "tape2",
     "tape3",
     "tape4",
+    "plant1",
+    "plant2"
 ]
 background = Image.open("./img/frame.png").resize((126, 126))
 

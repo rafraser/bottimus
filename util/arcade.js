@@ -12,6 +12,7 @@ const prizeList = [
   ['purplerocket', 'Toy Rocket (Purple)', 18],
   ['bluerocket', 'Toy Rocket (Blue)', 18],
   ['redhat', 'Lvl 100 Boss Hat', 17],
+  ['plant1', 'Garden Plant', 16],
   ['oldbarrel', 'Ancient Barrel', 16],
   ['tape2', 'Future Casette', 15],
 
@@ -24,6 +25,7 @@ const prizeList = [
   ['tape1', 'Retro Casette', 10],
 
   ['mars', 'Mars', 9],
+  ['plant2', 'Exotic Plant', 9],
   ['fox', 'Plush Fox', 8],
   ['pluto', 'Pluto', 8],
   ['goldmonitor', 'Royal (Broken) Monitor', 7],
