@@ -72,7 +72,8 @@ function spinRoulette(client, message, betType, betAmount) {
 
 module.exports = {
   name: 'roulette',
-  description: 'Roulette!',
+  description: 'Gamble your life savings away!',
+  cooldown: 30,
   execute(message, args, client) {
     // Determine the type of bet being made
     // Players can either pick a single number OR one of the above bet functions
