@@ -65,6 +65,7 @@ def generate_frame(offset=0, color="yellow"):
 
 def render_prize(frame, background, prize, color, toptext, bottomtext):
     font = ImageFont.truetype("./img/font/disco.ttf", 52)
+    font_smaller = ImageFont.truetype("./img/font/disco.ttf", 44)
     mid = math.floor(256 / 2)
     # Render the background
     canvas = background.copy()
@@ -83,10 +84,17 @@ def render_prize(frame, background, prize, color, toptext, bottomtext):
         tw, th = draw.textsize(toptext, font=font)
         draw.text(((512 - tw) / 2, 48 - (th / 2)), toptext, font=font, fill=textcolor)
 
+        # If the bottom text is too large, adjust to use a smaller font
         tw, th = draw.textsize(bottomtext, font=font)
-        draw.text(
-            ((512 - tw) / 2, 512 - 48 - (th / 2)), bottomtext, font=font, fill=textcolor
-        )
+        if tw > 480:
+            tw, th = draw.textsize(bottomtext, font=font_smaller)
+            draw.text(
+                ((512 - tw) / 2, 512 - 48 - (th / 2)), bottomtext, font=font_smaller, fill=textcolor
+            )
+        else:
+            draw.text(
+                ((512 - tw) / 2, 512 - 48 - (th / 2)), bottomtext, font=font, fill=textcolor
+            )
 
     img.paste(prize, (mid, mid), prize)
     canvas.paste(img, (0, 0), circle)
