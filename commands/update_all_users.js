@@ -15,19 +15,29 @@ module.exports = {
             return
         }
 
+        let forceMode = false
+
         // If arguments are specified, then search for those
         if (args.length >= 1) {
             for (let arg of args) {
+                if(arg == 'force') {
+                    forceMode = true
+                    break
+                }
+
                 client.fetchUser(arg, false).then(user => {
                     updateUserData(user)
                 }).catch()
             }
-            return
+            
+            if(!forceMode) return
         }
 
         // Fetch all the user IDs
-        // Anyone we care about has currency
-        const queryString = 'SELECT userid FROM arcade_currency'
+        // Depending on if force mode is active, select a different set of IDs
+        const partialQuery = 'SELECT userid FROM arcade_currency WHERE userid NOT IN (SELECT discordid FROM bottimus_userdata);'
+        const forceQuery = 'SELECT userid FROM arcade_currency'
+        const queryString = forceMode ? forceQuery : partialQuery
         pool.query(queryString, function (err, results) {
             if (err) {
                 message.channel.send(err.toString())
@@ -41,6 +51,7 @@ module.exports = {
                     console.log('Failed to get ', result.userid)
                 })
             }
+            message.channel.send(`Updated ${results.length} users.`)
         })
     }
 }
