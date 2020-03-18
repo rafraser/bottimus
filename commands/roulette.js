@@ -33,8 +33,8 @@ function spinRoulette(client, message, betType, betAmount) {
         } else {
           // Single number bet
           if(betType == result) {
-            message.channel.send(`Congratulations! You won ${coin} ${betAmount*36}`)
-            arcade.incrementArcadeCredits(message.member.id, betAmount*36)
+            message.channel.send(`Congratulations! You won ${coin} ${betAmount*35}`)
+            arcade.incrementArcadeCredits(message.member.id, betAmount*35)
           } else {
             message.channel.send('Better luck next time!')
           }
