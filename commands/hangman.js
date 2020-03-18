@@ -172,7 +172,7 @@ module.exports = {
           const won = (reason === 'win') ? 1 : 0
 
           incrementStatScore(key, guesses, correct, revealed, won, contribution)
-          arcade.incrementArcadeCredits(user.id, 3 + revealed + (won*5))
+          arcade.incrementArcadeCredits(key, 3 + revealed + (won * 5))
         })
       })
     })
