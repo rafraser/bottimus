@@ -4,7 +4,7 @@ import sys
 import random
 
 ball = Image.open("./img/gacha/" + str(random.randint(1, 6)) + ".png").resize(
-    (192, 192)
+    (192, 192), Image.NEAREST
 )
 
 # List of colors
@@ -95,7 +95,7 @@ def render_prize(frame, background, prize, color, toptext, bottomtext):
 
 def render_award(image, color, toptext, bottomtext):
     frames = []
-    prize = Image.open("./img/" + image + ".png").resize((256, 256))
+    prize = Image.open("./img/" + image + ".png").resize((256, 256), Image.NEAREST)
     len_start = 40
     len_finish = 150
     # Bounce the ball twice
