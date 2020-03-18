@@ -13,6 +13,7 @@ prizes = [
     "toxicdrum",
     "fox",
     "icefox",
+    "infinityfox",
     "gamebro",
     "gamebrocolor",
     "monitor",
@@ -26,7 +27,10 @@ prizes = [
     "tape1",
     "tape2",
     "tape3",
-    "tape4"
+    "tape4",
+    "goldhat",
+    "redhat",
+    "yellowhat"
 ]
 background = Image.open("./img/frame.png").resize((126, 126))
 

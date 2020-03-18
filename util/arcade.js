@@ -1,38 +1,46 @@
 const pool = require('./database')
 const prizeList = [
+  ['redrocket', 'Toy Rocket (Red)', 25],
+  ['greenrocket', 'Toy Rocket (Green)', 25],
   ['bowlingpin', 'Bowling Pin', 24],
-  ['chocolate', 'Suspicious Chocolate', 24],
-  ['redrocket', 'Toy Rocket (Red)', 24],
-  ['greenrocket', 'Toy Rocket (Green)', 24],
   ['drum', 'Industrial Drum', 24],
+  ['chocolate', 'Suspicious Chocolate', 22],
+  ['yellowhat', 'Fancy Hat', 22],
+  ['cards', 'Deck of Cards', 20],
+  ['dice', 'Fuzzy Dice', 20],
 
-  ['cards', 'Deck of Cards', 18],
-  ['dice', 'Fuzzy Dice', 18],
+  ['tape3', 'Digital Casette', 18],
   ['purplerocket', 'Toy Rocket (Purple)', 18],
   ['bluerocket', 'Toy Rocket (Blue)', 18],
-  ['oldbarrel', 'Ancient Barrel', 18],
+  ['redhat', 'Lvl 100 Boss Hat', 17],
+  ['oldbarrel', 'Ancient Barrel', 16],
+  ['tape2', 'Future Casette', 15],
 
-  ['coin', 'Fluffy Servers Token', 12],
-  ['monitor', 'Broken Monitor', 12],
-  ['toxicdrum', 'Corrosive Waste Drum', 12],
+  ['coin', 'Fluffy Servers Token', 14],
+  ['monitor', 'Broken Monitor', 13],
+  ['toxicdrum', 'Corrosive Waste Drum', 13],
   ['gamebro', 'Gamebro', 12],
   ['mysteryorb', 'Mysterious Orb', 12],
+  ['goldhat', 'Ringmaster\'s Hat', 11],
+  ['tape1', 'Retro Casette', 10],
 
-  ['pluto', 'Pluto', 6],
-  ['goldmonitor', 'Royal (Broken) Monitor', 6],
-  ['fox', 'Plush Fox', 6],
+  ['fox', 'Plush Fox', 8],
+  ['pluto', 'Pluto', 8],
+  ['goldmonitor', 'Royal (Broken) Monitor', 7],
+  ['tape4', 'Aesthetic Casette', 7],
   ['icefox', 'Ice Fox', 6],
   ['gamebrocolor', 'Gamebro Color', 6]
+  ['infinityfox', 'Infinity Fox', 5]
 ]
 
 function weightToRarity(weight) {
-  if (weight > 20) {
+  if (weight >= 20) {
     return 'Common'
-  } else if (weight > 15) {
+  } else if (weight >= 15) {
     return 'Uncommon'
-  } else if (weight > 10) {
+  } else if (weight >= 10) {
     return 'Rare'
-  } else if (weight > 5) {
+  } else if (weight >= 5) {
     return 'Legendary'
   } else {
     return 'Epic Legend'
