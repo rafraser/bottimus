@@ -107,7 +107,6 @@ module.exports = {
         } else {
           // Correct guess!
           gameMsg.channel.send('Good guess! ' + letter + ' is in the word!').then(function (msg) { msg.delete(1000) })
-          arcade.incrementArcadeCredits(user.id, 1)
 
           // Reveal letters in the word
           let revealed = 0
@@ -171,7 +170,9 @@ module.exports = {
           const revealed = playerRevealed.get(key) || 0
           const contribution = Math.floor((revealed / word.length) * 100)
           const won = (reason === 'win') ? 1 : 0
+
           incrementStatScore(key, guesses, correct, revealed, won, contribution)
+          arcade.incrementArcadeCredits(user.id, 3 + revealed + (won*5))
         })
       })
     })
