@@ -89,7 +89,10 @@ function getArcadeCredits(userid) {
       if (err) {
         resolve(0)
       } else {
-        if (results.length < 1) resolve(0)
+        if(results.length < 1 || !results[0]) {
+          resolve(0)
+          return
+        }
         resolve(results[0].amount || 0)
       }
     })
