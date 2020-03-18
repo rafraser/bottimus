@@ -81,7 +81,7 @@ def main(filename="./img/roulette.gif"):
     logo = Image.open("./img/cat.png").resize((160, 160))
 
     # Run the animation
-    colors = [COLOR_GREEN] + ([COLOR_BLACK, COLOR_RED] * 18)
+    colors = [COLOR_GREEN] + ([COLOR_RED, COLOR_BLACK] * 18)
     display_numbers = [str(x) for x in NUMBERS]
     frames, durations, ang = spinner.generate_animation(
         90, 37, display_numbers, colors, logo, ROULETTE_FONT, 416, 448, 4,
