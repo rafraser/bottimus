@@ -57,6 +57,11 @@ function fetchPrizeStatistics(id) {
   return queryHelper('SELECT SUM(amount) AS total, COUNT(amount) AS collected FROM arcade_prizes WHERE discordid = ?;', id)
 }
 
+// Retrieve Roulette statistics for a given ID from the database
+function fetchRouletteStatistics(id) {
+  return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS payout_average, ROUND(bet_average, 2) AS bet_average FROM arcade_roulette WHERE discordid = ?;', id)
+}
+
 // Keep the embed functions in an object for modular lookup
 let embedFunctions = {}
 
@@ -190,6 +195,27 @@ embedFunctions.prizes = function (user) {
         .setTitle(`🔮 Prizes - ${username}`)
         .addField('Total', `${r.total}`, true)
         .addField('Unique', `${r.collected}`, true)
+      resolve(embed)
+    }).catch(function (err) {
+      reject(err)
+    })
+  })
+}
+
+embedFunctions.roulette = function (user) {
+  return new Promise(function (resolve, reject) {
+    fetchRouletteStatistics(user.id).then(function (results) {
+      const username = user.displayName
+      const r = results[0]
+
+      // Generate a nice embed for details
+      const embed = new discord.RichEmbed()
+        .setColor('#4cd137')
+        .setTitle(`💸 Roulette - ${username}`)
+        .addField('Number', `${r.number}`, true)
+        .addField('Total Winnings', `${r.winnings}`, true)
+        .addField('Average Income', `${r.payout_average}`, true)
+        .addField('Average Bet', `${r.bet_average}`, true)
       resolve(embed)
     }).catch(function (err) {
       reject(err)
