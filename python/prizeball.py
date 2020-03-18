@@ -89,11 +89,17 @@ def render_prize(frame, background, prize, color, toptext, bottomtext):
         if tw > 480:
             tw, th = draw.textsize(bottomtext, font=font_smaller)
             draw.text(
-                ((512 - tw) / 2, 512 - 48 - (th / 2)), bottomtext, font=font_smaller, fill=textcolor
+                ((512 - tw) / 2, 512 - 48 - (th / 2)),
+                bottomtext,
+                font=font_smaller,
+                fill=textcolor,
             )
         else:
             draw.text(
-                ((512 - tw) / 2, 512 - 48 - (th / 2)), bottomtext, font=font, fill=textcolor
+                ((512 - tw) / 2, 512 - 48 - (th / 2)),
+                bottomtext,
+                font=font,
+                fill=textcolor,
             )
 
     img.paste(prize, (mid, mid), prize)

@@ -19,7 +19,7 @@ prizes = [
     "gamebrocolor",
     "monitor",
     "goldmonitor",
-    "redhat", 
+    "redhat",
     "goldhat",
     "pluto",
     "mars",
@@ -32,7 +32,7 @@ prizes = [
     "tape3",
     "tape4",
     "plant1",
-    "plant2"
+    "plant2",
 ]
 background = Image.open("./img/frame.png").resize((126, 126))
 
@@ -97,7 +97,9 @@ def renderInventory(items):
                     fill=(189, 195, 199),
                 )
 
-    inventory = inventory.resize((inventory.width * 3, inventory.height * 3), Image.NEAREST)
+    inventory = inventory.resize(
+        (inventory.width * 3, inventory.height * 3), Image.NEAREST
+    )
     inventory.save("./img/inventory.png")
 
 

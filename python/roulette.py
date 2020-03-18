@@ -65,13 +65,18 @@ def render_emblem(logo, insize=288):
     )
     draw.pieslice((left, left, left + insize, left + insize), 0, 360, (229, 142, 38))
 
-    #p = math.floor(left + (insize - logo.width) / 2)
-    #canvas.paste(logo, (p, p), logo)
+    # p = math.floor(left + (insize - logo.width) / 2)
+    # canvas.paste(logo, (p, p), logo)
 
     # Render a 'ball' instead of the traditional pointer
     left = left - 96
     bradius = 20
-    draw.pieslice((left - bradius, 512 - bradius, left + bradius, 512 + bradius), 0, 360, (189, 195, 199))
+    draw.pieslice(
+        (left - bradius, 512 - bradius, left + bradius, 512 + bradius),
+        0,
+        360,
+        (189, 195, 199),
+    )
 
     return canvas
 
@@ -84,8 +89,16 @@ def main(filename="./img/roulette.gif"):
     colors = [COLOR_GREEN] + ([COLOR_RED, COLOR_BLACK] * 18)
     display_numbers = [str(x) for x in NUMBERS]
     frames, durations, ang = spinner.generate_animation(
-        90, 37, display_numbers, colors, logo, ROULETTE_FONT, 416, 448, 4,
-        emblem_func=render_emblem
+        90,
+        37,
+        display_numbers,
+        colors,
+        logo,
+        ROULETTE_FONT,
+        416,
+        448,
+        4,
+        emblem_func=render_emblem,
     )
 
     # Save the GIF

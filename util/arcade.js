@@ -31,7 +31,7 @@ const prizeList = [
   ['goldmonitor', 'Royal (Broken) Monitor', 7],
   ['tape4', 'Aesthetic Casette', 7],
   ['icefox', 'Ice Fox', 6],
-  ['gamebrocolor', 'Gamebro Color', 6]
+  ['gamebrocolor', 'Gamebro Color', 6],
   ['infinityfox', 'Infinity Fox', 5]
 ]
 
@@ -91,7 +91,7 @@ function getArcadeCredits(userid) {
       if (err) {
         resolve(0)
       } else {
-        if(results.length < 1 || !results[0]) {
+        if (results.length < 1 || !results[0]) {
           resolve(0)
           return
         }
