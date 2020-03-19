@@ -22,7 +22,7 @@ bet_functions['red'] = function (result) {
 }
 
 function updateRouletteStat(userid, winnings, bet) {
-  const queryString = 'INSERT INTO arcade_roulette VALUES(?, 1, ?, ?) ON DUPLICATE KEY UPDATE number = number + 1, winnings = winnings + VALUES(winnings), bet_average = ((bet_average * number) + VALUES(bet_average))/(number + 1);'
+  const queryString = 'INSERT INTO arcade_roulette VALUES(?, 1, ?, ?) ON DUPLICATE KEY UPDATE number = number + 1, winnings = winnings + VALUES(winnings), bet_total = bet_total + VALUES(bet_total);'
 
   pool.query(queryString, [userid, winnings, bet], function (err, results) {
     if (err) {

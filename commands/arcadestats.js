@@ -59,7 +59,7 @@ function fetchPrizeStatistics(id) {
 
 // Retrieve Roulette statistics for a given ID from the database
 function fetchRouletteStatistics(id) {
-  return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS payout_average, ROUND(bet_average, 2) AS bet_average FROM arcade_roulette WHERE discordid = ?;', id)
+  return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS payout_average, ROUND(bet_total/number, 2) AS bet_average, bet_total FROM arcade_roulette WHERE discordid = ?;', id)
 }
 
 // Keep the embed functions in an object for modular lookup
@@ -214,6 +214,8 @@ embedFunctions.roulette = function (user) {
         .setTitle(`💸 Roulette - ${username}`)
         .addField('Number', `${r.number}`, true)
         .addField('Total Winnings', `${r.winnings}`, true)
+        .addField('Total Bet', `${r.bet_total}`, true)
+        .addField('Profit', `${r.winnings - r.bet_total}`, true)
         .addField('Average Income', `${r.payout_average}`, true)
         .addField('Average Bet', `${r.bet_average}`, true)
       resolve(embed)
