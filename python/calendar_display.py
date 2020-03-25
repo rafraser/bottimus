@@ -47,7 +47,8 @@ background_colors = {
 def centered_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
     w, h = font.getsize(text)
     draw.text((x - (w / 2), y), text, font=font, fill=fill)
-    
+
+
 def right_aligned_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
     w, h = font.getsize(text)
     draw.text((x - w, y), text, font=font, fill=fill)
@@ -75,15 +76,19 @@ def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
         yy -= h + 4
 
 
-def create_canvas(month):
+def create_canvas(year, month):
+    num_weeks = len(calendar.monthcalendar(year, month))
+
     total_width = (box_width * 7) + (padding * 6) + (margin * 2)
-    total_height = top_size + (box_height * 5) + (padding * 4) + (margin * 2)
+    total_height = top_size + (box_height * num_weeks) + (padding * 4) + (margin * 2)
 
     canvas = Image.new("RGBA", (total_width, total_height), "#dcdde1")
     draw = ImageDraw.Draw(canvas)
-    
+
     month_name = calendar.month_name[month]
-    right_aligned_text(draw, total_width - margin, 6, month_name, font_header, (87, 101, 116))
+    right_aligned_text(
+        draw, total_width - margin, 6, month_name, font_header, (87, 101, 116)
+    )
 
     for idx, day in enumerate(day_names):
         xx = margin + (box_width * (idx)) + (padding * (idx - 1))
@@ -131,7 +136,7 @@ def box_position(position):
 
 
 def iterate_month(year, month, events):
-    canvas = create_canvas(month)
+    canvas = create_canvas(year, month)
 
     start_day, month_length = calendar.monthrange(year, month)
     for i in range(month_length):
@@ -157,8 +162,8 @@ if __name__ == "__main__":
     tz = datetime.timezone(datetime.timedelta(hours=10))
     today = datetime.datetime.now(tz)
 
-    #f = open("py_logging.txt", "w")
-    #sys.stdout = f
+    # f = open("py_logging.txt", "w")
+    # sys.stdout = f
 
     for arg in args:
         arg = arg.split("|")
