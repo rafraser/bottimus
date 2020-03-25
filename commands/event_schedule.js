@@ -103,7 +103,6 @@ module.exports = {
         const channel = client.channels.get(approvalChannel)
         channel.send(`New event requested by **${message.member.displayName}**!`)
 
-        msg.delete()
         msg.channel.send('Event has been sent to Administrators for approval!')
       })
     })

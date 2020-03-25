@@ -58,10 +58,8 @@ module.exports = {
         // Approve or deny the event
         if (r.emoji.name === '✅') {
           approveEvent(event, client)
-          msg.delete()
           msg.channel.send('Event approved!')
         } else if (r.emoji.name === '❎') {
-          msg.delete()
           msg.channel.send('Event denied!')
         }
 
