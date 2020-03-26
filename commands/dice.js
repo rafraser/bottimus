@@ -4,6 +4,18 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max)) + 1;
 }
 
+function diceRoll(number, max) {
+    if (number === 1) {
+        return getRandomInt(max)
+    } else {
+        let total = 0
+        for (let i = 0; i < number; i++) {
+            total += getRandomInt(max)
+        }
+        return total
+    }
+}
+
 function testDiceRolling(max) {
     let results = {}
     for (let i = 0; i < 10000; i++) {
@@ -19,32 +31,26 @@ module.exports = {
     aliases: ['roll'],
     execute(message, args) {
         let rolls = args.map(arg => {
-            // Check if this is a multi-roll
-            let multiRoll = arg.match(/(?<number>\d+)d(?<max>\d+)/)
-            if (multiRoll) {
-                let number = parseInt(multiRoll.groups.number)
-                let max = parseInt(multiRoll.groups.max)
-
-                let total = 0
-                for (let i = 0; i < number; i++) {
-                    total += getRandomInt(max)
-                }
-
-                return total
-            } else {
-                // Check if this is a dN dice
-                let singleRoll = arg.match(/d(?<max>\d+)/)
-                if (singleRoll) {
-                    let max = parseInt(singleRoll.groups.max)
-                    return getRandomInt(max)
+            let rollData = arg.match(/((?<modifier>adv|dis)-)?(?<number>\d+)?d(?<max>\d+)/)
+            if (rollData) {
+                let number = parseInt(rollData.groups.number) || 1
+                let max = parseInt(rollData.groups.max)
+                let modifier = rollData.groups.modifier || null
+                if (modifier == 'adv') {
+                    let roll1 = diceRoll(number, max)
+                    let roll2 = diceRoll(number, max)
+                    return Math.max(diceRoll(number, max), diceRoll(number, max))
+                } else if (modifier == 'dis') {
+                    return Math.min(diceRoll(number, max), diceRoll(number, max))
                 } else {
-                    // Check if this is a number
-                    try {
-                        let max = parseInt(arg)
-                        return getRandomInt(max)
-                    } catch (e) {
-                        return null
-                    }
+                    return diceRoll(number, max)
+                }
+            } else {
+                try {
+                    let max = parseInt(arg)
+                    return getRandomInt(max)
+                } catch (e) {
+                    return null
                 }
             }
         })
