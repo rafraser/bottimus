@@ -25,24 +25,34 @@ module.exports = {
   description: 'Get information about when a user joined',
   execute(message, args, client) {
     getUserRankings(message.guild).then(function (rankings) {
+      // First, try a direct number lookup
       let user
       let ranking
-      try {
-        // Try searching for a user in the args
-        user = client.findUser(message, args.slice())
-        ranking = rankings.indexOf(user)
-      } catch (e) {
-        // Try getting a user number
-        ranking = parseInt(args.shift()) - 1
-        if (isNaN(ranking)) {
-          // Return the caller
-          user = message.member
-          ranking = rankings.indexOf(user)
-        } else {
-          // Number is valid, use that
+
+      // Determine the user/ranking to get data for
+      if (args.length >= 1) {
+        ranking = Number(args[0]) - 1
+
+        if (!isNaN(ranking)) {
           user = rankings[ranking]
+        } else {
+          try {
+            // Try searching for a user in the args
+            user = client.findUser(message, args.slice())
+            ranking = rankings.indexOf(user)
+          } catch (e) {
+            console.log(e)
+            // If all else fails, return self
+            user = message.member
+            ranking = rankings.indexOf(user)
+          }
         }
+      } else {
+        // Return self with no arguments
+        user = message.member
+        ranking = rankings.indexOf(user)
       }
+
       if (ranking < 0 || ranking > rankings.length) return
 
       // Generate the fancy embed
