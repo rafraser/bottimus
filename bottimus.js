@@ -191,6 +191,10 @@ client.timeToString = timeHelper.timeToString
 
 // Check for Administrator status
 client.isAdministrator = function (member) {
+  // Anyone with the administrator permission counts for these purposes
+  if (member.hasPermission('ADMINISTRATOR')) return true
+
+  // Get the role information from the server
   const roleData = client.serverRoles.get(member.guild.id)
   if (!roleData) return false
   if (!roleData.admin) return false
@@ -323,6 +327,8 @@ client.executePython = function (script, args) {
   return p
 }
 
+// Utility function that will pad or trim a string to the desired length
+// This is used extensively in things like the statistic leaderboards
 client.padOrTrim = function (string, length) {
   const trimmed = string.length > length ? string.substring(0, length) : string
   return trimmed.padEnd(length, ' ')

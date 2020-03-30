@@ -82,8 +82,12 @@ module.exports = {
   aliases: ['banish', 'void', 'kill'],
   mute: muteUser,
   unmute: unmuteUser,
-  guilds: ['309951255575265280'],
   execute(message, args, client) {
+    // Check that this server has configuration for the mute role
+    const roleData = client.serverRoles.get(message.channel.guild.id)
+    if (!roleData) return
+    if (!roleData.muted) return
+
     // Check that the user has permission
     if (!client.isModerator(message.member)) {
       message.channel.send('You need to be a Moderator to use this!')

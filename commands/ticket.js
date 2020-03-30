@@ -60,8 +60,12 @@ module.exports = {
   aliases: ['giveticket', 'admitone'],
   ticket: ticketUser,
   unticket: unticketUser,
-  guilds: ['309951255575265280'],
   execute(message, args, client) {
+    // Check that this server has configuration for the mute role
+    const roleData = client.serverRoles.get(message.channel.guild.id)
+    if (!roleData) return
+    if (!roleData.ticket) return
+
     // Check that the user has permission
     if (!client.isAdministrator(message.member)) {
       message.channel.send('You need to be an Administrator to use this!')
