@@ -227,7 +227,7 @@ embedFunctions.roulette = function (user) {
 
 module.exports = {
   name: 'arcadestats',
-  description: 'Fetchs statistics for arcade games',
+  description: 'Fetchs statistics for arcade games.\nFor a list of stat types:`!arcadestats`\nFor your statistics:`!arcadestats [type]`\nFor someone else\'s statistics:`!arcadestats [user] [type]`',
   aliases: ['gamestats', 'casinostats'],
   execute(message, args, client) {
     if (!args || args.length < 1) {

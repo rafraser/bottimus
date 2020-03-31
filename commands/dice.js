@@ -27,7 +27,7 @@ function testDiceRolling(max) {
 
 module.exports = {
     name: 'dice',
-    description: 'Roll a simple dice',
+    description: 'Roll some dice using DnD syntax. Multiple rolls can be done at once.\nExamples: `!dice 20` `!dice d20 4d10`\nAlso supports advantage modifiers: `!dice adv-d20` `!dice dis-3d10`',
     aliases: ['roll'],
     execute(message, args) {
         let rolls = args.map(arg => {

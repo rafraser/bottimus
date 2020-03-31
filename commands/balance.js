@@ -2,7 +2,7 @@ const arcade = require('../util/arcade')
 
 module.exports = {
   name: 'balance',
-  description: 'Get Arcade points information',
+  description: 'See how many coins you have.\nYou can obtain more coins by playing games or gambling - don\'t forget your `!dailyspin` once per day.\nTo view someone else\'s balance: `!balance [user]`',
   cooldown: 10,
   aliases: ['credits', 'bal'],
   execute(message, args, client) {

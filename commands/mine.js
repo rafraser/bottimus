@@ -66,7 +66,7 @@ function startMiningTrip(msg, member, client) {
 
 module.exports = {
   name: 'mine',
-  description: '-',
+  description: 'Mine diamonds to earn coins. Each diamond is worth 5 coins.\nClick on the pickaxe repeatedly. Due to Discord limits, it may take a moment before each diamond is mined.',
   cooldown: 180,
   execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {

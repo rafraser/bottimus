@@ -22,7 +22,7 @@ function getUserRankings(guild) {
 
 module.exports = {
   name: 'user',
-  description: 'Get information about when a user joined',
+  description: 'Get user information\nThis displays the join date and join ranking for a given user',
   execute(message, args, client) {
     getUserRankings(message.guild).then(function (rankings) {
       // First, try a direct number lookup

@@ -72,8 +72,8 @@ function spinRoulette(client, message, betType, betAmount) {
 
 module.exports = {
   name: 'roulette',
-  description: 'Gamble your life savings away!',
-  cooldown: 30,
+  description: 'Risk big on the roulette wheel!\nYou can bet on even, odd, or on a single number: `!roulette even` `!roulette 19`\nYou can also specify how much to bet (50 - 500 coins): `!roulette even 50` `!roulette 25 500`',
+  cooldown: 20,
   execute(message, args, client) {
     // Determine the type of bet being made
     // Players can either pick a single number OR one of the above bet functions

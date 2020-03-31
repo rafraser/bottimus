@@ -49,7 +49,7 @@ function pickWheel() {
 
 module.exports = {
   name: 'dailyspin',
-  description: 'Spin a prize wheel once a day!',
+  description: 'Spin the lucky prize wheel every 12 hours!\nThis is a great way to start earning coins',
   aliases: ['daily'],
   execute(message, args, client) {
     getLastSpin(message.member.id).then(function (results) {

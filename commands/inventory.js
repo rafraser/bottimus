@@ -3,8 +3,8 @@ const discord = require('discord.js')
 
 module.exports = {
   name: 'inventory',
-  description: 'Display the prize inventory',
-  cooldown: 30,
+  description: 'Display all the prizes collected so far. Can you get all 30?\nTo view someone else\'s inventory: `!inventory [user]`',
+  cooldown: 15,
   execute(message, args, client) {
     const user = client.findUser(message, args, true)
     arcade.getArcadePrizes(user.id).then(function (prizes) {

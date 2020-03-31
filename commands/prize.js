@@ -50,10 +50,10 @@ function redeemPrize(msg, user, client) {
 }
 
 module.exports = {
-  name: 'prizeball',
-  description: 'Try your luck at the legendary prize ball machine!',
+  name: 'prize',
+  description: 'Try your luck at the legendary prize ball machine! Can you get all 30 prizes?\nEach prize attempt costs 1000 coins.',
   cooldown: 40,
-  aliases: ['redeemprize', 'prize'],
+  aliases: ['redeemprize', 'prizeball'],
   execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
       if (amount < 1000) {

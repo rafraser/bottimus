@@ -3,7 +3,7 @@ const http = require('http')
 
 module.exports = {
   name: 'numberfact',
-  description: 'Get a random number fact',
+  description: 'Get a random number fact\nFor a fact about a specific number: `!numberfact [number]`',
   cooldown: 10,
   guilds: ['309951255575265280'],
   execute(message, args) {

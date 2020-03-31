@@ -28,7 +28,7 @@ function fetchStatistics(id) {
 
 module.exports = {
   name: 'triviastats',
-  description: 'Fetchs statistics from Trivia',
+  description: 'Fetchs statistics from Trivia\nTo view someone else\'s statistics: `!triviastats [user]`',
   execute(message, args, client) {
     const user = client.findUser(message, args, true)
 

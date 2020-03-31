@@ -156,7 +156,7 @@ function startTypeRacer(client, message, display) {
 
 module.exports = {
   name: 'typeracer',
-  description: 'Play a game of Type Racer',
+  description: 'Play a game of Type Racer\nAfter the word image is sent, type out the contents as quickly as possible\nYou are allowed one mistake',
   aliases: ['typerace'],
   execute(message, args, client) {
     // Make sure each guild only has a single game going on

@@ -60,7 +60,7 @@ function hangmanFilter(msg) {
 
 module.exports = {
   name: 'hangman',
-  description: 'Play a game of Hangman',
+  description: 'Play a game of Hangman\nType *capital* letters to guess.\nYou get one coin for each letter revealed, plus a participation bonus at the end of the game.',
   execute(message, args, client) {
     // Make sure each guild only has a single game going on
     if (isPlayingHangman(client, message.guild)) return

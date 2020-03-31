@@ -58,7 +58,7 @@ function getQuestionData() {
 
 module.exports = {
   name: 'trivia',
-  description: 'Play a trivia question',
+  description: 'Play a trivia question\nClick on the reaction to make your guess. No cheating!',
   aliases: ['quiz'],
   cooldown: 12,
   execute(message, args, client) {
