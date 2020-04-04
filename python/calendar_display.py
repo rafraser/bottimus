@@ -28,19 +28,42 @@ day_names = [
     "Sunday",
 ]
 
+# Colors
+COLOR_PINK = "#f368e0"
+COLOR_GREEN = "#4cd137"
+COLOR_YELLOW = "#e1b12c"
+COLOR_PURPLE = "#9c88ff"
+COLOR_BLUE = "#00a8ff"
+COLOR_RED = "#e84118"
+
 # Background colours for the events
 background_colors = {
-    "sandbox": "#4cd137",
-    "jackbox": "#9c88ff",
-    "murder": "#e84118",
-    "minigames": "#e1b12c",
-    "testing": "#4cd137",
-    "mapping": "#4cd137",
-    "music": "#f368e0",
-    "streaming": "#f368e0",
-    "hidden": "#e84118",
-    "generic": "#00a8ff",
-    "gmod": "#00a8ff",
+    "art": COLOR_PINK,
+    "csgo": COLOR_YELLOW,
+    "death": COLOR_PURPLE,
+    "deathrun": COLOR_RED,
+    "dodgeball": COLOR_BLUE,
+    "dota": COLOR_RED,
+    "generic": COLOR_BLUE,
+    "gmod": COLOR_BLUE,
+    "golf": COLOR_GREEN,
+    "hidden": COLOR_RED,
+    "jackbox": COLOR_PURPLE,
+    "league": COLOR_PURPLE,
+    "mapping": COLOR_GREEN,
+    "minecraft": COLOR_GREEN,
+    "minigames": COLOR_YELLOW,
+    "movie": COLOR_PINK,
+    "murder": COLOR_RED,
+    "music": COLOR_PINK,
+    "overwatch": COLOR_YELLOW,
+    "racing": COLOR_GREEN,
+    "sandbox": COLOR_GREEN,
+    "stream": COLOR_PINK,
+    "switch": COLOR_RED,
+    "testing": COLOR_GREEN,
+    "voice": COLOR_BLUE,
+    "zombie": COLOR_RED,
 }
 
 

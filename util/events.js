@@ -6,15 +6,30 @@ function formatEventDate(date) {
 // https://fluffyservers.com/img/events/
 
 const eventList = {
-  sandbox: true,
+  art: true,
+  csgo: true,
+  death: true,
+  deathrun: true,
+  dodgeball: true,
+  dota: true,
+  golf: true,
+  hidden: true,
   jackbox: true,
-  murder: true,
-  minigames: true,
-  testing: true,
+  league: true,
   mapping: true,
+  minecraft: true,
+  minigames: true,
+  movie: true,
+  murder: true,
   music: true,
-  streaming: true,
-  hidden: true
+  overwatch: true,
+  racing: true,
+  sandbox: true,
+  stream: true,
+  switch: true,
+  testing: true,
+  voice: true,
+  zombie: true
 }
 
 function getEventCategory(event) {
