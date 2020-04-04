@@ -94,7 +94,7 @@ module.exports = {
         return user.id === message.member.id && reaction.emoji.name === '✅'
       }
 
-      const collector = msg.createReactionCollector(filter, { time: 15000 })
+      const collector = msg.createReactionCollector(filter, { time: 25000 })
       collector.on('collect', function () {
         // Confirmation received!
         collector.stop()
