@@ -35,7 +35,7 @@ module.exports = {
     }
 
     // Prepare variables
-    let title, description, when
+    let title, description, when, forcetype
 
     // Attempt to parse the event format
     try {
@@ -51,7 +51,11 @@ module.exports = {
 
       while (args.length >= 1) {
         let arg = args.shift()
-        if (arg.includes(':')) {
+        if (arg.startsWith('type:')) {
+          // Try parsing this argument as type
+          arg = arg.split(':')
+          forcetype = arg[1]
+        } else if (arg.includes(':')) {
           // Try parsing this argument as time
           arg = arg.split(':')
           datetime.hour = arg[0]
@@ -78,12 +82,13 @@ module.exports = {
         return
       }
     } catch (e) {
+      console.log(e)
       message.channel.send('Invalid event structure')
       return
     }
 
     // Generate an initial event embed
-    const event = events.generateEvent(message.member, title, description, when)
+    const event = events.generateEvent(message.member, title, description, when, forcetype)
     const timeLeft = client.timeToString(event.time - Date.now(), 2)
     const embed = events.generateEventEmbed(event, timeLeft)
 

@@ -32,7 +32,12 @@ const eventList = {
   zombie: true
 }
 
-function getEventCategory(event) {
+function getEventCategory(event, forcetype) {
+  // If force, check it's a valid type
+  if (forcetype && eventList[forcetype]) {
+    return forcetype
+  }
+
   const words = event.title.split(' ').concat(event.description.split(' '))
   let gmod = false
 
@@ -87,13 +92,13 @@ function generateCompletedEventEmbed(event) {
   return embed
 }
 
-function generateEvent(member, title, description, time) {
+function generateEvent(member, title, description, time, forcetype) {
   const event = {}
   event.scheduler = member.displayName
   event.title = title
   event.description = description
   event.time = time
-  event.category = getEventCategory(event)
+  event.category = getEventCategory(event, forcetype)
 
   return event
 }
