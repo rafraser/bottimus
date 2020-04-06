@@ -17,6 +17,11 @@ function updateEvent(client, sendNew = false) {
     return
   }
 
+  // Don't display events that are further than 24 hours away
+  if (Date.now() + (24 * 3600 * 1000) < event.time) {
+    return
+  }
+
   // Send a new message for the next event (if applicable)
   if (sendNew) {
     eventChannel.send('[Next Event]')
