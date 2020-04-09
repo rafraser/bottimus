@@ -11,8 +11,11 @@ module.exports = {
 
     // Restart the bot after a brief delay
     message.channel.send('Goodbye!')
+
+    // Give the bot about 30 seconds, but put the bot into a 'shutdown' mode first
+    client.restartingSoon = true
     setTimeout(function () {
       process.exit(1)
-    }, 1000)
+    }, 30 * 1000)
   }
 }

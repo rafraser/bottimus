@@ -72,6 +72,9 @@ client.on('message', function (message) {
   // Do not handle messages by bots
   if (message.author.bot) return
 
+  // Do not handle messages if the bot is about to restart
+  if (client.restartingSoon) return
+
   // Scanners are applied to every message
   // This can be used to stop messages from sending
   for (const scanner of client.scanners) {
