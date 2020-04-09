@@ -1,3 +1,5 @@
+const events = require('../util/events')
+
 module.exports = {
   name: 'eventlist',
   description: 'Get a brief list of what events are upcoming',
@@ -15,10 +17,22 @@ module.exports = {
       return a.time - b.time
     }).array()
 
+    // Get timezone from arguments
+    let timezone = 'AEST'
+    if (args.length >= 1) {
+      timezone = args[0]
+    }
+
     // Generate a code block list
     let outputString = '```cs\n# Upcoming Events #'
+    let now = Date.now()
     sortedEvents.forEach(function (item, index) {
-      outputString += '\n ' + (index + 1) + '. ' + item.title
+      if (Date.now() > item.time) return
+
+      let name = item.title.replace("'", "")
+      let timeString = events.formatEventDate(item.time, false, timezone)
+
+      outputString += '\n' + client.padOrTrim(name, 20) + '  ' + client.padOrTrim(timeString, 25)
     })
     outputString += '```'
     message.channel.send(outputString)

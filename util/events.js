@@ -1,16 +1,21 @@
 const discord = require('discord.js')
 
-function formatEventDate(date) {
+function formatEventDate(date, newline = true) {
   // Robert A Fraser elite coding skills right here
   // Look I know this sucks but Fluffy Servers events will always be running in Sydney time
   // We really only need this to get the tag at the end correct
   // Blame that one guy in my Discord that nitpicked me about this
   let timezone = 'AEST'
-  if (date.getTimezoneOffset() === -660) {
+  if (timezone == 'AEST' && date.getTimezoneOffset() === -660) {
     timezone = 'AEDT'
   }
 
-  return date.toLocaleString('en-GB', { timezone: timezone, month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', '\n') + ' ' + timezone
+  let timeString = date.toLocaleString('en-GB', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+  if (newline) {
+    return timeString.replace(',', '\n') + ' ' + timezone
+  } else {
+    return timeString + ' ' + timezone
+  }
 }
 // https://fluffyservers.com/img/events/
 
@@ -141,6 +146,7 @@ function generateCalendar(client) {
   })
 }
 
+module.exports.formatEventDate = formatEventDate
 module.exports.generateEventEmbed = generateEventEmbed
 module.exports.generateCompletedEventEmbed = generateCompletedEventEmbed
 module.exports.generateEvent = generateEvent
