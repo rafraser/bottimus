@@ -48,6 +48,9 @@ function updateEvent(client, sendNew = false) {
           const pingString = users.filter(user => !user.bot).map(user => user.toString()).join(' ')
           const channel = client.channelWithTesting(notificationChannel)
           channel.send(`Event **${event.title}** is now starting!\n${pingString}`)
+
+          const amount = users.filter(user => !user.bot).size
+          events.addEventHistory(event, amount)
         })
       }
 

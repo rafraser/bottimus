@@ -1,4 +1,10 @@
 const discord = require('discord.js')
+const pool = require('../util/database')
+
+function addEventHistory(event, reactions) {
+  const queryString = 'INSERT INTO event_history VALUES(?, ?, ?, ?)'
+  pool.query(queryString, [event.time, event.title, event.category, reactions])
+}
 
 function formatEventDate(date, newline = true) {
   // Robert A Fraser elite coding skills right here
@@ -146,6 +152,7 @@ function generateCalendar(client) {
   })
 }
 
+module.exports.addEventHistory = addEventHistory
 module.exports.formatEventDate = formatEventDate
 module.exports.generateEventEmbed = generateEventEmbed
 module.exports.generateCompletedEventEmbed = generateCompletedEventEmbed
