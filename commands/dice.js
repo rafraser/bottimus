@@ -60,7 +60,7 @@ module.exports = {
         if (rolls.length < 1) {
             message.channel.send('Enter valid dice!')
         } else {
-            message.channel.send(`🎲 ${rolls.join(" ")}`)
+            message.channel.send(`${rolls.map(x => `**${x}**`).join("  |  ")}`)
         }
     }
 }
