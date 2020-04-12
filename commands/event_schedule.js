@@ -105,6 +105,8 @@ module.exports = {
         collector.stop()
         client.requestedEventsData.push(event)
 
+        if (client.testingMode) return
+
         const channel = client.channels.get(approvalChannel)
         channel.send(`New event requested by **${message.member.displayName}**!`)
 
