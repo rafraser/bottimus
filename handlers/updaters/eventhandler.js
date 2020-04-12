@@ -30,6 +30,16 @@ function updateEvent(client, sendNew = false) {
   eventChannel.fetchMessages({ limit: 10 }).then(messages => {
     const displayMessage = messages.find(m => m.author.bot)
 
+    // If the display message already has an embed, make sure it's for this event
+    // If not, send a new message and repeat this process
+    if (displayMessage.embeds && displayMessage.embeds.length >= 1) {
+      const embed = displayMessage.embeds[0]
+      if (embed.title != event.title) {
+        updateEvent(client, true)
+        return
+      }
+    }
+
     if (Date.now() > event.time) {
       // Send the event notification out
       const reaction = displayMessage.reactions.get('🔔')
