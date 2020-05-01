@@ -34,7 +34,8 @@ function updateEvent(client, sendNew = false) {
     // If not, send a new message and repeat this process
     if (displayMessage.embeds && displayMessage.embeds.length >= 1) {
       const embed = displayMessage.embeds[0]
-      if (embed.title != event.title) {
+      const trimmedTitle = event.title.trim()
+      if (embed.title != trimmedTitle) {
         updateEvent(client, true)
         return
       }
