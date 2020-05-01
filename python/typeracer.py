@@ -4,15 +4,13 @@ import sys
 import textwrap
 
 
-def generate_typeracer(text: str, fontname: str):
+def generate_typeracer(text: str, output: str, fontname: str):
     """Generates and saves a Typeracer challenge image
 
     Arguments:
         text {str} -- Text to be displayed on the output image
+        output {str} -- Filename to save to
         fontname {str} -- Fontname to be used to build
-
-    Returns:
-        Image -- Pillow image with the generated challenge image
     """
     # Wrap text and calculate dimensions
     lines = textwrap.wrap(text, width=56)
@@ -27,8 +25,8 @@ def generate_typeracer(text: str, fontname: str):
     for i, line in enumerate(lines):
         draw.text((4, 4 + i * 16), line, font=font)
 
-    # Save and return
-    return im.save("./img/typeracer.png")
+    # Save image to output file
+    im.save(f"./img/{output}")
 
 
 if __name__ == "__main__":
@@ -39,5 +37,10 @@ if __name__ == "__main__":
         default="Quadrunde",
         help="Font to use for the output image. Must exist in ./img/fonts",
     )
+    parser.add_argument(
+        "--output",
+        default="typeracer.png",
+        help="Output filename (include file extension)",
+    )
     args = parser.parse_args()
-    generate_typeracer(args.text, args.font)
+    generate_typeracer(args.text, args.output, args.font)
