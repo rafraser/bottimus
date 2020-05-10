@@ -48,6 +48,7 @@ const eventList = {
   stream: true,
   switch: true,
   testing: true,
+  tower: true,
   voice: true,
   zombie: true
 }

@@ -62,6 +62,7 @@ background_colors = {
     "stream": COLOR_PINK,
     "switch": COLOR_RED,
     "testing": COLOR_GREEN,
+    "tower": COLOR_BLUE,
     "voice": COLOR_BLUE,
     "zombie": COLOR_RED,
 }
