@@ -210,6 +210,11 @@ def main(prizes, filename="./img/wheel.gif"):
 
 
 if __name__ == "__main__":
-    prizes = sys.argv[1:]
-    prizes = [x for x in prizes if not x.startswith("python/")]  # bugfix
+    parser = argparse.ArgumentParser(description="Generate a cool spinner")
+    parser.add_argument(
+        "prizes", nargs="+", help="List of prizes to be put on the spinner"
+    )
+    args = parser.parse_args()
+
+    prizes = [x for x in args.prizes if not x.startswith("python/")]  # Bugfix
     main(prizes, "./img/spinner.gif")
