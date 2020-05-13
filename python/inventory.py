@@ -1,3 +1,4 @@
+import argparse
 import math
 import sys
 from PIL import Image, ImageDraw, ImageFont
@@ -127,9 +128,12 @@ def renderInventory(items):
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    items = {}
-    for arg in args:
-        arg = arg.split(":")
-        items[arg[0]] = int(arg[1])
+    parser = argparse.ArgumentParser(
+        description="Generate an inventory for a list of prize:amount pairs"
+    )
+    parser.add_argument("--prizes", nargs='+', description="List of prizes for the inventory. Each item should be of the form prize:amount"
+    args = parser.parse_args()
+
+    # Dictionary comprehension to split the prize list up
+    items = {k: int(v) for k,v in (x.split(':') for x in args.prizes)}
     renderInventory(items)

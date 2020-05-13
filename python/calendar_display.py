@@ -265,10 +265,28 @@ def iterate_month(year, month, events):
     canvas.save("./img/calendar.png")
 
 
+def process_events_list(events):
+    """Process a list of event strings into proper event structures
+
+    Arguments:
+        events {[type]} -- [description]
+
+    Returns:
+        [type] -- List of processed event structures
+    """
+    return events
+
+
 if __name__ == "__main__":
     # Split the event args
     args = sys.argv[1:]
     events = {}
+    parser = argparse.ArgumentParser(
+        description="Generate a calendar for a list of events"
+    )
+    parser.add_argument("--events", nargs="+", description="List of events")
+
+    args = parser.parse_args()
 
     # Get the current date
     tz = datetime.timezone(datetime.timedelta(hours=10))
