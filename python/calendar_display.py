@@ -68,16 +68,52 @@ background_colors = {
 
 
 def centered_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
+    """Draw centered text
+
+    Arguments:
+        draw {[type]} -- [description]
+        x {[type]} -- [description]
+        y {[type]} -- [description]
+        text {[type]} -- [description]
+        font {[type]} -- [description]
+
+    Keyword Arguments:
+        fill {tuple} -- [description] (default: {(255, 255, 255, 255)})
+    """
     w, h = font.getsize(text)
     draw.text((x - (w / 2), y), text, font=font, fill=fill)
 
 
 def right_aligned_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
+    """Draw right-aligned text
+
+    Arguments:
+        draw {[type]} -- [description]
+        x {[type]} -- [description]
+        y {[type]} -- [description]
+        text {[type]} -- [description]
+        font {[type]} -- [description]
+
+    Keyword Arguments:
+        fill {tuple} -- [description] (default: {(255, 255, 255, 255)})
+    """
     w, h = font.getsize(text)
     draw.text((x - w, y), text, font=font, fill=fill)
 
 
 def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
+    """Draw wrapped text within a box
+
+    Arguments:
+        draw {[type]} -- [description]
+        x {[type]} -- [description]
+        y {[type]} -- [description]
+        text {[type]} -- [description]
+        font {[type]} -- [description]
+
+    Keyword Arguments:
+        maxwidth {[type]} -- [description] (default: {box_width})
+    """
     # Split the text into multiple lines
     text = text.split(" ")
     i = 0
@@ -100,6 +136,16 @@ def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
 
 
 def create_canvas(year, month):
+    """Create the base calendar canvas
+    This adjusts sizing based on what month of the year it is
+
+    Arguments:
+        year {[type]} -- Calendar year
+        month {[type]} -- Calendar month
+
+    Returns:
+        [type] -- Generated canvas image
+    """
     num_weeks = len(calendar.monthcalendar(year, month))
 
     total_width = (box_width * 7) + (padding * 6) + (margin * 2)
@@ -122,6 +168,15 @@ def create_canvas(year, month):
 
 
 def render_blank_day(number):
+    """Render a blank calendar square
+    This is a simple box with the date attached
+
+    Arguments:
+        number {[type]} -- Date number
+
+    Returns:
+        [type] -- Generated calendar square
+    """
     box = Image.new("RGBA", (box_width, box_height), "#bdc3c7")
     draw = ImageDraw.Draw(box)
     draw.text((6, 2), str(number), font=font_bold)
@@ -129,6 +184,15 @@ def render_blank_day(number):
 
 
 def render_event_image(box, image):
+    """Paste an event image into the relevant box
+
+    Arguments:
+        box {[type]} -- Existing calendar square to add image to
+        image {[type]} -- Image file for event icon
+
+    Returns:
+        [type] -- New calendar square with event icon
+    """
     size = math.floor(box_height / 2)
     img = Image.open(image).resize((size, size)).convert("RGBA")
     box.paste(img, (box_width - size - 4, 4), img)
@@ -136,6 +200,16 @@ def render_event_image(box, image):
 
 
 def render_event_day(event):
+    """Render a calendar square with a single scheduled event
+    This box is coloured based on the event type
+    This box also has an icon based on the event type
+
+    Arguments:
+        event {[type]} -- Event data
+
+    Returns:
+        [type] -- Generated calendar square
+    """
     color = background_colors[event["category"]]
     image = "./img/event/" + event["category"] + ".png"
 
@@ -149,6 +223,14 @@ def render_event_day(event):
 
 
 def box_position(position):
+    """Calculate the positioning of a calendar box
+
+    Arguments:
+        position {[type]} -- Day number of the month
+
+    Returns:
+        [type] -- (x, y) tuple for the calendar square positioning
+    """
     xx = position % 7
     yy = math.floor(position / 7)
 
@@ -159,6 +241,13 @@ def box_position(position):
 
 
 def iterate_month(year, month, events):
+    """Iterate over a month, creating calendar squares as needed
+
+    Arguments:
+        year {[type]} -- Calendar year
+        month {[type]} -- Calendar month
+        events {[type]} -- List of events for data
+    """
     canvas = create_canvas(year, month)
 
     start_day, month_length = calendar.monthrange(year, month)

@@ -4,8 +4,6 @@ import math
 import random
 import sys
 
-ROULETTE_FONT = ImageFont.truetype("./img/font/disco.ttf", 48)
-
 NUMBERS = [
     0,
     32,
@@ -52,6 +50,18 @@ COLOR_GREEN = (33, 140, 116)
 
 # Render the emblem
 def render_emblem(logo, insize=288):
+    """Generate a special emblem for roulette
+    This is a simple version with no image
+
+    Arguments:
+        logo {[type]} -- Irrelevant parameter
+
+    Keyword Arguments:
+        insize {int} -- Radius for the emblem (default: {288})
+
+    Returns:
+        [type] -- Output generated emblem
+    """
     canvas = Image.new("RGBA", (1024, 1024))
     draw = ImageDraw.Draw(canvas)
 
@@ -64,9 +74,6 @@ def render_emblem(logo, insize=288):
         (245, 246, 250),
     )
     draw.pieslice((left, left, left + insize, left + insize), 0, 360, (229, 142, 38))
-
-    # p = math.floor(left + (insize - logo.width) / 2)
-    # canvas.paste(logo, (p, p), logo)
 
     # Render a 'ball' instead of the traditional pointer
     left = left - 96
@@ -81,9 +88,18 @@ def render_emblem(logo, insize=288):
     return canvas
 
 
-def main(filename="./img/roulette.gif"):
+def main(filename="./img/roulette.gif", emblem="./img/cat.png", fontname="disco"):
+    """Generate a roulette wheel animation
+    Internally, this uses code found in spinner.py but with a different emblem function
+
+    Keyword Arguments:
+        filename {str} -- Output filename to save to (default: {"./img/roulette.gif"})
+        emblem {str} -- Irrelevant parameter (default: {"./img/cat.png"})
+        fontname {str} -- Font to render numbers with (default: {"disco"})
+    """
     # Load resources
-    logo = Image.open("./img/cat.png").resize((160, 160))
+    logo = Image.open(emblem).resize((160, 160))
+    font = ImageFont.truetype(f"./img/font/{fontname}.ttf", 48)
 
     # Run the animation
     colors = [COLOR_GREEN] + ([COLOR_RED, COLOR_BLACK] * 18)
@@ -94,7 +110,7 @@ def main(filename="./img/roulette.gif"):
         display_numbers,
         colors,
         logo,
-        ROULETTE_FONT,
+        font,
         416,
         448,
         4,
@@ -118,5 +134,9 @@ def main(filename="./img/roulette.gif"):
 
 
 if __name__ == "__main__":
-    main("./img/roulette.gif")
-
+    parser = argparse.ArgumentParser(description="Generate a roulette wheel animation")
+    parser.add_argument(
+        "--output", default="./img/roulette.gif", help="Output file path"
+    )
+    args = parser.parse_args()
+    main(filename=args.output)

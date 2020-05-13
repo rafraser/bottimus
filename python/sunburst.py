@@ -20,7 +20,7 @@ COLORS = {
 
 
 def generate_frame(offset: int = 0, color: str = "yellow"):
-    """[summary]
+    """Generate a single frame for a sunburst award
 
     Keyword Arguments:
         offset {int} -- Angular offset to use (in degrees) (default: {0})

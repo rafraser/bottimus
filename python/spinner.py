@@ -7,6 +7,17 @@ DEFAULT_FONT = ImageFont.truetype("./img/font/disco.ttf", 56)
 
 # Draw the slice text / icon
 def render_prize(prizes, ang, i, font):
+    """Render an individual prize segment
+
+    Arguments:
+        prizes {[type]} -- List of prizes
+        ang {[type]} -- Angle of the prize segment
+        i {[type]} -- Prize index to render
+        font {[type]} -- Font to use for prize
+
+    Returns:
+        [type] -- Output generated segment
+    """
     ang = (360 - ang) % 360
     canvas = Image.new("RGBA", (1024, 1024))
     draw = ImageDraw.Draw(canvas)
@@ -44,6 +55,17 @@ def render_prize(prizes, ang, i, font):
 
 # Render the emblem
 def render_emblem(logo, insize=288):
+    """Render the centre emblem for the spinner
+
+    Arguments:
+        logo {[type]} -- Image to use for the emblem
+
+    Keyword Arguments:
+        insize {int} -- Radius of the emblem (default: {288})
+
+    Returns:
+        [type] -- Output generated emblem image
+    """
     canvas = Image.new("RGBA", (1024, 1024))
     draw = ImageDraw.Draw(canvas)
 
@@ -68,6 +90,11 @@ def render_emblem(logo, insize=288):
 
 
 def render_background():
+    """Render the background for the spinner
+
+    Returns:
+        [type] -- Generated background image
+    """
     canvas = Image.new("RGBA", (1024, 1024), (45, 52, 54))
     draw = ImageDraw.Draw(canvas)
 
@@ -79,6 +106,21 @@ def render_background():
 
 # Render the wheel
 def render_spinner(prizes, n, colors, font, radius=448, linewidth=8):
+    """Render the spinner base image
+
+    Arguments:
+        prizes {[type]} -- List of prizes to display on the wheel
+        n {[type]} -- Number of segments
+        colors {[type]} -- List of colors for the wheel segments
+        font {[type]} -- Font to use for prize text
+
+    Keyword Arguments:
+        radius {int} -- Radius of the spinner (default: {448})
+        linewidth {int} -- Width of the lines between segments (default: {8})
+
+    Returns:
+        [type] -- Generated spinner image
+    """
     canvas = Image.new("RGBA", (1024, 1024))
     draw = ImageDraw.Draw(canvas)
     width = 360 / n
@@ -115,6 +157,18 @@ def render_spinner(prizes, n, colors, font, radius=448, linewidth=8):
 
 # Render each frame of the animation
 def render_frame(background, emblem, spinner, rotation):
+    """Render a single frame of the image
+    This only combines the already generated components
+
+    Arguments:
+        background {[type]} -- Background image
+        emblem {[type]} -- Emblem image
+        spinner {[type]} -- Spinner image
+        rotation {[type]} -- Angle to render the spinner at
+
+    Returns:
+        [type] -- Output frame
+    """
     canvas = background.copy()
     spin = spinner.rotate(rotation, center=(256, 256))
     canvas.paste(spin, (0, 0), spin)
@@ -137,6 +191,27 @@ def generate_animation(
     emblem_func=render_emblem,
     spinner_func=render_spinner,
 ):
+    """Generate a complete spinner animation
+
+    Arguments:
+        count {[type]} -- Number of frames
+        n {[type]} -- Number of segments on the wheel
+        prizes {[type]} -- List of prizes to display on the wheel
+        colors {[type]} -- List of colors for the wheel segments
+        logo {[type]} -- Image to use for the center of the wheel
+
+    Keyword Arguments:
+        font {[type]} -- Font to use for wheel text (default: {DEFAULT_FONT})
+        innerwidth {int} -- Radius of the wheel emblem (default: {288})
+        outerwidth {int} -- Radius of the wheel from emblem to outskirt (default: {448})
+        linewidth {int} -- Thickness of the lines between segments (default: {8})
+        background_func {[type]} -- Function to use for background rendering (default: {render_background})
+        emblem_func {[type]} -- Function to use for emblem rendering (default: {render_emblem})
+        spinner_func {[type]} -- Function to use for spinner rendering (default: {render_spinner})
+
+    Returns:
+        [type] -- [description]
+    """
     frames = []
     velocity = random.uniform(8, 20)
     acceleration = -velocity / count
@@ -164,6 +239,15 @@ def generate_animation(
 
 
 def pick_random_colors(n):
+    """Pick random colors for the wheel
+    Where possible, colors for the wheel will come in pairs
+
+    Arguments:
+        n {int} -- Number of colors to select
+
+    Returns:
+        [type] -- List of colors to use in the generated wheel
+    """
     # Pick colors
     colors = [
         (232, 67, 147),
@@ -185,6 +269,15 @@ def pick_random_colors(n):
 
 
 def main(prizes, filename="./img/wheel.gif"):
+    """Generate a spinner animation gif
+    This does not return the GIF - it only saves it!
+
+    Arguments:
+        prizes {[type]} -- List of prizes to be displayed on the wheel
+
+    Keyword Arguments:
+        filename {str} -- Output filename for the spinner gif (default: {"./img/wheel.gif"})
+    """
     # Load resources
     logo = Image.open("./img/cat.png").resize((160, 160))
     n = len(prizes)
