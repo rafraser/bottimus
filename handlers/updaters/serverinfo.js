@@ -18,7 +18,7 @@ function updateMurder(message) {
 }
 
 function updateMinigames(message) {
-  const ip = '45.76.119.173'
+  const ip = '149.28.161.120'
   gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
     // Generate a nice looking embed
     const embed = new discord.RichEmbed()
