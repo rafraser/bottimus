@@ -298,13 +298,18 @@ client.findUser = function (message, args, retself = false) {
 
 // Execute a given python script
 client.executePython = function (script, args) {
-  if (!Array.isArray(args)) {
-    args = [args]
-  }
-  args.unshift('python/' + script + '.py')
-
   const p = new Promise(function (resolve, reject) {
-    const python = spawn('python3', args)
+    let python
+    if (args) {
+      if (!Array.isArray(args)) {
+        args = [args]
+      }
+      args.unshift('python/' + script + '.py')
+      python = spawn('python3', args)
+    } else {
+      python = spawn('python3', ['python/' + script + '.py'])
+    }
+
     let data = ''
 
     // Log print statements and errors to the data
