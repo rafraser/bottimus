@@ -34,7 +34,7 @@ function pickPrize() {
 }
 
 function openPrizeBall(msg, client, key, prize, rarity) {
-  const args = ['prizes/' + key, rarity, rarity + ' Prize!', prize]
+  const args = ['prizes/' + key, '--color', rarity, '--toptext', rarity + ' Prize!', '--bottomtext', prize]
   client.executePython('prizeball', args).then(function () {
     const attachment = new discord.Attachment('./img/prizeball.gif')
     msg.channel.send(attachment)
