@@ -3,6 +3,7 @@ import datetime
 import calendar
 import math
 import sys
+import argparse
 
 # Load fonts from file
 font_bold = ImageFont.truetype("./img/font/Montserrat-Black.ttf", 48)
@@ -277,38 +278,24 @@ def process_events_list(events):
     return events
 
 
-if __name__ == "__main__":
-    # Split the event args
-    args = sys.argv[1:]
-    events = {}
-    parser = argparse.ArgumentParser(
-        description="Generate a calendar for a list of events"
-    )
-    parser.add_argument("--events", nargs="+", description="List of events")
-
-    args = parser.parse_args()
-
+def main(args):
     # Get the current date
     tz = datetime.timezone(datetime.timedelta(hours=10))
     today = datetime.datetime.now(tz)
+    events = {}
 
-    # f = open("py_logging.txt", "w")
-    # sys.stdout = f
-
-    for arg in args:
-        arg = arg.split("|")
-        print(arg)
-
-        date = datetime.datetime.strptime(arg[0], "%a, %d %b %Y %H:%M:%S %Z")
+    for e in args.events:
+        # Split up the argument and parse the time
+        e = e.split("|")
+        date = datetime.datetime.strptime(e[0], "%a, %d %b %Y %H:%M:%S %Z")
         date = date.replace(tzinfo=datetime.timezone.utc)
         date = date.astimezone()
-        print(date)
 
         # Skip anything that isn't this month
         if date.year != today.year or date.month != today.month:
             continue
 
-        event = {"date": date, "category": arg[1], "title": arg[2]}
+        event = {"date": date, "category": e[1], "title": e[2]}
 
         # Group events by day
         if date.day in events:
@@ -316,4 +303,14 @@ if __name__ == "__main__":
         else:
             events[date.day] = [event]
 
+    # Generate the calendar for the month using the events list
     iterate_month(today.year, today.month, events)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Generate a calendar for a list of events"
+    )
+    parser.add_argument("--events", nargs="+", help="List of events")
+    args = parser.parse_args()
+    main(args)

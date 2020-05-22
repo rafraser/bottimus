@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import math
 import sys
 import random
+import argparse
 
 ball = Image.open("./img/gacha/" + str(random.randint(1, 6)) + ".png").resize(
     (192, 192), Image.NEAREST
