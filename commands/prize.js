@@ -50,7 +50,7 @@ function redeemPrize(msg, user, client) {
 
   // Announce prize after 10 seconds
   setTimeout(function () {
-    msg.channel.send(`Congrats, ${user.displayName}! You won ${prize}!`)
+    msg.channel.send(`Congrats, ${user.displayName}! You won **${prize}**!`)
   }, 10000)
 }
 
@@ -62,10 +62,10 @@ module.exports = {
   execute(message, args, client) {
     arcade.getArcadeCredits(message.member.id).then(function (amount) {
       if (amount < 1000) {
-        message.channel.send('You need at least 1000 coins for this!')
+        message.channel.send('You need at least **1000** coins for this!')
       } else {
         // Send a confirmation message
-        message.channel.send('Redeeming a prize costs 1000 coins: react to confirm').then(function (msg) {
+        message.channel.send('Redeeming a prize costs **1000** coins: react to confirm').then(function (msg) {
           msg.react('✅')
           const filter = function (reaction, user) {
             return user.id === message.member.id && reaction.emoji.name === '✅'

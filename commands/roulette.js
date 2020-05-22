@@ -41,11 +41,11 @@ function spinRoulette(client, message, betType, betAmount) {
     message.channel.send(attachment).then(function () {
       setTimeout(function () {
         // Check how the results went!
-        message.channel.send(`The wheel came up: ${result}`)
+        message.channel.send(`The wheel came up: **${result}**`)
         if (typeof betType == "string") {
           // Function bet
           if (bet_functions[betType](result)) {
-            message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} ${betAmount * 2}`)
+            message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} **${betAmount * 2}**`)
             arcade.incrementArcadeCredits(message.member.id, betAmount * 2)
             updateRouletteStat(message.member.id, betAmount * 2, betAmount)
           } else {
@@ -55,7 +55,7 @@ function spinRoulette(client, message, betType, betAmount) {
         } else {
           // Single number bet
           if (betType == result) {
-            message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} ${betAmount * 35}`)
+            message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} **${betAmount * 35}**`)
             arcade.incrementArcadeCredits(message.member.id, betAmount * 35)
             updateRouletteStat(message.member.id, betAmount * 35, betAmount)
           } else {
@@ -96,10 +96,10 @@ module.exports = {
         message.channel.send('Please enter a valid bet amount!')
         return
       } else if (amount < 50) {
-        message.channel.send('You must bet at least 50 coins!')
+        message.channel.send('You must bet at least **50** coins!')
         return
       } else if (amount > 500) {
-        message.channel.send('You can only bet up to 500 coins.')
+        message.channel.send('You can only bet up to **500** coins.')
         return
       }
 
@@ -115,7 +115,7 @@ module.exports = {
       }
 
       // Send a confirmation message
-      message.channel.send(`Are you sure you want to bet ${betAmount} coins on ${betType}?`).then(function (msg) {
+      message.channel.send(`Are you sure you want to bet **${betAmount}** coins on ${betType}?`).then(function (msg) {
         msg.react('✅')
         const filter = function (reaction, user) {
           return user.id === message.member.id && reaction.emoji.name === '✅'

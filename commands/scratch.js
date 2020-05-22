@@ -89,7 +89,7 @@ function generateScratchCard(msg, user, client) {
   setTimeout(function () {
     if (amount > 0) {
       const coin = client.emojis.get('631834832300670976')
-      msg.channel.send(`Congrats, ${user.displayName}! You won ${coin} ${amount}`)
+      msg.channel.send(`Congrats, ${user.displayName}! You won ${coin} **${amount}**`)
     } else {
       msg.channel.send(`Better luck next time, ${user.displayName} :(`)
     }
@@ -98,7 +98,7 @@ function generateScratchCard(msg, user, client) {
 
 module.exports = {
   name: 'scratchcard',
-  description: 'Try your luck with a scratchcard! Each card costs 250 coins to play.\n__Payouts:__\n💰 2500\n🍉 1000\n🍒 800\n🍋 500\n🍓 300\n🍇 100',
+  description: 'Try your luck with a scratchcard! Each card costs **250** coins to play.\n__Payouts:__\n💰 2500\n🍉 1000\n🍒 800\n🍋 500\n🍓 300\n🍇 100',
   aliases: ['scratch'],
   cooldown: 30,
   execute(message, args, client) {

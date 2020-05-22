@@ -83,7 +83,7 @@ module.exports = {
             } else {
               const amount = parseInt(data.replace('#coin ', ''), 10)
               const coin = client.emojis.get('631834832300670976')
-              message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} ${amount}`)
+              message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} **${amount}**`)
               arcade.incrementArcadeCredits(message.member.id, amount)
             }
           }, 6500)
