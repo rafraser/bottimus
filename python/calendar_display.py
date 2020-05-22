@@ -195,15 +195,15 @@ def create_canvas(year, month):
     canvas = Image.new("RGBA", (total_width, total_height), COLOR_BACKGROUND)
     draw = ImageDraw.Draw(canvas)
 
-    month_name = calendar.month_name[month]
+    month_name = calendar.month_name[month] + " " + str(year)
     right_aligned_text(
-        draw, total_width - margin, 6, month_name, font_header, (87, 101, 116)
+        draw, total_width - margin, 6, month_name, font_header, COLOR_DARK
     )
 
     for idx, day in enumerate(day_names):
         xx = margin + (box_width * (idx)) + (padding * (idx - 1))
         yy = top_size + margin / 2
-        centered_text(draw, xx + (box_width / 2), yy, day, font_medium, (87, 101, 116))
+        centered_text(draw, xx + (box_width / 2), yy, day, font_medium, COLOR_DARK)
 
     return canvas
 
