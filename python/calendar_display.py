@@ -9,6 +9,7 @@ import argparse
 font_bold = ImageFont.truetype("./img/font/Montserrat-Black.ttf", 48)
 font_medium = ImageFont.truetype("./img/font/Montserrat-Black.ttf", 32)
 font_light = ImageFont.truetype("./img/font/Montserrat-Regular.ttf", 24)
+font_light_small = ImageFont.truetype("./img/font/Montserrat-Regular.ttf", 20)
 font_header = ImageFont.truetype("./img/font/lemonmilk-light.ttf", 128)
 
 # Sizing properties
@@ -36,6 +37,10 @@ COLOR_YELLOW = "#e1b12c"
 COLOR_PURPLE = "#9c88ff"
 COLOR_BLUE = "#00a8ff"
 COLOR_RED = "#e84118"
+
+COLOR_DARK = "#576574"
+COLOR_BACKGROUND = "#dcdde1"
+COLOR_BLANK = "#bdc3c7"
 
 # Background colours for the events
 background_colors = {
@@ -131,9 +136,44 @@ def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
     # Build the text from the bottom upwards
     yy = y
     for line in lines[::-1]:
-        w, h = font.getsize(line + word)
+        w, h = font.getsize(line)
         draw.text((x, yy), line, font=font)
         yy -= h + 4
+
+
+def single_line_text(draw, x, y, text, font, maxwidth=box_width, maxheight=box_height):
+    """Draw a single line of text, centered in a box
+
+    Arguments:
+        draw {[type]} -- [description]
+        x {[type]} -- [description]
+        y {[type]} -- [description]
+        text {[type]} -- [description]
+        font {[type]} -- [description]
+
+    Keyword Arguments:
+        maxwidth {[type]} -- [description] (default: {box_width})
+        maxheight {[type]} -- [description] (default: {box_height})
+    """
+    # Split the text into multiple lines
+    text = text.split(" ")
+    i = 0
+    lines = []
+    line = ""
+    for word in text:
+        w, h = font.getsize(line + word)
+        if w >= maxwidth:
+            lines.append(line)
+            line = ""
+        line += word + " "
+    lines.append(line)
+
+    # In this situation we take and draw only the last line
+    line = lines[-1]
+    w, h = font.getsize(line)
+
+    yy = math.floor((maxheight / 2) - (h / 2)) - 2
+    draw.text((x, y + yy), line, font=font)
 
 
 def create_canvas(year, month):
@@ -152,7 +192,7 @@ def create_canvas(year, month):
     total_width = (box_width * 7) + (padding * 6) + (margin * 2)
     total_height = top_size + (box_height * num_weeks) + (padding * 4) + (margin * 2)
 
-    canvas = Image.new("RGBA", (total_width, total_height), "#dcdde1")
+    canvas = Image.new("RGBA", (total_width, total_height), COLOR_BACKGROUND)
     draw = ImageDraw.Draw(canvas)
 
     month_name = calendar.month_name[month]
@@ -178,13 +218,13 @@ def render_blank_day(number):
     Returns:
         [type] -- Generated calendar square
     """
-    box = Image.new("RGBA", (box_width, box_height), "#bdc3c7")
+    box = Image.new("RGBA", (box_width, box_height), COLOR_BLANK)
     draw = ImageDraw.Draw(box)
     draw.text((6, 2), str(number), font=font_bold)
     return box
 
 
-def render_event_image(box, image):
+def render_event_image(box, image, size=(math.floor(box_height / 2)), offset=(4, 4)):
     """Paste an event image into the relevant box
 
     Arguments:
@@ -194,33 +234,72 @@ def render_event_image(box, image):
     Returns:
         [type] -- New calendar square with event icon
     """
-    size = math.floor(box_height / 2)
     img = Image.open(image).resize((size, size)).convert("RGBA")
-    box.paste(img, (box_width - size - 4, 4), img)
+    box.paste(img, (box_width - size - offset[0], offset[1]), img)
     return box
 
 
-def render_event_day(event):
+def render_event_day(day, events):
     """Render a calendar square with a single scheduled event
     This box is coloured based on the event type
     This box also has an icon based on the event type
 
     Arguments:
-        event {[type]} -- Event data
+        day   {[type]} -- Day of the month to generate the box
+        event {[type]} -- List of events falling on this day
 
     Returns:
         [type] -- Generated calendar square
     """
-    color = background_colors[event["category"]]
-    image = "./img/event/" + event["category"] + ".png"
+    if len(events) == 1:
+        # Handle the case where only a single event falls on this day
+        event = events[0]
+        color = background_colors[event["category"]]
+        image = "./img/event/" + event["category"] + ".png"
 
-    box = Image.new("RGBA", (box_width, box_height), color)
-    draw = ImageDraw.Draw(box)
-    draw.text((6, 2), str(event["date"].day), font=font_bold)
-    wrapped_text(draw, 6, 112, event["title"], font_light, box_width - 16)
+        box = Image.new("RGBA", (box_width, box_height), color)
+        draw = ImageDraw.Draw(box)
+        draw.text((6, 2), str(day), font=font_bold)
+        wrapped_text(draw, 6, 112, event["title"], font_light, box_width - 16)
 
-    box = render_event_image(box, image)
-    return box
+        box = render_event_image(box, image)
+        return box
+    elif len(events) <= 5:
+        # In the case of exactly two events, split the box in half
+        # This will remove the day number, but still have event text
+        n = len(events)
+        box = Image.new("RGBA", (box_width, box_height))
+        draw = ImageDraw.Draw(box)
+        row_height = box_height / n
+        icon_size = math.floor(box_height / n) - 8
+
+        for i in range(n):
+            event = events[i]
+            color = background_colors[event["category"]]
+            image = "./img/event/" + event["category"] + ".png"
+
+            # Fill in this 'part' of the box
+            top = math.floor(i * row_height)
+            bottom = math.ceil((i + 1) * row_height)
+            draw.rectangle((0, top, box_width, bottom), fill=color)
+
+            # Add text & image
+            single_line_text(
+                draw,
+                6,
+                top,
+                event["title"],
+                font_light_small,
+                maxwidth=box_width - 16,
+                maxheight=row_height,
+            )
+            box = render_event_image(box, image, size=icon_size, offset=(4, top + 4))
+
+            # Add a line underneath each event row
+            if i > 0:
+                draw.line((0, top, box_width, top), fill=COLOR_BLANK)
+
+        return box
 
 
 def box_position(position):
@@ -256,7 +335,7 @@ def iterate_month(year, month, events):
         day_number = i + 1
 
         if day_number in events:
-            box = render_event_day(events[day_number][0])
+            box = render_event_day(day_number, events[day_number])
         else:
             box = render_blank_day(day_number)
 
@@ -266,7 +345,7 @@ def iterate_month(year, month, events):
     canvas.save("./img/calendar.png")
 
 
-def process_events_list(events):
+def process_events_list(today, args):
     """Process a list of event strings into proper event structures
 
     Arguments:
@@ -275,16 +354,9 @@ def process_events_list(events):
     Returns:
         [type] -- List of processed event structures
     """
-    return events
-
-
-def main(args):
-    # Get the current date
-    tz = datetime.timezone(datetime.timedelta(hours=10))
-    today = datetime.datetime.now(tz)
     events = {}
 
-    for e in args.events:
+    for e in args:
         # Split up the argument and parse the time
         e = e.split("|")
         date = datetime.datetime.strptime(e[0], "%a, %d %b %Y %H:%M:%S %Z")
@@ -302,6 +374,15 @@ def main(args):
             events[date.day].append(event)
         else:
             events[date.day] = [event]
+
+    return events
+
+
+def main(args):
+    # Get the current date
+    tz = datetime.timezone(datetime.timedelta(hours=10))
+    today = datetime.datetime.now(tz)
+    events = process_events_list(today, args.events)
 
     # Generate the calendar for the month using the events list
     iterate_month(today.year, today.month, events)
