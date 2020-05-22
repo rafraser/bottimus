@@ -83,15 +83,15 @@ function generateScratchCard(msg, user, client) {
   arcade.incrementArcadeCredits(user, amount)
   updateScratch(user, amount)
 
-  // Announce winnings after 5 seconds
+  // Announce winnings after 10 seconds
   setTimeout(function () {
     if (amount > 0) {
       const coin = client.emojis.get('631834832300670976')
       msg.channel.send(`Congrats! You won ${coin} ${amount}`)
     } else {
-      msg.channel.send('Better luck next time :(')
+      msg.channel.send(`Better luck next time :(`)
     }
-  }, 5000)
+  }, 10000)
 }
 
 module.exports = {
