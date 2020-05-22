@@ -45,7 +45,7 @@ function spinRoulette(client, message, betType, betAmount) {
         if (typeof betType == "string") {
           // Function bet
           if (bet_functions[betType](result)) {
-            message.channel.send(`Congratulations! You won ${coin} ${betAmount * 2}`)
+            message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} ${betAmount * 2}`)
             arcade.incrementArcadeCredits(message.member.id, betAmount * 2)
             updateRouletteStat(message.member.id, betAmount * 2, betAmount)
           } else {
@@ -55,7 +55,7 @@ function spinRoulette(client, message, betType, betAmount) {
         } else {
           // Single number bet
           if (betType == result) {
-            message.channel.send(`Congratulations! You won ${coin} ${betAmount * 35}`)
+            message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} ${betAmount * 35}`)
             arcade.incrementArcadeCredits(message.member.id, betAmount * 35)
             updateRouletteStat(message.member.id, betAmount * 35, betAmount)
           } else {

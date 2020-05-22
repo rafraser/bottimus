@@ -10,9 +10,9 @@ module.exports = {
     arcade.getArcadeCredits(user.id).then(function (amount) {
       const coin = client.emojis.get('631834832300670976')
       if (amount > 0) {
-        message.channel.send(`Balance: ${amount}${coin}`)
+        message.channel.send(`${user.displayName}'s Balance: ${amount}${coin}`)
       } else {
-        message.channel.send(`You don't have any coins! Go play some games and earn some ${coin}`)
+        message.channel.send(`No coins! Go play some games and earn some ${coin}`)
       }
     })
   }

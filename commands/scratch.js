@@ -71,6 +71,8 @@ function generateScratchCard(msg, user, client) {
     }
   }
 
+  let userID = user.id
+
   // Update the message with the scratchcard
   msg.clearReactions()
   const embed = new discord.RichEmbed()
@@ -80,16 +82,16 @@ function generateScratchCard(msg, user, client) {
   msg.edit(embed)
 
   // Pay the winner
-  arcade.incrementArcadeCredits(user, amount)
-  updateScratch(user, amount)
+  arcade.incrementArcadeCredits(userID, amount)
+  updateScratch(userID, amount)
 
   // Announce winnings after 10 seconds
   setTimeout(function () {
     if (amount > 0) {
       const coin = client.emojis.get('631834832300670976')
-      msg.channel.send(`Congrats! You won ${coin} ${amount}`)
+      msg.channel.send(`Congrats, ${user.displayName}! You won ${coin} ${amount}`)
     } else {
-      msg.channel.send(`Better luck next time :(`)
+      msg.channel.send(`Better luck next time, ${user.displayName} :(`)
     }
   }, 10000)
 }
@@ -116,7 +118,7 @@ module.exports = {
             // Confirmation received!
             collector.stop()
             arcade.incrementArcadeCredits(message.member.id, -250)
-            generateScratchCard(msg, message.member.id, client)
+            generateScratchCard(msg, message.member, client)
           })
         })
       }
