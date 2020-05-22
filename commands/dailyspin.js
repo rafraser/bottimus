@@ -69,7 +69,7 @@ module.exports = {
       message.channel.send('Get ready!')
 
       // Spin the wheel!
-      const prizes = pickWheel()
+      const prizes = ['--prizes'].concat(pickWheel())
       updateLastSpin(message.member.id, new Date())
       updateUserData(message.member.user)
 

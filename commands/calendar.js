@@ -11,7 +11,7 @@ module.exports = {
       return
     }
 
-    const events2 = []
+    const events2 = ['--events']
     for (const event of client.eventsData.values()) {
       events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
     }

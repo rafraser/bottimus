@@ -8,7 +8,7 @@ module.exports = {
   execute(message, args, client) {
     const user = client.findUser(message, args, true)
     arcade.getArcadePrizes(user.id).then(function (prizes) {
-      let prizes2 = []
+      let prizes2 = ['--prizes']
       for (const prize in prizes) {
         prizes2.push(prize + ':' + prizes[prize])
       }

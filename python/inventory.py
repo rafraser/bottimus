@@ -1,3 +1,4 @@
+import argparse
 import math
 import sys
 from PIL import Image, ImageDraw, ImageFont
@@ -38,6 +39,15 @@ background = Image.open("./img/frame.png").resize((126, 126))
 
 
 def silhoutte(image):
+    """Convert an image into a silhouette
+    This uses Super Advanced Techniques(TM)
+
+    Arguments:
+        image {[type]} -- Input image
+
+    Returns:
+        [type] -- Generated silhouette
+    """
     pixels = image.load()
     for yy in range(1, image.height - 1):
         for xx in range(1, image.width - 1):
@@ -55,6 +65,15 @@ def silhoutte(image):
 
 
 def renderSquare(prize=None, locked=False):
+    """Render a single square of the inventory
+
+    Keyword Arguments:
+        prize {[type]} -- Prize image for this square (default: {None})
+        locked {bool} -- Whether this square is unlocked or not (default: {False})
+
+    Returns:
+        [type] -- Output square image
+    """
     canvas = Image.new("RGB", (126, 126))
     canvas.paste(background)
 
@@ -70,6 +89,11 @@ def renderSquare(prize=None, locked=False):
 
 
 def renderInventory(items):
+    """Render a list of items as an inventory image
+
+    Arguments:
+        items {[type]} -- List of items to have in the inventory
+    """
     row_size = 6
     num_rows = math.ceil(len(prizes) / row_size)
 
@@ -104,9 +128,16 @@ def renderInventory(items):
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    items = {}
-    for arg in args:
-        arg = arg.split(":")
-        items[arg[0]] = int(arg[1])
+    parser = argparse.ArgumentParser(
+        description="Generate an inventory for a list of prize:amount pairs"
+    )
+    parser.add_argument(
+        "--prizes",
+        nargs="+",
+        help="List of prizes for the inventory. Each item should be of the form prize:amount",
+    )
+    args = parser.parse_args()
+
+    # Dictionary comprehension to split the prize list up
+    items = {k: int(v) for k, v in (x.split(":") for x in args.prizes)}
     renderInventory(items)

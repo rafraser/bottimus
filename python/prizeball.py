@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import math
 import sys
 import random
+import argparse
 
 ball = Image.open("./img/gacha/" + str(random.randint(1, 6)) + ".png").resize(
     (192, 192), Image.NEAREST
@@ -136,8 +137,27 @@ def render_award(image, color, toptext, bottomtext):
 
 
 if __name__ == "__main__":
-    image = sys.argv[1]
-    color = sys.argv[2]
-    toptext = sys.argv[3]
-    bottomtext = sys.argv[4]
-    render_award(image, color, toptext, bottomtext)
+    parser = argparse.ArgumentParser(
+        description="Generate a prize reveal gif animation\nThis is an improved version of sunburst.py"
+    )
+    parser.add_argument("image", help="Image source for the prize")
+    parser.add_argument(
+        "--color", default="yellow", help="Background color for the sunburst"
+    )
+    parser.add_argument(
+        "--toptext", default=None, help="Text to display above the prize"
+    )
+    parser.add_argument(
+        "--bottomtext", default=None, help="Text to display below the prize"
+    )
+    parser.add_argument(
+        "--font", default="disco", help="Font to use for the displayed text"
+    )
+    parser.add_argument(
+        "--output",
+        default="sunbeam.gif",
+        help="Output filename (include .gif extension)",
+    )
+    args = parser.parse_args()
+
+    render_award(args.image, args.color, args.toptext, args.bottomtext)
