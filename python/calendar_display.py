@@ -172,7 +172,7 @@ def single_line_text(draw, x, y, text, font, maxwidth=box_width, maxheight=box_h
     line = lines[-1]
     w, h = font.getsize(line)
 
-    yy = math.floor((maxheight / 2) - (h / 2)) - 2
+    yy = math.floor((maxheight / 2) - (h / 2)) - 1
     draw.text((x, y + yy), line, font=font)
 
 
@@ -251,39 +251,32 @@ def render_event_day(day, events):
     Returns:
         [type] -- Generated calendar square
     """
-    if len(events) == 1:
-        # Handle the case where only a single event falls on this day
-        event = events[0]
+    # Only take up to 5 events
+    events = sorted(events, key=lambda e: e["date"])
+    events = events[:5]
+    n = len(events)
+
+    # Create the box
+    box = Image.new("RGBA", (box_width, box_height))
+    draw = ImageDraw.Draw(box)
+    row_height = box_height / n
+    icon_size = math.floor(box_height / n) - 8 if n > 1 else math.floor(box_height / 2)
+
+    # Add a row in the box for each scheduled event
+    for i in range(n):
+        event = events[i]
         color = background_colors[event["category"]]
         image = "./img/event/" + event["category"] + ".png"
 
-        box = Image.new("RGBA", (box_width, box_height), color)
-        draw = ImageDraw.Draw(box)
-        draw.text((6, 2), str(day), font=font_bold)
-        wrapped_text(draw, 6, 112, event["title"], font_light, box_width - 16)
+        # Fill in the box background for each event
+        top = math.floor(i * row_height)
+        bottom = math.ceil((i + 1) * row_height)
+        draw.rectangle((0, top, box_width, bottom), fill=color)
 
-        box = render_event_image(box, image)
-        return box
-    elif len(events) <= 5:
-        # In the case of exactly two events, split the box in half
-        # This will remove the day number, but still have event text
-        n = len(events)
-        box = Image.new("RGBA", (box_width, box_height))
-        draw = ImageDraw.Draw(box)
-        row_height = box_height / n
-        icon_size = math.floor(box_height / n) - 8
-
-        for i in range(n):
-            event = events[i]
-            color = background_colors[event["category"]]
-            image = "./img/event/" + event["category"] + ".png"
-
-            # Fill in this 'part' of the box
-            top = math.floor(i * row_height)
-            bottom = math.ceil((i + 1) * row_height)
-            draw.rectangle((0, top, box_width, bottom), fill=color)
-
-            # Add text & image
+        # Add in event text
+        if n < 2:
+            wrapped_text(draw, 6, 112, event["title"], font_light, box_width - 16)
+        else:
             single_line_text(
                 draw,
                 6,
@@ -293,13 +286,18 @@ def render_event_day(day, events):
                 maxwidth=box_width - 16,
                 maxheight=row_height,
             )
-            box = render_event_image(box, image, size=icon_size, offset=(4, top + 4))
 
-            # Add a line underneath each event row
-            if i > 0:
-                draw.line((0, top, box_width, top), fill=COLOR_BLANK)
+        # Draw the event icon
+        box = render_event_image(box, image, size=icon_size, offset=(4, top + 4))
 
-        return box
+        # Add a divider between lines as needed
+        if i > 0:
+            draw.line((0, top, box_width, top), fill=COLOR_BLANK)
+
+    # Stamp the number if there's only one event
+    if n == 1:
+        draw.text((6, 2), str(day), font=font_bold)
+    return box
 
 
 def box_position(position):
