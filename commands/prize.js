@@ -45,8 +45,13 @@ function redeemPrize(msg, user, client) {
   msg.clearReactions()
   msg.edit('Get ready!')
   const [key, prize, rarity] = arcade.pickPrize()
-  arcade.unlockArcadePrize(user, key)
+  arcade.unlockArcadePrize(user.id, key)
   openPrizeBall(msg, client, key, prize, rarity)
+
+  // Announce prize after 10 seconds
+  setTimeout(function () {
+    msg.channel.send(`Congrats, ${user.displayName}! You won ${prize}!`)
+  }, 10000)
 }
 
 module.exports = {
@@ -71,7 +76,7 @@ module.exports = {
             // Confirmation received!
             collector.stop()
             arcade.incrementArcadeCredits(message.member.id, -1000)
-            redeemPrize(msg, message.member.id, client)
+            redeemPrize(msg, message.member, client)
           })
         })
       }
