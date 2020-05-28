@@ -32,6 +32,7 @@ const eventList = {
   deathrun: true,
   dodgeball: true,
   dota: true,
+  gmod: true,
   golf: true,
   hidden: true,
   jackbox: true,
@@ -59,26 +60,17 @@ function getEventCategory(event, forcetype) {
     return forcetype
   }
 
-  const words = event.title.split(' ').concat(event.description.split(' '))
-  let gmod = false
-
   // Scan all the words to spot the first category
+  const words = event.title.split(' ').concat(event.description.split(' '))
   for (let word of words) {
     word = word.toLowerCase()
     if (eventList[word]) {
       return word
-    } else if (word === 'gmod') {
-      gmod = true
     }
   }
 
-  // If no specific event was mentioned;
-  // check if it's a Garry's Mod or a generic event
-  if (gmod) {
-    return 'gmod'
-  } else {
-    return 'generic'
-  }
+  // Default to generic
+  return 'generic'
 }
 
 function findEventIcon(event) {
