@@ -62,6 +62,12 @@ client.on('ready', function () {
   // Start initialisation
   handlerSetup.setup(client)
 
+  // Set status
+  client.user.setPresence({
+    activity: { name: '' },
+    status: 'online'
+  })
+
   // Start the update loop
   client.minute = 0
   setInterval(client.update, 60 * 1000)
