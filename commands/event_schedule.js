@@ -8,8 +8,12 @@ You can schedule events with the following syntax:
 If no date is specified, it will default to today.
 
 The icon for the event will be automatically detected based on keywords.
-The following events have icons: \`sandbox jackbox murder minigames testing mapping music streaming hidden gmod\`
+The following events have icons:
 `
+
+function getEventTypes() {
+  return "\`" + Object.keys(events.eventCategories).join(" ") + "\`"
+}
 
 module.exports = {
   name: 'schedule',
@@ -25,7 +29,7 @@ module.exports = {
 
     // Help text if no arguments are provided
     if (args.length < 1) {
-      message.channel.send(helpString)
+      message.channel.send(helpString + getEventTypes())
       return
     }
 

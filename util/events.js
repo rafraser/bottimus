@@ -153,3 +153,4 @@ module.exports.generateEvent = generateEvent
 module.exports.getSortedEvents = getSortedEvents
 module.exports.getNextEvent = getNextEvent
 module.exports.generateCalendar = generateCalendar
+module.exports.eventCategories = eventList
