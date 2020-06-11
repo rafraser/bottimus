@@ -48,10 +48,8 @@ client.on('ready', function () {
 
     // Setup logging
     if (!client.testingMode) {
-      let date = new Date()
-      let dateString = date.toISOString()
-
-      let logFile = fs.createWriteStream(`logs/${dateString}.txt`)
+      const snowflake = discord.SnowflakeUtil.generate()
+      let logFile = fs.createWriteStream(`logs/${snowflake}.txt`)
       process.stdout.write = process.stderr.write = logFile.write.bind(logFile)
     }
 

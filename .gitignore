@@ -1,17 +1,23 @@
+# Development stuff
 .env
 .testmode
-data/events/
-data/mutes/
+.vscode/
 node_modules/
 python/__pycache__/
-.vscode/
-
 package-lock.json
+
+# Data files
+data/events/
+data/mutes/
+logs/
+
+# Wordlists (stop people cheating at hangman)
 hangman_words.js
 typeracer_words.js
-py_logging.txt
 
+# Generated images
 img/calendar.png
 img/inventory.png
 img/prizeball.gif
-im/spinner.gif
+img/spinner.gif
+img/roulette.gif
