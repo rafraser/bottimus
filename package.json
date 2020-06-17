@@ -2,7 +2,7 @@
     "name": "fluffy-bottimus",
     "version": "0.0.1",
     "dependencies": {
-        "discord.js": "^11.5.1",
+        "discord.js": "^11.6.4",
         "dotenv": "^6.2.0",
         "gamedig": "^2.0.14",
         "html-entities": "^1.2.1",

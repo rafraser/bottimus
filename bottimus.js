@@ -71,6 +71,14 @@ client.on('ready', function () {
   setInterval(client.update, 60 * 1000)
 })
 
+client.on('invalidated', function () {
+  console.log('Client has been invalidated')
+})
+
+client.on('error', function (e) {
+  console.error(e)
+})
+
 // Command handler
 client.on('message', function (message) {
   // Do not handle messages by bots
