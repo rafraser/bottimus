@@ -2,7 +2,6 @@ const events = require('../../util/events')
 
 const notificationChannel = '309951255575265280'
 const displayChannel = '621422264251973664'
-const displayChannelTesting = '723314836435501187'
 
 function updateEventMessage(client, eventChannel, event) {
   eventChannel.messages.fetch({ limit: 10 }).then(messages => {
@@ -64,7 +63,7 @@ function updateEvent(client, sendNew = false, ignoreTime = false) {
   }
 
   // Find the event display message
-  const eventChannel = client.channelWithTesting(displayChannel, displayChannelTesting)
+  const eventChannel = client.channelWithTesting(displayChannel)
   const event = client.upcomingEvent
   if (!event) {
     return
