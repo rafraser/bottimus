@@ -33,7 +33,7 @@ module.exports = {
           let codestring = '```yaml\nNum  Username                Score\n----------------------------------\n'
           let i = 1
           for (const result of results) {
-            const u = client.users.get(result.discordid)
+            const u = client.users.cache.get(result.discordid)
             let display = result.discordid
             if (u) { display = u.username }
 

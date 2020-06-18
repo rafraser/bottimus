@@ -10,16 +10,17 @@ function incrementStatScore(userid, speed) {
   const queryThree = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
 
   // callback hell I know
-  return new Promise(function (resolve, reject) {
-    pool.query(queryOne, [userid, speed], function (err, results) {
-      if (err) { console.log(err); return }
-      pool.query(queryTwo, [userid], function (err, results) {
-        if (err) { console.log(err); return }
-        const best = results[0].speed_best
+  return new Promise((resolve, reject) => {
+    pool.query(queryOne, [userid, speed], (err, results) => {
+      if (err) reject(err)
 
+      pool.query(queryTwo, [userid], (err, results) => {
+        if (err) reject(err)
+
+        const best = results[0].speed_best
         if (speed > best) {
-          pool.query(queryThree, [speed, new Date(), userid], function (err) {
-            if (err) console.log(err)
+          pool.query(queryThree, [speed, new Date(), userid], err => {
+            if (err) reject(err)
           })
           resolve([true, userid, speed])
         } else {
@@ -77,15 +78,15 @@ function startTypeRacer(client, message, display) {
   const list = shuffle(words.easy).slice(0, n - hard).concat(shuffle(words.hard).slice(0, hard))
   display.delete()
 
-  client.executePython('typeracer', list.join(' ')).then(function () {
+  client.executePython('typeracer', list.join(' ')).then(() => {
     // Send the image to the channel
-    const attachment = new discord.Attachment('./img/typeracer.png')
-    message.channel.send(attachment).then(function () {
+    const attachment = new discord.MessageAttachment('./img/typeracer.png')
+    message.channel.send(attachment).then(() => {
       const starttime = new Date()
       let winners = new Map()
 
       const collector = message.channel.createMessageCollector(messageFilter, { time: 60000 })
-      collector.on('collect', function (m) {
+      collector.on('collect', m => {
         // Check the message and see if it's a valid race response
         // Skip message if already won
         if (winners.get(m.member.id)) return
@@ -119,7 +120,7 @@ function startTypeRacer(client, message, display) {
         let string = 'The race is over!\n'
         // Announce the winners
         for (const result of winners) {
-          const member = message.guild.members.get(result[0])
+          const member = message.guild.members.cache.get(result[0])
           const finishtime = result[1]
           const duration = (finishtime - starttime) / 1000
           const wpm = Math.floor((letters / 5) * (60 / duration))
@@ -134,11 +135,11 @@ function startTypeRacer(client, message, display) {
           arcade.incrementArcadeCredits(result[0], credits)
 
           // Store data, announcing records when applicable
-          incrementStatScore(result[0], wpm).then(function (record) {
+          incrementStatScore(result[0], wpm).then(record => {
             if (record[0]) {
               const id = record[1]
               const speed = record[2]
-              const member = message.guild.members.get(id).displayName
+              const member = message.guild.members.cache.get(id).displayName
               message.channel.send('⭐ ' + member + ' set a new record of ' + speed + ' WPM!')
             }
           })
@@ -151,7 +152,7 @@ function startTypeRacer(client, message, display) {
         setPlayingTyperacer(client, message.guild, false)
       })
     })
-  }).catch(function (e) { message.channel.send(e) })
+  }).catch(message.channel.send)
 }
 
 module.exports = {
@@ -163,14 +164,14 @@ module.exports = {
     if (isPlayingTyperacer(client, message.guild)) return
     setPlayingTyperacer(client, message.guild, true)
 
-    message.channel.send('Get ready for Type Racer!').then(function (m) {
+    message.channel.send('Get ready for Type Racer!').then(m => {
       // Small delay before starting to allow players time to prepare
-      setTimeout(function () { m.edit('Type Racer starting in: 5') }, 5000)
-      setTimeout(function () { m.edit('Type Racer starting in: 4') }, 6000)
-      setTimeout(function () { m.edit('Type Racer starting in: 3') }, 7000)
-      setTimeout(function () { m.edit('Type Racer starting in: 2') }, 8000)
-      setTimeout(function () { m.edit('Type Racer starting in: 1') }, 9000)
-      setTimeout(function () { startTypeRacer(client, message, m) }, 10000)
+      setTimeout(() => { m.edit('Type Racer starting in: 5') }, 5000)
+      setTimeout(() => { m.edit('Type Racer starting in: 4') }, 6000)
+      setTimeout(() => { m.edit('Type Racer starting in: 3') }, 7000)
+      setTimeout(() => { m.edit('Type Racer starting in: 2') }, 8000)
+      setTimeout(() => { m.edit('Type Racer starting in: 1') }, 9000)
+      setTimeout(() => { startTypeRacer(client, message, m) }, 10000)
     })
   }
 }

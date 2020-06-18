@@ -23,7 +23,7 @@ function ticketUser(client, member, duration, muter, channel) {
   client.ticketData.set(member.guild.id + ',' + member.id, options)
 
   // Add the ticket role
-  member.addRole(member.guild.roles.get(ticketID))
+  member.roles.add(member.guild.roles.cache.get(ticketID))
 
   // Write a data file in case of restarting
   client.writeDataFile('tickets', member.guild.id + ',' + member.id, options)
@@ -31,9 +31,9 @@ function ticketUser(client, member, duration, muter, channel) {
 
 function unticketUser(client, id) {
   const settings = client.ticketData.get(id)
-  const guild = client.guilds.get(settings.guild)
-  const member = guild.members.get(settings.member)
-  const channel = guild.channels.get(settings.channel)
+  const guild = client.guilds.cache.get(settings.guild)
+  const member = guild.members.cache.get(settings.member)
+  const channel = guild.channels.cache.get(settings.channel)
   client.ticketData.delete(id)
 
   // Get the ticket role from guild role info
@@ -51,7 +51,7 @@ function unticketUser(client, id) {
   if (!member) {
     return
   }
-  member.removeRole(member.guild.roles.get(ticketID))
+  member.roles.add(member.guild.roles.cache.get(ticketID))
 }
 
 module.exports = {
@@ -100,7 +100,7 @@ module.exports = {
         ticketUser(client, target, duration, message.member, message.channel)
 
         // Send a cool mute embed
-        let embed = new discord.RichEmbed()
+        let embed = new discord.MessageEmbed()
           .setColor('#ff9f43')
           .setTitle('🎟️ ' + target.displayName + ' has a ticket 🎟️')
           .setDescription('It is valid for the next ' + client.timeToString(duration * 60 * 1000))
