@@ -216,12 +216,12 @@ client.isAdministrator = function (member) {
 
   if (roleData.admin instanceof Array) {
     // Treat arrays as a list of role IDs
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return roleData.admin.includes(role.id)
     })
   } else {
     // Treat strings as a role suffix
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return role.name.endsWith(roleData.admin)
     })
   }
@@ -237,12 +237,12 @@ client.isModerator = function (member) {
 
   if (roleData.mod instanceof Array) {
     // Treat arrays as a list of role IDs
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return roleData.mod.includes(role.id)
     })
   } else {
     // Treat strings as a role suffix
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return role.name.endsWith(roleData.mod)
     })
   }
@@ -255,7 +255,7 @@ client.isCommunityStar = function (member) {
   if (member.guild.id !== '309951255575265280') return false
   if (client.isModerator(member)) return true
 
-  return member.roles.some(role => {
+  return member.roles.cache.some(role => {
     return role.name.endsWith('Community Star')
   })
 }
@@ -264,7 +264,7 @@ client.isCommunityStar = function (member) {
 client.channelWithTesting = function (channel) {
   const testing = '583635933585342466'
   const channelID = client.testingMode ? testing : channel
-  return client.channels.get(channelID)
+  return client.channels.cache.get(channelID)
 }
 
 // Helper utility function to find a user

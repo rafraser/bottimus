@@ -2,7 +2,7 @@ const discord = require('discord.js')
 const fs = require('fs')
 
 function muteUser(client, member, duration, muter, channel) {
-  let roles = member.roles
+  let roles = member.roles.cache
   let roleIDs = roles.map(role => role.id)
 
   // Get the muted role from guild role info
@@ -30,11 +30,11 @@ function muteUser(client, member, duration, muter, channel) {
   // Remove all roles, then add muted role
   // We need this forEach loop vs removeRoles in the case of un-removable roles
   // eg. Nitro Boost
-  roles.forEach(function (role) {
+  roles.forEach(role => {
     if (role.id === muteID) return
-    member.removeRole(role).catch(function (e) { })
+    member.roles.remove(role).catch(e => { })
   })
-  member.addRole(member.guild.roles.get(muteID))
+  member.roles.add(member.guild.roles.cache.get(muteID))
 
   // Write a data file in case of restarting
   client.writeDataFile('mutes', member.guild.id + ',' + member.id, options)
@@ -42,9 +42,9 @@ function muteUser(client, member, duration, muter, channel) {
 
 function unmuteUser(client, id) {
   const settings = client.mutesData.get(id)
-  const guild = client.guilds.get(settings.guild)
-  const member = guild.members.get(settings.member)
-  const channel = guild.channels.get(settings.channel)
+  const guild = client.guilds.cache.get(settings.guild)
+  const member = guild.members.cache.get(settings.member)
+  const channel = guild.channels.cache.get(settings.channel)
   client.mutesData.delete(id)
 
   // Get the muted role from guild role info
@@ -55,7 +55,7 @@ function unmuteUser(client, id) {
 
   // Delete the mute data file (if it exists)
   try {
-    fs.unlink('data/mutes/' + member.guild.id + ',' + member.id + '.json', function (e) { })
+    fs.unlink('data/mutes/' + member.guild.id + ',' + member.id + '.json', e => { })
   } catch (e) { }
 
   // Abort if the member doesn't exist
@@ -64,11 +64,11 @@ function unmuteUser(client, id) {
   }
 
   // Add roles back, then removed muted role
-  settings.roles.forEach(function (id) {
-    const role = guild.roles.get(id)
-    member.addRole(role).catch(function (e) { })
+  settings.roles.forEach(id => {
+    const role = guild.roles.cache.get(id)
+    member.roles.add(role).catch(e => { })
   })
-  member.removeRole(member.guild.roles.get(muteID))
+  member.roles.remove(member.guild.roles.cache.get(muteID))
 
   // Reply message
   try {
@@ -126,7 +126,7 @@ module.exports = {
         muteUser(client, target, duration, message.member, message.channel)
 
         // Send a cool mute embed
-        let embed = new discord.RichEmbed()
+        let embed = new discord.MessageEmbed()
           .setColor('#c0392b')
           .setTitle('🦀 ' + target.displayName + ' is gone 🦀')
           .setDescription('They have been banished to the void for ' + client.timeToString(duration * 60 * 1000))

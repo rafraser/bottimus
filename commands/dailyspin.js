@@ -21,9 +21,9 @@ const GAME_WHEELS = [
 ]
 
 function getLastSpin(id) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     const queryString = 'SELECT lastspin FROM arcade_dailyspin WHERE discordid = ?'
-    pool.query(queryString, [id], function (err, results) {
+    pool.query(queryString, [id], (err, results) => {
       if (err) {
         reject(err)
       } else {
@@ -40,7 +40,7 @@ function updateLastSpin(id, date) {
 
 function updateUserData(user) {
   const queryString = 'INSERT INTO bottimus_userdata VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE username = VALUES(username), tag = VALUES(tag), avatar = VALUES(avatar)';
-  pool.query(queryString, [user.id, user.username, user.tag, user.displayAvatarURL])
+  pool.query(queryString, [user.id, user.username, user.tag, user.displayAvatarURL()])
 }
 
 function pickWheel() {
@@ -52,7 +52,7 @@ module.exports = {
   description: 'Spin the lucky prize wheel every 12 hours!\nThis is a great way to start earning coins',
   aliases: ['daily'],
   execute(message, args, client) {
-    getLastSpin(message.member.id).then(function (results) {
+    getLastSpin(message.member.id).then(results => {
       let lastspin = results[0]
       // If the user has previously spun the wheel, check that it's been 24 hours
       if (lastspin) {
@@ -70,29 +70,32 @@ module.exports = {
 
       // Spin the wheel!
       const prizes = ['--prizes'].concat(pickWheel())
-      updateLastSpin(message.member.id, new Date())
-      updateUserData(message.member.user)
 
-      client.executePython('spinner', prizes).then(function (data) {
-        const attachment = new discord.Attachment('./img/spinner.gif')
-        message.channel.send(attachment).then(function () {
-          setTimeout(function () {
+      client.executePython('spinner', prizes).then(data => {
+        const attachment = new discord.MessageAttachment('./img/spinner.gif')
+        message.channel.send(attachment).then(() => {
+          setTimeout(() => {
             // After a short delay, announce the winning and award credits
             if (data.startsWith('ZERO')) {
               message.channel.send('Oh no :( Better luck next time!')
             } else {
               const amount = parseInt(data.replace('#coin ', ''), 10)
-              const coin = client.emojis.get('631834832300670976')
+              const coin = client.emojis.cache.get('631834832300670976')
               message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} **${amount}**`)
+
+              // Update the database info once the spin is *successfully* complete
               arcade.incrementArcadeCredits(message.member.id, amount)
+              updateLastSpin(message.member.id, new Date())
+              // updateUserData(message.member.user)
             }
           }, 6500)
-        }).catch(function () {
+        }).catch(err => {
           message.channel.send('The wheel broke :(')
         })
       })
-    }).catch(function (err) {
+    }).catch(err => {
       message.channel.send(err.toString())
     })
+
   }
 }

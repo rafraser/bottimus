@@ -8,7 +8,7 @@ function incrementStatScore(userid, amount) {
 }
 
 function generateMiningEmbed(msg, name, amount, over = false) {
-  const embed = new discord.RichEmbed()
+  const embed = new discord.MessageEmbed()
     .setTitle(name + '\'s Mining Expedition')
     .setColor('#5352ed')
   if (over) {
@@ -30,13 +30,13 @@ function startMiningTrip(msg, member, client) {
     return u.id === member.id && reaction.emoji.name === '⛏' && collecting
   }
 
-  msg.clearReactions().then(function () {
+  msg.reactions.removeAll().then(() => {
     // Start watching for the pickaxe clicking
     msg.react('⛏')
     const collector = msg.createReactionCollector(filter, { time: 30000 })
-    collector.on('collect', function (reaction) {
+    collector.on('collect', reaction => {
       collecting = false
-      reaction.remove(member).then(function () {
+      reaction.users.remove(member).then(() => {
         if (collecting || gameover) return
 
         amount++
@@ -46,14 +46,14 @@ function startMiningTrip(msg, member, client) {
     })
 
     // Finish the expedition and announce the earnings
-    collector.on('end', function () {
+    collector.on('end', () => {
       // Cleanup game
-      msg.clearReactions()
+      msg.reactions.removeAll()
       gameover = true
       collecting = false
 
       // Announce results
-      const coin = client.emojis.get('631834832300670976')
+      const coin = client.emojis.cache.get('631834832300670976')
       generateMiningEmbed(msg, member.displayName, amount, true)
       msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${amount * 5} coins earned`)
 
@@ -69,19 +69,19 @@ module.exports = {
   description: 'Mine diamonds to earn coins. Each diamond is worth 5 coins.\nClick on the pickaxe repeatedly. Due to Discord limits, it may take a moment before each diamond is mined.',
   cooldown: 180,
   execute(message, args, client) {
-    arcade.getArcadeCredits(message.member.id).then(function (amount) {
+    arcade.getArcadeCredits(message.member.id).then(amount => {
       if (amount < 25) {
         message.channel.send('You need at least 25 coins for this!')
       } else {
         // Send a confirmation message
-        message.channel.send('Going on a mining expedition costs 25 coins: react to confirm').then(function (msg) {
+        message.channel.send('Going on a mining expedition costs 25 coins: react to confirm').then(msg => {
           msg.react('✅')
           const filter = function (reaction, user) {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
           const collector = msg.createReactionCollector(filter, { time: 10000 })
-          collector.on('collect', function () {
+          collector.on('collect', () => {
             // Confirmation received!
             collector.stop()
             arcade.incrementArcadeCredits(message.member.id, -25)

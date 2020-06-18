@@ -7,7 +7,7 @@ function incrementStatScore(userid, guesses, correct, revealed, won, contributio
   // Sorry
   const queryString = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
 
-  pool.query(queryString, [userid, guesses, correct, revealed, won, contribution], function (err, results) {
+  pool.query(queryString, [userid, guesses, correct, revealed, won, contribution], (err, results) => {
     if (err) {
       console.log(err)
     }
@@ -19,7 +19,7 @@ function getRandomWord() {
 }
 
 function generateEmbed(attempts, guesses, fails) {
-  const embed = new discord.RichEmbed()
+  const embed = new discord.MessageEmbed()
     .setTitle('Hangman')
     .setDescription((8 - fails) + ' mistakes left!')
     .setFooter(attempts.join(' '))
@@ -78,16 +78,16 @@ module.exports = {
     let playerCorrect = new Map()
     let playerRevealed = new Map()
 
-    message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails)).then(function (gameMsg) {
+    message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails)).then(gameMsg => {
       const collector = gameMsg.channel.createMessageCollector(hangmanFilter, { time: 60000 })
-      collector.on('collect', function (m) {
+      collector.on('collect', m => {
         // Check words for valid guesses
         let letter = m.content
         let user = m.member
 
         // Don't count guesses twice
         if (attempts.includes(letter)) {
-          gameMsg.channel.send(letter + ' has already been guessed!').then(function (msg) { msg.delete(1000) })
+          gameMsg.channel.send(letter + ' has already been guessed!').then(msg => { msg.delete({ timeout: 1000, reason: 'Hangman cleanup' }) })
           m.delete()
           return
         }
@@ -95,7 +95,7 @@ module.exports = {
         attempts.push(letter)
         if (word.indexOf(letter) === -1) {
           // Incorrect guess, oh no :(
-          gameMsg.channel.send('Uh oh! ' + letter + ' is not in the word!').then(function (msg) { msg.delete(1000) })
+          gameMsg.channel.send('Uh oh! ' + letter + ' is not in the word!').then(msg => { msg.delete({ timeout: 1000, reason: 'Hangman cleanup' }) })
           fails++
 
           // Track guesses per user
@@ -106,7 +106,7 @@ module.exports = {
           }
         } else {
           // Correct guess!
-          gameMsg.channel.send('Good guess! ' + letter + ' is in the word!').then(function (msg) { msg.delete(1000) })
+          gameMsg.channel.send('Good guess! ' + letter + ' is in the word!').then(msg => { msg.delete({ timeout: 1000, reason: 'Hangman cleanup' }) })
 
           // Reveal letters in the word
           let revealed = 0
@@ -150,7 +150,7 @@ module.exports = {
         }
       })
 
-      collector.on('end', function (collected, reason) {
+      collector.on('end', (collected, reason) => {
         setPlayingHangman(client, gameMsg.guild, false)
 
         // Send a message depending on how the game ended
@@ -165,7 +165,7 @@ module.exports = {
 
         // Increment stats data for all players
         // TODO
-        playerGuesses.forEach(function (guesses, key) {
+        playerGuesses.forEach((guesses, key) => {
           const correct = playerCorrect.get(key) || 0
           const revealed = playerRevealed.get(key) || 0
           const contribution = Math.floor((revealed / word.length) * 100)
