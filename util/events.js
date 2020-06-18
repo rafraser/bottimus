@@ -118,7 +118,7 @@ function generateEvent(member, title, description, time, forcetype) {
 
 function getSortedEvents(client) {
   // Sort the events by whichever is soonest
-  return client.eventsData.sort(function (a, b) {
+  return client.eventsData.sort((a, b) => {
     return a.time - b.time
   }).array()
 }
@@ -139,7 +139,7 @@ function generateCalendar(client) {
       events2.push(`${event.time.toUTCString()}.${event.category}.${event.title}`)
     }
 
-    client.executePython('calendar_display', events2).then(function () {
+    client.executePython('calendar_display', events2).then(() => {
       resolve('./img/calendar.png')
     })
   })

@@ -24,10 +24,8 @@ bet_functions['red'] = function (result) {
 function updateRouletteStat(userid, winnings, bet) {
   const queryString = 'INSERT INTO arcade_roulette VALUES(?, 1, ?, ?) ON DUPLICATE KEY UPDATE number = number + 1, winnings = winnings + VALUES(winnings), bet_total = bet_total + VALUES(bet_total);'
 
-  pool.query(queryString, [userid, winnings, bet], function (err, results) {
-    if (err) {
-      console.log(err)
-    }
+  pool.query(queryString, [userid, winnings, bet], (err, results) => {
+    if (err) console.log(err)
   })
 }
 
@@ -65,9 +63,7 @@ function spinRoulette(client, message, betType, betAmount) {
         }
       }, 6500)
     })
-  }).catch(function (err) {
-    message.channel.send(err.toString())
-  })
+  }).catch(message.channel.send)
 }
 
 module.exports = {
@@ -108,21 +104,21 @@ module.exports = {
     }
 
     // Check that the user has enough coins
-    arcade.getArcadeCredits(message.member.id).then(function (amount) {
+    arcade.getArcadeCredits(message.member.id).then(amount => {
       if (amount < betAmount) {
         message.channel.send(`You don't have enough coins for this!`)
         return
       }
 
       // Send a confirmation message
-      message.channel.send(`Are you sure you want to bet **${betAmount}** coins on ${betType}?`).then(function (msg) {
+      message.channel.send(`Are you sure you want to bet **${betAmount}** coins on ${betType}?`).then(msg => {
         msg.react('✅')
         const filter = function (reaction, user) {
           return user.id === message.member.id && reaction.emoji.name === '✅'
         }
 
         const collector = msg.createReactionCollector(filter, { time: 35000 })
-        collector.on('collect', function () {
+        collector.on('collect', () => {
           // Confirmation received!
           collector.stop()
           msg.edit('Get ready!')

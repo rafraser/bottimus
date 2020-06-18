@@ -24,7 +24,7 @@ module.exports = {
     }
 
     // Query database
-    pool.query(queryString, [args[0]], function (err, results) {
+    pool.query(queryString, [args[0]], (err, results) => {
       if (err) {
         message.channel.send('Couldn\'t get stats :(')
         message.channel.send(err.toString())

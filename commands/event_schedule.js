@@ -104,7 +104,7 @@ module.exports = {
       }
 
       const collector = msg.createReactionCollector(filter, { time: 25000 })
-      collector.on('collect', function () {
+      collector.on('collect', () => {
         // Confirmation received!
         collector.stop()
         client.requestedEventsData.push(event)

@@ -44,7 +44,7 @@ function unticketUser(client, id) {
 
   // Delete the ticket data file (if it exists)
   try {
-    fs.unlink('data/tickets/' + member.guild.id + ',' + member.id + '.json', function (e) { })
+    fs.unlink('data/tickets/' + member.guild.id + ',' + member.id + '.json', console.error)
   } catch (e) { }
 
   // Abort if the member doesn't exist

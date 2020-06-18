@@ -6,7 +6,7 @@ module.exports = {
   execute(client) {
     if (!client.mutesData) return
 
-    client.mutesData.forEach(function (data, id) {
+    client.mutesData.forEach((data, id) => {
       // Unmute each user if sufficient time has passed
       if (Date.now() > data.unmute.getTime()) {
         mute.unmute(client, id)

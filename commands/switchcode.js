@@ -3,8 +3,8 @@ const discord = require('discord.js')
 
 // Helper function to get statistics
 function queryHelper(queryString, args) {
-    return new Promise(function (resolve, reject) {
-        pool.query(queryString, args, function (err, results) {
+    return new Promise((resolve, reject) => {
+        pool.query(queryString, args, (err, results) => {
             if (err) {
                 reject(err)
             } else {

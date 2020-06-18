@@ -13,7 +13,7 @@ module.exports = {
     }
 
     // Sort the events by whichever is soonest
-    const sortedEvents = client.eventsData.sort(function (a, b) {
+    const sortedEvents = client.eventsData.sort((a, b) => {
       return a.time - b.time
     }).array()
 
@@ -26,7 +26,7 @@ module.exports = {
     // Generate a code block list
     let outputString = '```cs\n# Upcoming Events #'
     let now = Date.now()
-    sortedEvents.forEach(function (item, index) {
+    sortedEvents.forEach((item, index) => {
       if (Date.now() > item.time) return
 
       let name = item.title.replace("'", "")

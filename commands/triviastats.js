@@ -16,7 +16,7 @@ function calculateTotals(results) {
 function fetchStatistics(id) {
   return new Promise((resolve, reject) => {
     const queryString = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
-    pool.query(queryString, [id], function (err, results) {
+    pool.query(queryString, [id], (err, results) => {
       if (err) {
         reject(err)
       } else {

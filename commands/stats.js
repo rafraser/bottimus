@@ -16,14 +16,14 @@ module.exports = {
 
     // Query Fluffy Servers API
     const url = 'https://fluffyservers.com/api/stats/search/' + args[0]
-    https.get(url, function (resp) {
+    https.get(url, resp => {
       let data = ''
 
-      resp.on('data', function (chunk) {
+      resp.on('data', chunk => {
         data += chunk
       })
 
-      resp.on('end', function () {
+      resp.on('end', () => {
         try {
           const result = JSON.parse(data).results[0]
           // Generate a fancy looking embed with the user statistics

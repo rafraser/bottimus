@@ -77,7 +77,7 @@ function testPrizePicking() {
 
 function incrementArcadeCredits(userid, amount) {
   const queryString = 'INSERT INTO arcade_currency VALUES(?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);'
-  pool.query(queryString, [userid, amount], function (err, results) {
+  pool.query(queryString, [userid, amount], (err, results) => {
     if (err) {
       console.log(err)
     }
@@ -85,9 +85,9 @@ function incrementArcadeCredits(userid, amount) {
 }
 
 function getArcadeCredits(userid) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     const queryString = 'SELECT * FROM arcade_currency WHERE userid = ?;'
-    pool.query(queryString, [userid], function (err, results) {
+    pool.query(queryString, [userid], (err, results) => {
       if (err) {
         resolve(0)
       } else {
@@ -102,9 +102,9 @@ function getArcadeCredits(userid) {
 }
 
 function unlockArcadePrize(userid, prize) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     const queryString = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
-    pool.query(queryString, [userid, prize], function (err, results) {
+    pool.query(queryString, [userid, prize], (err, results) => {
       if (err) {
         console.log(err)
         reject(err)
@@ -116,9 +116,9 @@ function unlockArcadePrize(userid, prize) {
 }
 
 function getArcadePrizes(userid) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     const queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
-    pool.query(queryString, [userid], function (err, results) {
+    pool.query(queryString, [userid], (err, results) => {
       if (err) {
         reject(err)
       } else {

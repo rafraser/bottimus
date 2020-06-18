@@ -134,7 +134,7 @@ embedFunctions.typeracer = function (user) {
         .addField('Best Speed', `${r.speed_best}WPM`, true)
         .addField('Record Date', `${best}`, true)
       resolve(embed)
-    }).catch(function (err) {
+    }).catch(err => {
       reject(err)
     })
   })
@@ -155,7 +155,7 @@ embedFunctions.scratchcard = function (user) {
         .addField('Profit', `${r.winnings - r.number * 250}`, true)
         .addField('Average Income', `${r.average}`, true)
       resolve(embed)
-    }).catch(function (err) {
+    }).catch(err => {
       reject(err)
     })
   })
@@ -177,7 +177,7 @@ embedFunctions.mining = function (user) {
         .addField('Earnings', `${r.diamonds * 5}`, true)
         .addField('Profit', `${r.diamonds * 5 - r.number * 25}`, true)
       resolve(embed)
-    }).catch(function (err) {
+    }).catch(err => {
       reject(err)
     })
   })
@@ -196,7 +196,7 @@ embedFunctions.prizes = function (user) {
         .addField('Total', `${r.total}`, true)
         .addField('Unique', `${r.collected}`, true)
       resolve(embed)
-    }).catch(function (err) {
+    }).catch(err => {
       reject(err)
     })
   })
@@ -219,7 +219,7 @@ embedFunctions.roulette = function (user) {
         .addField('Average Income', `${r.payout_average}`, true)
         .addField('Average Bet', `${r.bet_average}`, true)
       resolve(embed)
-    }).catch(function (err) {
+    }).catch(err => {
       reject(err)
     })
   })
@@ -249,8 +249,8 @@ module.exports = {
 
     // Fancy promise stuff
     // This runs all of the given promises, ignoring any errors
-    let m = promises.map(function (p) {
-      return p.catch(function (err) {
+    let m = promises.map(p => {
+      return p.catch(err => {
         console.log(err)
         return null
       })

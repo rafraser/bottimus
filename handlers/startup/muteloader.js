@@ -6,14 +6,14 @@ module.exports = {
   execute(client) {
     client.mutesData = new discord.Collection()
     try {
-      fs.readdir('data/mutes/', function (err, files) {
+      fs.readdir('data/mutes/', (err, results) => {
         if (err || !files) {
           return
         }
 
         for (let mute of files) {
           // Load each mute data file
-          fs.readFile('data/mutes/' + mute, function (err, data) {
+          fs.readFile('data/mutes/' + mute, (err, data) => {
             if (err) return
 
             const id = mute.replace('.json', '')

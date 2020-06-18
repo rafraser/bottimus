@@ -114,7 +114,7 @@ function startTypeRacer(client, message, display) {
         m.channel.send('✅ ' + m.member.displayName + ' has completed the race!')
       })
 
-      collector.on('end', function () {
+      collector.on('end', () => {
         let letters = list.join(' ').length
         let place = 1
         let string = 'The race is over!\n'
