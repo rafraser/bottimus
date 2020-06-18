@@ -17,7 +17,7 @@ module.exports = {
     }
 
     client.executePython('calendar_display', events2).then(function () {
-      const attachment = new discord.Attachment('./img/calendar.png')
+      const attachment = new discord.MessageAttachment('./img/calendar.png')
       message.channel.send(attachment)
     })
   }

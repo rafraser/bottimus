@@ -3,8 +3,8 @@ const discord = require('discord.js')
 
 // Calculate the totals across all trivia categories
 function calculateTriviaTotals(results) {
-  const totalGuesses = 0
-  const totalCorrect = 0
+  let totalGuesses = 0
+  let totalCorrect = 0
 
   for (const result of results) {
     totalGuesses = totalGuesses + result.attempted
@@ -16,8 +16,8 @@ function calculateTriviaTotals(results) {
 
 // Helper function to get statistics
 function queryHelper(queryString, id) {
-  return new Promise(function (resolve, reject) {
-    pool.query(queryString, [id], function (err, results) {
+  return new Promise((resolve, reject) => {
+    pool.query(queryString, [id], (err, results) => {
       if (err) {
         reject(err)
       } else {
@@ -67,13 +67,13 @@ let embedFunctions = {}
 
 // Generate a nice embed for Hangman information
 embedFunctions.hangman = function (user) {
-  return new Promise(function (resolve, reject) {
-    fetchHangmanStatistics(user.id).then(function (results) {
+  return new Promise((resolve, reject) => {
+    fetchHangmanStatistics(user.id).then(results => {
       const username = user.displayName
       const r = results[0]
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`🚷 Hangman -  ${username}`)
         .addField('Letters Guessed', `${r.guesses}`, true)
@@ -83,7 +83,7 @@ embedFunctions.hangman = function (user) {
         .addField('Words Contributed', `${r.words}`, true)
         .addField('Contribution', `${r.contribution}%`, true)
       resolve(embed)
-    }).catch(function (err) {
+    }).catch(err => {
       reject(err)
     })
   })
@@ -91,20 +91,20 @@ embedFunctions.hangman = function (user) {
 
 // Generate a nice embed for Trivia information
 embedFunctions.trivia = function (user) {
-  return new Promise(function (resolve, reject) {
-    fetchTriviaStatistics(user.id).then(function (results) {
+  return new Promise((resolve, reject) => {
+    fetchTriviaStatistics(user.id).then(results => {
       const username = user.displayName
       const [totalGuesses, totalCorrect] = calculateTriviaTotals(results)
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`❓ Trivia - ${username}`)
         .addField('Questions Answered', `${totalGuesses}`, true)
         .addField('Questions Correct', `${totalCorrect}`, true)
         .addField('Percentage', `${Math.floor((totalCorrect / totalGuesses) * 100) || 0}%`, true)
       resolve(embed)
-    }).catch(function (err) {
+    }).catch(err => {
       reject(err)
     })
   })
@@ -112,8 +112,8 @@ embedFunctions.trivia = function (user) {
 
 // Generate a nice embed for Typeracer information
 embedFunctions.typeracer = function (user) {
-  return new Promise(function (resolve, reject) {
-    fetchTyperacerStatistics(user.id).then(function (results) {
+  return new Promise((resolve, reject) => {
+    fetchTyperacerStatistics(user.id).then(results => {
       const username = user.displayName
       const r = results[0]
 
@@ -126,7 +126,7 @@ embedFunctions.typeracer = function (user) {
       const best = day + '-' + month + '-' + year
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`🏎 Type Racer - ${username}`)
         .addField('Races Completed', `${r.completed}`, true)
@@ -141,13 +141,13 @@ embedFunctions.typeracer = function (user) {
 }
 
 embedFunctions.scratchcard = function (user) {
-  return new Promise(function (resolve, reject) {
-    fetchScratchcardStatistics(user.id).then(function (results) {
+  return new Promise((resolve, reject) => {
+    fetchScratchcardStatistics(user.id).then(results => {
       const username = user.displayName
       const r = results[0]
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`💸 Scratch Cards - ${username}`)
         .addField('Number', `${r.number}`, true)
@@ -162,13 +162,13 @@ embedFunctions.scratchcard = function (user) {
 }
 
 embedFunctions.mining = function (user) {
-  return new Promise(function (resolve, reject) {
-    fetchMiningStatistics(user.id).then(function (results) {
+  return new Promise((resolve, reject) => {
+    fetchMiningStatistics(user.id).then(results => {
       const username = user.displayName
       const r = results[0]
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`💎 Mining - ${username}`)
         .addField('Expeditions', `${r.number}`, true)
@@ -184,13 +184,13 @@ embedFunctions.mining = function (user) {
 }
 
 embedFunctions.prizes = function (user) {
-  return new Promise(function (resolve, reject) {
-    fetchPrizeStatistics(user.id).then(function (results) {
+  return new Promise((resolve, reject) => {
+    fetchPrizeStatistics(user.id).then(results => {
       const username = user.displayName
       const r = results[0]
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`🔮 Prizes - ${username}`)
         .addField('Total', `${r.total}`, true)
@@ -203,13 +203,13 @@ embedFunctions.prizes = function (user) {
 }
 
 embedFunctions.roulette = function (user) {
-  return new Promise(function (resolve, reject) {
-    fetchRouletteStatistics(user.id).then(function (results) {
+  return new Promise((resolve, reject) => {
+    fetchRouletteStatistics(user.id).then(results => {
       const username = user.displayName
       const r = results[0]
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`💸 Roulette - ${username}`)
         .addField('Number', `${r.number}`, true)
@@ -256,7 +256,7 @@ module.exports = {
       })
     })
 
-    Promise.all(m).then(function (results) {
+    Promise.all(m).then(results => {
       if (results.length < 1) {
         message.channel.send('No data available')
       } else {
@@ -266,5 +266,6 @@ module.exports = {
         }
       }
     })
+
   }
 }

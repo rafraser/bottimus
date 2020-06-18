@@ -9,18 +9,18 @@ module.exports = {
   cooldown: 10,
   execute(message, args) {
     // Grab a random cat fact from the URL
-    https.get(CAT_FACT_URL, function (resp) {
+    https.get(CAT_FACT_URL, resp => {
       let data = ''
 
-      resp.on('data', function (chunk) {
+      resp.on('data', chunk => {
         data += chunk
       })
 
-      resp.on('end', function () {
+      resp.on('end', () => {
         // Send the embed
         const fact = JSON.parse(data).fact
 
-        const embed = new discord.RichEmbed()
+        const embed = new discord.MessageEmbed()
           .setColor('#9c88ff')
           .setDescription(fact)
         message.channel.send(embed)
