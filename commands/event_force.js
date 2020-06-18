@@ -11,6 +11,6 @@ module.exports = {
       return
     }
 
-    updater.execute(client, true)
+    updater.execute(client, true, true)
   }
 }

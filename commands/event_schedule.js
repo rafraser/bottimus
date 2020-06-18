@@ -97,7 +97,7 @@ module.exports = {
     const embed = events.generateEventEmbed(event, timeLeft)
 
     // Check that the event is correct before sending
-    message.channel.send('Is this correct?', embed).then(function (msg) {
+    message.channel.send('Is this correct?', embed).then(msg => {
       msg.react('✅')
       const filter = function (reaction, user) {
         return user.id === message.member.id && reaction.emoji.name === '✅'
@@ -109,11 +109,8 @@ module.exports = {
         collector.stop()
         client.requestedEventsData.push(event)
 
-        if (client.testingMode) return
-
-        const channel = client.channels.get(approvalChannel)
+        const channel = client.channelWithTesting(approvalChannel)
         channel.send(`New event requested by **${message.member.displayName}**!`)
-
         msg.channel.send('Event has been sent to Administrators for approval!')
       })
     })

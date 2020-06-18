@@ -260,8 +260,7 @@ client.isCommunityStar = function (member) {
 }
 
 // Useful function to get a channel with a default case for testing mode
-client.channelWithTesting = function (channel) {
-  const testing = '583635933585342466'
+client.channelWithTesting = function (channel, testing = '583635933585342466') {
   const channelID = client.testingMode ? testing : channel
   return client.channels.cache.get(channelID)
 }

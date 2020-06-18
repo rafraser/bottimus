@@ -80,7 +80,7 @@ function findEventIcon(event) {
 function generateEventEmbed(event, timeLeft) {
   const formattedTime = formatEventDate(event.time)
   const image = findEventIcon(event)
-  const embed = new discord.RichEmbed()
+  const embed = new discord.MessageEmbed()
     .setColor('#f0932b')
     .setTitle(event.title)
     .setDescription(event.description)
@@ -95,7 +95,7 @@ function generateEventEmbed(event, timeLeft) {
 function generateCompletedEventEmbed(event) {
   const formattedTime = formatEventDate(event.time)
   const image = findEventIcon(event)
-  const embed = new discord.RichEmbed()
+  const embed = new discord.MessageEmbed()
     .setColor('#f0932b')
     .setTitle(event.title)
     .setThumbnail(image)
