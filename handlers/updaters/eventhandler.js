@@ -58,11 +58,10 @@ function updateEventMessage(client, eventChannel, event) {
 function updateEvent(client, sendNew = false, ignoreTime = false) {
   if (!client.eventsData) return
 
+  // Get the next event if required
   if (!client.upcomingEvent) {
     client.upcomingEvent = events.getNextEvent(client)
   }
-
-  console.log(client.upcomingEvent)
 
   // Find the event display message
   const eventChannel = client.channelWithTesting(displayChannel, displayChannelTesting)
