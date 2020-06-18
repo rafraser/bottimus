@@ -27,14 +27,17 @@ function muteUser(client, member, duration, muter, channel) {
   }
   client.mutesData.set(member.guild.id + ',' + member.id, options)
 
-  // Remove all roles, then add muted role
+  // Add the muted role
+  const muteRole = member.guild.roles.cache.get(muteID)
+  member.roles.add(muteRole)
+
+  // Remove all pther roles
   // We need this forEach loop vs removeRoles in the case of un-removable roles
   // eg. Nitro Boost
   roles.forEach(role => {
-    if (role.id === muteID) return
+    if (role.id === muteID || role.name === '@everyone') return
     member.roles.remove(role).catch(e => { })
   })
-  member.roles.add(member.guild.roles.cache.get(muteID))
 
   // Write a data file in case of restarting
   client.writeDataFile('mutes', member.guild.id + ',' + member.id, options)
@@ -63,12 +66,16 @@ function unmuteUser(client, id) {
     return
   }
 
+  // Remove the muted role
+  const muteRole = member.guild.roles.cache.get(muteID)
+  member.roles.remove(muteRole)
+
   // Add roles back, then removed muted role
   settings.roles.forEach(id => {
     const role = guild.roles.cache.get(id)
+    if (role.id === muteID || role.name === '@everyone') return
     member.roles.add(role).catch(e => { })
   })
-  member.roles.remove(member.guild.roles.cache.get(muteID))
 
   // Reply message
   try {
