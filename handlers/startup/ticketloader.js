@@ -6,14 +6,14 @@ module.exports = {
   execute(client) {
     client.ticketData = new discord.Collection()
     try {
-      fs.readdir('data/tickets/', function (err, files) {
+      fs.readdir('data/tickets/', (err, files) => {
         if (err || !files) {
           return
         }
 
         for (let ticket of files) {
           // Load each ticket data file
-          fs.readFile('data/tickets/' + ticket, function (err, data) {
+          fs.readFile('data/tickets/' + ticket, (err, data) => {
             if (err) return
 
             const id = ticket.replace('.json', '')

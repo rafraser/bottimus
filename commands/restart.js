@@ -15,12 +15,11 @@ module.exports = {
     // Put a notification in the bot's status to alert the state
     client.user.setPresence({
       activity: { name: 'Restarting!' },
-      status: 'idle'
     })
 
     // Give the bot about 30 seconds, but put the bot into a 'shutdown' mode first
     client.restartingSoon = true
-    setTimeout(function () {
+    setTimeout(() => {
       process.exit(1)
     }, 30 * 1000)
   }

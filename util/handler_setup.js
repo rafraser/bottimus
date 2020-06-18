@@ -62,7 +62,7 @@ function loadRoles(client) {
 
     for (const file of files) {
       let server = file.replace('.json', '')
-      fs.readFile('./data/roles/' + file, 'utf8', function (err, data) {
+      fs.readFile('./data/roles/' + file, 'utf8', (err, data) => {
         if (err) {
           console.error(err)
           return

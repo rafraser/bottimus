@@ -14,7 +14,7 @@ module.exports = {
 
         // Build a table of server names and owners
         let serverList = '```\n'
-        client.guilds.forEach(guild => {
+        client.guilds.cache.forEach(guild => {
             const name = client.padOrTrim(guild.name, 30)
             const owner = client.padOrTrim(guild.owner.displayName, 20)
             serverList += `${name}  ${owner}\n`

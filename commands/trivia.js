@@ -11,7 +11,7 @@ const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 }
 function incrementStatScore(userid, category, correct) {
   const queryString = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
 
-  pool.query(queryString, [userid, category, correct], function (err, results) {
+  pool.query(queryString, [userid, category, correct], (err, results) => {
     if (err) {
       console.log(err)
     }
@@ -19,15 +19,15 @@ function incrementStatScore(userid, category, correct) {
 }
 
 function getQuestionData() {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // Query the data from OpenTDB
-    https.get('https://opentdb.com/api.php?amount=1&type=multiple', function (resp) {
+    https.get('https://opentdb.com/api.php?amount=1&type=multiple', resp => {
       resp.data = ''
-      resp.on('data', function (chunk) {
+      resp.on('data', chunk => {
         resp.data += chunk
       })
 
-      resp.on('end', function () {
+      resp.on('end', () => {
         let info
         try {
           info = JSON.parse(resp.data).results[0]
@@ -62,9 +62,9 @@ module.exports = {
   aliases: ['quiz'],
   cooldown: 12,
   execute(message, args, client) {
-    getQuestionData().then(function (data) {
+    getQuestionData().then(data => {
       // Create an embed for the question
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(data.category)
         .setDescription(data.question)
@@ -75,9 +75,9 @@ module.exports = {
         .addField('D', data.answers[3])
 
       // Send the embed and prepare the reactions
-      message.channel.send(embed).then(function (msg) {
+      message.channel.send(embed).then(msg => {
         // sorry
-        msg.react('🇦').then(function () { msg.react('🇧').then(function () { msg.react('🇨').then(function () { msg.react('🇩') }) }) })
+        msg.react('🇦').then(() => { msg.react('🇧').then(() => { msg.react('🇨').then(() => { msg.react('🇩') }) }) })
 
         // Filter out any reactions that aren't guesses
         const filter = function (r) {
@@ -86,13 +86,13 @@ module.exports = {
         }
 
         // Wait 15 seconds for reactions
-        msg.awaitReactions(filter, { time: 15000 }).then(function (collected) {
+        msg.awaitReactions(filter, { time: 15000 }).then(collected => {
           message.channel.send('The correct answer is: ' + arrayOfLetters[data.correct])
 
           // Sort out all the guesses, disqualifying anyone that guessed multiple times
           let guesses = new Map()
-          collected.forEach(function (reaction) {
-            reaction.users.forEach(function (user) {
+          collected.forEach(reaction => {
+            reaction.users.cache.forEach(user => {
               if (user.bot) return
 
               if (guesses.get(user.id)) {
@@ -105,10 +105,10 @@ module.exports = {
 
           // From all the guesses, determine who won
           let winners = []
-          guesses.forEach(function (guess, id) {
+          guesses.forEach((guess, id) => {
             const c = (guess === data.correct) ? 1 : 0
             if (c) {
-              const username = message.guild.members.get(id).displayName
+              const username = message.guild.members.cache.get(id).displayName
               winners.push(username)
             }
 
@@ -123,7 +123,7 @@ module.exports = {
           }
         })
       })
-    }).catch(function (error) {
+    }).catch(error => {
       message.channel.send(error)
     })
   }

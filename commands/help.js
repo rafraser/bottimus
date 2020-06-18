@@ -2,8 +2,8 @@ const discord = require('discord.js')
 const fs = require('fs')
 
 function defaultHelpEmbed(client, message) {
-  const coin = client.emojis.get('631834832300670976')
-  const embed = new discord.RichEmbed()
+  const coin = client.emojis.cache.get('631834832300670976')
+  const embed = new discord.MessageEmbed()
     .setColor('#9c88ff')
     .setTitle('Commands Overview')
     .setDescription('For more help on a specific command, type `!help [command]`')
@@ -15,7 +15,7 @@ function defaultHelpEmbed(client, message) {
 }
 
 function commandHelpEmbed(command, message) {
-  return new discord.RichEmbed()
+  return new discord.MessageEmbed()
     .setColor('#9c88ff')
     .setTitle('!' + command.name)
     .setDescription(command.description)

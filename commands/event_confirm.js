@@ -42,10 +42,10 @@ module.exports = {
     const embed = events.generateEventEmbed(event, timeLeft)
 
     // Send the message and await administrator action
-    message.channel.send(embed).then(function (msg) {
+    message.channel.send(embed).then(msg => {
       // Make sure the reactions are in the right order
       // Subtle but annoying if not implemented
-      msg.react('✅').then(function () {
+      msg.react('✅').then(() => {
         msg.react('❎')
       })
 
@@ -54,7 +54,7 @@ module.exports = {
       }
 
       const collector = msg.createReactionCollector(filter, { time: 15000 })
-      collector.on('collect', function (r) {
+      collector.on('collect', r => {
         // Approve or deny the event
         if (r.emoji.name === '✅') {
           approveEvent(event, client)

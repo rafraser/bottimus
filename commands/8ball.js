@@ -11,7 +11,7 @@ module.exports = {
   execute(message, args) {
     // Pick one of the 20 8ball images at random and send it as a reply
     const result = getRandomInt(1, 20)
-    const img = new discord.Attachment('./img/8ball/' + result + '.png')
+    const img = new discord.MessageAttachment('./img/8ball/' + result + '.png')
     message.channel.send(img)
   }
 }

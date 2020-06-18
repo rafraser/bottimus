@@ -16,8 +16,8 @@ module.exports = {
       events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
     }
 
-    client.executePython('calendar_display', events2).then(function () {
-      const attachment = new discord.Attachment('./img/calendar.png')
+    client.executePython('calendar_display', events2).then(() => {
+      const attachment = new discord.MessageAttachment('./img/calendar.png')
       message.channel.send(attachment)
     })
   }
