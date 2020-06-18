@@ -33,13 +33,13 @@ function updateRouletteStat(userid, winnings, bet) {
 
 function spinRoulette(client, message, betType, betAmount) {
   // Spin the wheel, brent!
-  const coin = client.emojis.get('631834832300670976')
+  const coin = client.emojis.cache.get('631834832300670976')
 
-  client.executePython('roulette').then(function (result) {
+  client.executePython('roulette').then(result => {
     result = parseInt(result) // just in case
-    const attachment = new discord.Attachment('./img/roulette.gif')
-    message.channel.send(attachment).then(function () {
-      setTimeout(function () {
+    const attachment = new discord.MessageAttachment('./img/roulette.gif')
+    message.channel.send(attachment).then(() => {
+      setTimeout(() => {
         // Check how the results went!
         message.channel.send(`The wheel came up: **${result}**`)
         if (typeof betType == "string") {
@@ -126,7 +126,7 @@ module.exports = {
           // Confirmation received!
           collector.stop()
           msg.edit('Get ready!')
-          msg.clearReactions()
+          msg.reactions.removeAll()
 
           // Spin the wheel
           arcade.incrementArcadeCredits(message.member.id, -betAmount)

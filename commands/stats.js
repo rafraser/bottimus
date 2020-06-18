@@ -27,7 +27,7 @@ module.exports = {
         try {
           const result = JSON.parse(data).results[0]
           // Generate a fancy looking embed with the user statistics
-          const embed = new discord.RichEmbed()
+          const embed = new discord.MessageEmbed()
             .setColor('#e84118')
             .setTitle(`Stats for ${result.username}`)
             .addField('Hours Played', `${Math.floor(result.playtime / 3600) || 0}`, false)

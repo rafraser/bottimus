@@ -36,13 +36,13 @@ function pickPrize() {
 function openPrizeBall(msg, client, key, prize, rarity) {
   const args = ['prizes/' + key, '--color', rarity, '--toptext', rarity + ' Prize!', '--bottomtext', prize]
   client.executePython('prizeball', args).then(function () {
-    const attachment = new discord.Attachment('./img/prizeball.gif')
+    const attachment = new discord.MessageAttachment('./img/prizeball.gif')
     msg.channel.send(attachment)
   })
 }
 
 function redeemPrize(msg, user, client) {
-  msg.clearReactions()
+  msg.reactions.removeAll()
   msg.edit('Get ready!')
   const [key, prize, rarity] = arcade.pickPrize()
   arcade.unlockArcadePrize(user.id, key)
@@ -51,7 +51,7 @@ function redeemPrize(msg, user, client) {
   // Announce prize after 10 seconds
   setTimeout(function () {
     msg.channel.send(`Congrats, ${user.displayName}! You won **${prize}**!`)
-  }, 10000)
+  }, 12500)
 }
 
 module.exports = {

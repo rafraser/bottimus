@@ -74,8 +74,8 @@ function generateScratchCard(msg, user, client) {
   let userID = user.id
 
   // Update the message with the scratchcard
-  msg.clearReactions()
-  const embed = new discord.RichEmbed()
+  msg.reactions.removeAll()
+  const embed = new discord.MessageEmbed()
     .setTitle('Scratch Card')
     .setColor('#ff9f43')
     .setDescription(message)
@@ -88,7 +88,7 @@ function generateScratchCard(msg, user, client) {
   // Announce winnings after 10 seconds
   setTimeout(function () {
     if (amount > 0) {
-      const coin = client.emojis.get('631834832300670976')
+      const coin = client.emojis.cache.get('631834832300670976')
       msg.channel.send(`Congrats, ${user.displayName}! You won ${coin} **${amount}**`)
     } else {
       msg.channel.send(`Better luck next time, ${user.displayName} :(`)

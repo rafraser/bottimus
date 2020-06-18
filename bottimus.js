@@ -63,7 +63,6 @@ client.on('ready', function () {
   // Set status
   client.user.setPresence({
     activity: { name: '' },
-    status: 'online'
   })
 
   // Start the update loop

@@ -22,7 +22,7 @@ function buildFriendsTable(client, message, gid) {
             codeString += 'Nobody has listed their friend code yet - be the first!'
         }
         for (const result of results) {
-            const u = client.users.get(result.discordid)
+            const u = client.users.cache.get(result.discordid)
             let display = result.discordid
             if (u) { display = u.username }
 
