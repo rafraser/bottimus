@@ -6,7 +6,7 @@ module.exports = {
   execute(client) {
     client.mutesData = new discord.Collection()
     try {
-      fs.readdir('data/mutes/', function (err, files) {
+      fs.readdir('data/mutes/', (err, files) => {
         if (err || !files) {
           return
         }

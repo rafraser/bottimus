@@ -13,7 +13,7 @@ module.exports = {
 
         for (const event of files) {
           // Load each event data file
-          fs.readFile('data/events/' + event, function (err, data) {
+          fs.readFile('data/events/' + event, (err, data) => {
             if (err) return
 
             const id = event.replace('.json', '')
