@@ -74,8 +74,8 @@ function generateScratchCard(msg, user, client) {
   let userID = user.id
 
   // Update the message with the scratchcard
-  msg.clearReactions()
-  const embed = new discord.RichEmbed()
+  msg.reactions.removeAll()
+  const embed = new discord.MessageEmbed()
     .setTitle('Scratch Card')
     .setColor('#ff9f43')
     .setDescription(message)
@@ -86,9 +86,9 @@ function generateScratchCard(msg, user, client) {
   updateScratch(userID, amount)
 
   // Announce winnings after 10 seconds
-  setTimeout(function () {
+  setTimeout(() => {
     if (amount > 0) {
-      const coin = client.emojis.get('631834832300670976')
+      const coin = client.emojis.cache.get('631834832300670976')
       msg.channel.send(`Congrats, ${user.displayName}! You won ${coin} **${amount}**`)
     } else {
       msg.channel.send(`Better luck next time, ${user.displayName} :(`)
@@ -102,19 +102,19 @@ module.exports = {
   aliases: ['scratch'],
   cooldown: 30,
   execute(message, args, client) {
-    arcade.getArcadeCredits(message.member.id).then(function (amount) {
+    arcade.getArcadeCredits(message.member.id).then(amount => {
       if (amount < 250) {
         message.channel.send('You need at least 250 coins for this!')
       } else {
         // Send a confirmation message
-        message.channel.send('Scratch cards cost 250 coins: react to confirm').then(function (msg) {
+        message.channel.send('Scratch cards cost 250 coins: react to confirm').then(msg => {
           msg.react('✅')
           const filter = function (reaction, user) {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
           const collector = msg.createReactionCollector(filter, { time: 25000 })
-          collector.on('collect', function () {
+          collector.on('collect', () => {
             // Confirmation received!
             collector.stop()
             arcade.incrementArcadeCredits(message.member.id, -250)

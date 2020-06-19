@@ -3,9 +3,9 @@ const discord = require('discord.js')
 
 function updateMurder(message) {
   const ip = '35.244.106.238'
-  gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
+  gamedig.query({ type: 'garrysmod', host: ip }).then(result => {
     // Generate a nice looking embed
-    const embed = new discord.RichEmbed()
+    const embed = new discord.MessageEmbed()
       .setColor('#e84118')
       .setTitle('🕹️ Murder')
       .setDescription(`Click: steam://connect/${ip} to join`)
@@ -14,14 +14,14 @@ function updateMurder(message) {
       .setThumbnail(`https://fluffyservers.com/mapicons/${result.map}.jpg`)
       .setTimestamp()
     message.edit(embed)
-  }).catch(function (e) { })
+  }).catch(e => { })
 }
 
 function updateMinigames(message) {
   const ip = '149.28.161.120'
-  gamedig.query({ type: 'garrysmod', host: ip }).then(function (result) {
+  gamedig.query({ type: 'garrysmod', host: ip }).then(result => {
     // Generate a nice looking embed
-    const embed = new discord.RichEmbed()
+    const embed = new discord.MessageEmbed()
       .setColor('#fbc531')
       .setTitle('🕹️ Minigames')
       .setDescription(`Click: steam://connect/${ip} to join\n Type \`!role minigames\` to join the channel`)
@@ -31,7 +31,7 @@ function updateMinigames(message) {
       .setThumbnail(`https://fluffyservers.com/mg/maps/${result.map}.jpg`)
       .setTimestamp()
     message.edit(embed)
-  }).catch(function (e) { })
+  }).catch(e => { })
 }
 
 const serverChannel = '528849382196379650'
@@ -43,11 +43,11 @@ module.exports = {
   frequency: 5,
   execute(client) {
     try {
-      const channel = client.channels.get(serverChannel)
-      channel.fetchMessage(murderMessage).then(function (m) { updateMurder(m) })
-      channel.fetchMessage(minigamesMessage).then(function (m) { updateMinigames(m) })
+      const channel = client.channels.cache.get(serverChannel)
+      channel.messages.fetch(murderMessage).then(updateMurder)
+      channel.messages.fetch(minigamesMessage).then(updateMinigames)
     } catch (e) {
-      console.log('Failed to update server info')
+      console.error(e)
     }
   }
 }

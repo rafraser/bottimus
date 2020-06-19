@@ -35,23 +35,23 @@ function pickPrize() {
 
 function openPrizeBall(msg, client, key, prize, rarity) {
   const args = ['prizes/' + key, '--color', rarity, '--toptext', rarity + ' Prize!', '--bottomtext', prize]
-  client.executePython('prizeball', args).then(function () {
-    const attachment = new discord.Attachment('./img/prizeball.gif')
+  client.executePython('prizeball', args).then(() => {
+    const attachment = new discord.MessageAttachment('./img/prizeball.gif')
     msg.channel.send(attachment)
   })
 }
 
 function redeemPrize(msg, user, client) {
-  msg.clearReactions()
+  msg.reactions.removeAll()
   msg.edit('Get ready!')
   const [key, prize, rarity] = arcade.pickPrize()
   arcade.unlockArcadePrize(user.id, key)
   openPrizeBall(msg, client, key, prize, rarity)
 
   // Announce prize after 10 seconds
-  setTimeout(function () {
+  setTimeout(() => {
     msg.channel.send(`Congrats, ${user.displayName}! You won **${prize}**!`)
-  }, 10000)
+  }, 12500)
 }
 
 module.exports = {
@@ -60,19 +60,19 @@ module.exports = {
   cooldown: 40,
   aliases: ['redeemprize', 'prizeball'],
   execute(message, args, client) {
-    arcade.getArcadeCredits(message.member.id).then(function (amount) {
+    arcade.getArcadeCredits(message.member.id).then(amount => {
       if (amount < 1000) {
         message.channel.send('You need at least **1000** coins for this!')
       } else {
         // Send a confirmation message
-        message.channel.send('Redeeming a prize costs **1000** coins: react to confirm').then(function (msg) {
+        message.channel.send('Redeeming a prize costs **1000** coins: react to confirm').then(msg => {
           msg.react('✅')
           const filter = function (reaction, user) {
             return user.id === message.member.id && reaction.emoji.name === '✅'
           }
 
           const collector = msg.createReactionCollector(filter, { time: 35000 })
-          collector.on('collect', function () {
+          collector.on('collect', () => {
             // Confirmation received!
             collector.stop()
             arcade.incrementArcadeCredits(message.member.id, -1000)

@@ -14,7 +14,7 @@ module.exports = {
 
     // Give the bot about 30 seconds, but put the bot into a 'shutdown' mode first
     client.restartingSoon = true
-    setTimeout(function () {
+    setTimeout(() => {
       process.exit(1)
     }, 30 * 1000)
   }

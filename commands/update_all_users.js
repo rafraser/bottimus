@@ -2,7 +2,7 @@ const pool = require('../util/database')
 
 function updateUserData(user) {
     const queryString = 'INSERT INTO bottimus_userdata VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE username = VALUES(username), tag = VALUES(tag), avatar = VALUES(avatar)';
-    pool.query(queryString, [user.id, user.username, user.tag, user.displayAvatarURL])
+    pool.query(queryString, [user.id, user.username, user.tag, user.displayAvatarURL()])
 }
 
 module.exports = {
@@ -20,17 +20,17 @@ module.exports = {
         // If arguments are specified, then search for those
         if (args.length >= 1) {
             for (let arg of args) {
-                if(arg == 'force') {
+                if (arg == 'force') {
                     forceMode = true
                     break
                 }
 
-                client.fetchUser(arg, false).then(user => {
+                client.users.fetch(arg, false).then(user => {
                     updateUserData(user)
                 }).catch()
             }
-            
-            if(!forceMode) return
+
+            if (!forceMode) return
         }
 
         // Fetch all the user IDs
@@ -38,14 +38,14 @@ module.exports = {
         const partialQuery = 'SELECT userid FROM arcade_currency WHERE userid NOT IN (SELECT discordid FROM bottimus_userdata);'
         const forceQuery = 'SELECT userid FROM arcade_currency'
         const queryString = forceMode ? forceQuery : partialQuery
-        pool.query(queryString, function (err, results) {
+        pool.query(queryString, (err, results) => {
             if (err) {
                 message.channel.send(err.toString())
                 return
             }
 
             for (let result of results) {
-                client.fetchUser(result.userid, false).then(user => {
+                client.users.fetch(result.userid, false).then(user => {
                     updateUserData(user)
                 }).catch(err => {
                     console.log('Failed to get ', result.userid)

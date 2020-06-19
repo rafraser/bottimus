@@ -14,9 +14,9 @@ function calculateTotals(results) {
 }
 
 function fetchStatistics(id) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     const queryString = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
-    pool.query(queryString, [id], function (err, results) {
+    pool.query(queryString, [id], (err, results) => {
       if (err) {
         reject(err)
       } else {
@@ -32,12 +32,12 @@ module.exports = {
   execute(message, args, client) {
     const user = client.findUser(message, args, true)
 
-    fetchStatistics(user.id).then(function (results) {
+    fetchStatistics(user.id).then(results => {
       const username = user.displayName
       const [totalGuesses, totalCorrect] = calculateTotals(results)
 
       // Generate a nice embed for details
-      const embed = new discord.RichEmbed()
+      const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
         .setTitle(`Trivia Stats for ${username}`)
         .addField('Questions Answered', `${totalGuesses}`, true)
@@ -45,9 +45,11 @@ module.exports = {
         .addField('Percentage', `${Math.floor((totalCorrect / totalGuesses) * 100) || 0}%`, true)
 
       // Wait until the first message is sent
-      message.channel.send(embed).then(function () {
+      message.channel.send(embed).then(() => {
         // Generate a fancy breakdown of the trivia categories
         // This uses code formatting for extra coolness
+        if (!results || results.length < 1) return
+
         let codestring = '```python\n\n'
         for (const result of results) {
           const qstring = (result.correct + '/' + result.attempted).padStart(8, ' ')
@@ -58,7 +60,7 @@ module.exports = {
         codestring += '```'
         message.channel.send(codestring)
       })
-    }).catch(function (err) {
+    }).catch(err => {
       message.channel.send('Could not get stats :(')
       message.channel.send(err.toString())
     })

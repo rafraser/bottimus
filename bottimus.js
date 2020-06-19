@@ -19,7 +19,7 @@ client.writeDataFile = function (directory, name, data) {
   }
 
   // Convert the data to JSON and write to the data file
-  fs.writeFile('data/' + directory + '/' + name + '.json', JSON.stringify(data), function (e) {
+  fs.writeFile('data/' + directory + '/' + name + '.json', JSON.stringify(data), e => {
     if (e) console.error(e)
   })
 }
@@ -37,13 +37,13 @@ client.update = function () {
 }
 
 // Load all the required functionality when the bot is connected
-client.on('ready', function () {
+client.on('ready', () => {
   // Initialise important directories
   handlerSetup.createDirectories()
 
   // Run a quick check to see if this is a test bot
   // Testing mode is enabled if a .testmode file exists
-  fs.access('.testmode', fs.constants.F_OK, function (err) {
+  fs.access('.testmode', fs.constants.F_OK, err => {
     client.testingMode = !err
 
     // Setup logging
@@ -63,7 +63,6 @@ client.on('ready', function () {
   // Set status
   client.user.setPresence({
     activity: { name: '' },
-    status: 'online'
   })
 
   // Start the update loop
@@ -71,16 +70,14 @@ client.on('ready', function () {
   setInterval(client.update, 60 * 1000)
 })
 
-client.on('invalidated', function () {
+client.on('invalidated', () => {
   console.log('Client has been invalidated')
 })
 
-client.on('error', function (e) {
-  console.error(e)
-})
+client.on('error', console.error)
 
 // Command handler
-client.on('message', function (message) {
+client.on('message', message => {
   // Do not handle messages by bots
   if (message.author.bot) return
 
@@ -167,7 +164,7 @@ client.on('message', function (message) {
 })
 
 // Welcome new users to the server where applicable
-client.on('guildMemberAdd', function (member) {
+client.on('guildMemberAdd', member => {
   if (client.testingMode) return
 
   const guild = member.guild.id
@@ -177,7 +174,7 @@ client.on('guildMemberAdd', function (member) {
 })
 
 // Log any deleted messages into a moderation logging channel
-client.on('messageDelete', function (message) {
+client.on('messageDelete', message => {
   if (message.guild.id !== '309951255575265280') return
   if (client.testingMode) return
   if (message.member.user.bot) return
@@ -216,12 +213,12 @@ client.isAdministrator = function (member) {
 
   if (roleData.admin instanceof Array) {
     // Treat arrays as a list of role IDs
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return roleData.admin.includes(role.id)
     })
   } else {
     // Treat strings as a role suffix
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return role.name.endsWith(roleData.admin)
     })
   }
@@ -237,12 +234,12 @@ client.isModerator = function (member) {
 
   if (roleData.mod instanceof Array) {
     // Treat arrays as a list of role IDs
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return roleData.mod.includes(role.id)
     })
   } else {
     // Treat strings as a role suffix
-    return member.roles.some(role => {
+    return member.roles.cache.some(role => {
       return role.name.endsWith(roleData.mod)
     })
   }
@@ -255,16 +252,15 @@ client.isCommunityStar = function (member) {
   if (member.guild.id !== '309951255575265280') return false
   if (client.isModerator(member)) return true
 
-  return member.roles.some(role => {
+  return member.roles.cache.some(role => {
     return role.name.endsWith('Community Star')
   })
 }
 
 // Useful function to get a channel with a default case for testing mode
-client.channelWithTesting = function (channel) {
-  const testing = '583635933585342466'
+client.channelWithTesting = function (channel, testing = '583635933585342466') {
   const channelID = client.testingMode ? testing : channel
-  return client.channels.get(channelID)
+  return client.channels.cache.get(channelID)
 }
 
 // Helper utility function to find a user
@@ -285,7 +281,7 @@ client.findUser = function (message, args, retself = false) {
 
   // Search the list of users for matching names
   const search = args.shift().toLowerCase()
-  const results = message.guild.members.filter(function (u) {
+  const results = message.guild.members.cache.filter(u => {
     return u.displayName.toLowerCase().includes(search)
       || u.user.username.toLowerCase().includes(search)
       || u.user.tag.toLowerCase() == search
@@ -309,8 +305,8 @@ client.findUser = function (message, args, retself = false) {
 }
 
 // Execute a given python script
-client.executePython = function (script, args) {
-  const p = new Promise(function (resolve, reject) {
+client.executePython = (script, args) => {
+  const p = new Promise((resolve, reject) => {
     let python
     if (args) {
       if (!Array.isArray(args)) {
@@ -325,17 +321,17 @@ client.executePython = function (script, args) {
     let data = ''
 
     // Log print statements and errors to the data
-    python.stdout.on('data', function (d) {
+    python.stdout.on('data', d => {
       data += d
     })
 
-    python.stderr.on('data', function (d) {
+    python.stderr.on('data', d => {
       data += d
     })
 
     // Resolve or reject the promise depending on the result of the python code
     // 0 is a success, any other code is a failure
-    python.on('close', function (code) {
+    python.on('close', code => {
       data = data.trim() // remove any whitespace at the end
       if (code === 0) {
         resolve(data)

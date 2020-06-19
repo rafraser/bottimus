@@ -13,7 +13,7 @@ module.exports = {
 
         for (let mute of files) {
           // Load each mute data file
-          fs.readFile('data/mutes/' + mute, function (err, data) {
+          fs.readFile('data/mutes/' + mute, (err, data) => {
             if (err) return
 
             const id = mute.replace('.json', '')

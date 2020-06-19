@@ -53,7 +53,7 @@ module.exports = {
   name: 'role',
   description: 'Assign a role to yourself',
   aliases: ['roleme', 'assign', 'setrole'],
-  cooldown: 5,
+  cooldown: 3,
   execute(message, args, client) {
     const user = message.member
     const roleData = client.serverRoles.get(user.guild.id)
@@ -74,7 +74,7 @@ module.exports = {
       return
     }
 
-    const userRoles = message.member.roles
+    const userRoles = message.member.roles.cache
     let messageStack = ''
     let addStack = []
     let removeStack = []
@@ -133,7 +133,7 @@ module.exports = {
     }
 
     // Roles have been processed, now apply our changes
-    user.removeRoles(removeStack).then(function () { user.addRoles(addStack) })
+    user.roles.remove(removeStack).then(() => { user.roles.add(addStack) })
     message.channel.send(messageStack)
   }
 }

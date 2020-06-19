@@ -25,14 +25,14 @@ module.exports = {
       }
     }
 
-    http.get(url, function (resp) {
+    http.get(url, resp => {
       let data = ''
 
-      resp.on('data', function (chunk) {
+      resp.on('data', chunk => {
         data += chunk
       })
 
-      resp.on('end', function () {
+      resp.on('end', () => {
         data = data.split(' ')
         const number = data.shift()
         if (isNaN(number)) {
@@ -40,7 +40,7 @@ module.exports = {
           return
         }
 
-        const embed = new discord.RichEmbed()
+        const embed = new discord.MessageEmbed()
           .setColor('#9c88ff')
           .setTitle(number)
           .setDescription(data.join(' '))
