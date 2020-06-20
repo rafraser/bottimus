@@ -2,7 +2,7 @@ const gamedig = require('gamedig')
 const discord = require('discord.js')
 
 function updateMurder(message) {
-  const ip = '35.244.106.238'
+  const ip = '172.105.170.249'
   gamedig.query({ type: 'garrysmod', host: ip }).then(result => {
     // Generate a nice looking embed
     const embed = new discord.MessageEmbed()
