@@ -5,7 +5,11 @@ const timeHelper = require('./util/timehelper')
 const handlerSetup = require('./util/handler_setup')
 
 // Create a new Discord client
-const client = new discord.Client()
+const client = new discord.Client({
+  ws: {
+    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
+  }
+})
 const prefixes = ['!', 'Bottimus, ']
 
 // Load the configuration from the .env file
