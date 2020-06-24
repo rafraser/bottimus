@@ -187,7 +187,7 @@ client.on('messageDelete', message => {
   if (message.channel.name === 'bottimus-test-track') return
   if (message.content.startsWith('!say')) return
 
-  const channel = message.guild.channels.find((ch) => ch.name === 'junkyard')
+  const channel = message.guild.channels.cache.find((ch) => ch.name === 'junkyard')
 
   // todo: fix this to work for messages with multiple attachments
   // Not sure if this is even possible; but it's a real pain to deal with
