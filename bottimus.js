@@ -7,7 +7,7 @@ const handlerSetup = require('./util/handler_setup')
 // Create a new Discord client
 const client = new discord.Client({
   ws: {
-    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
+    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS']
   }
 })
 const prefixes = ['!', 'Bottimus, ']
