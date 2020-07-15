@@ -8,6 +8,23 @@ const entities = new HtmlEntities()
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 }
 
+const categories = {
+  'Science': [17, 17, 17, 18, 19, 27, 28, 30],
+  'Entertainment': [10, 11, 12, 13, 14, 15, 16, 29, 31, 32],
+  'Humanities': [22, 22, 20, 23, 24, 25, 25, 26],
+  'General': [9]
+}
+
+function getCategoryId(category) {
+  if (category in categories) {
+    const ids = categories[category]
+    return ids[Math.floor(Math.random() * ids.length)]
+  } else {
+    const keys = Object.keys(categories)
+    return getCategoryId(keys[Math.floor(Math.random() * keys.length)])
+  }
+}
+
 function incrementStatScore(userid, category, correct) {
   const queryString = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
 
@@ -18,10 +35,10 @@ function incrementStatScore(userid, category, correct) {
   })
 }
 
-function getQuestionData() {
+function getQuestionData(category) {
   return new Promise((resolve, reject) => {
     // Query the data from OpenTDB
-    https.get('https://opentdb.com/api.php?amount=1&type=multiple', resp => {
+    https.get(`https://opentdb.com/api.php?amount=1&category=${category}&type=multiple`, resp => {
       resp.data = ''
       resp.on('data', chunk => {
         resp.data += chunk
@@ -62,7 +79,21 @@ module.exports = {
   aliases: ['quiz'],
   cooldown: 12,
   execute(message, args, client) {
-    getQuestionData().then(data => {
+    let category = 9
+    if (!args || args.length < 1) {
+      category = getCategoryId('Any')
+    } else {
+      let arg = args.shift()
+      if (arg in categories) {
+        category = getCategoryId(arg)
+      } else {
+        const categoriesString = Object.keys(categories).join(' ')
+        message.channel.send('Category choices: (leave blank for any): ```' + categoriesString + '```')
+        return
+      }
+    }
+
+    getQuestionData(category).then(data => {
       // Create an embed for the question
       const embed = new discord.MessageEmbed()
         .setColor('#4cd137')
