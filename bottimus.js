@@ -137,35 +137,54 @@ client.on('message', message => {
   }
 
   // Check for cooldowns
-  if (command.cooldown) {
-    const user = message.member.id
-    if (client.cooldowns.get(cmd)) {
-      const cools = client.cooldowns.get(cmd)
-      if (cools.has(user)) {
-        const elapsed = Date.now() - cools.get(user)
-
-        // Cooldown is still active: send a warning message
-        if (elapsed < command.cooldown * 1000) {
-          const timeleft = (command.cooldown * 1000) - elapsed
-          message.channel.send('Slow down! Try again in ' + client.timeToString(timeleft))
-          return
-        }
-      }
-    } else {
-      client.cooldowns.set(cmd, new Map())
-    }
-
-    client.cooldowns.get(cmd).set(user, Date.now())
+  let cooldown = client.checkCooldown(command, message.member.id)
+  if (cooldown !== false) {
+    console.log(cooldown)
+    message.channel.send('Slow down! Try again in ' + client.timeToString(cooldown))
+    return
   }
 
   // Execute the command
   // Includes some terrible error handling!
   try {
-    command.execute(message, args, client)
+    const result = command.execute(message, args, client)
+    if (result !== -1) {
+      client.updateCooldown(command, message.member.id)
+    }
   } catch (error) {
     message.channel.send(error.message)
   }
 })
+
+client.checkCooldown = function (command, user) {
+  if (!command.cooldown) return false
+  if (client.cooldowns.get(command.name)) {
+    const cools = client.cooldowns.get(command.name)
+    if (cools.has(user)) {
+      const elapsed = Date.now() - cools.get(user)
+
+      // Cooldown is still active: send a warning message
+      if (elapsed < command.cooldown * 1000) {
+        console.log((command.cooldown * 1000) - elapsed)
+        return (command.cooldown * 1000) - elapsed
+      }
+    }
+  } else {
+    client.cooldowns.set(command.name, new Map())
+    return false
+  }
+
+  return false
+}
+
+client.updateCooldown = function (command, user) {
+  if (!command.cooldown) return
+  if (!client.cooldowns.get(command.name)) {
+    client.cooldowns.set(command.name, new Map())
+  }
+
+  client.cooldowns.get(command.name).set(user, Date.now())
+}
 
 // Welcome new users to the server where applicable
 client.on('guildMemberAdd', member => {
