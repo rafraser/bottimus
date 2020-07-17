@@ -62,7 +62,7 @@ module.exports = {
         const delay = 12 * 3600 * 1000
         if (elapsed < delay) {
           message.channel.send('Your next daily spin is in ' + client.timeToString(delay - elapsed))
-          return
+          return -1
         }
       }
 

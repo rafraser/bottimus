@@ -35,7 +35,6 @@ module.exports = {
             user = client.findUser(message, args.slice())
             ranking = rankings.indexOf(user)
           } catch (e) {
-            console.log(e)
             // If all else fails, return self
             user = message.member
             ranking = rankings.indexOf(user)

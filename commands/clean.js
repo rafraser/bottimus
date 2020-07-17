@@ -12,7 +12,9 @@ module.exports = {
     try {
       let num = args.shift() || 50
       num = Math.min(parseInt(num, 10) + 1, 100)
-      if (isNaN(num)) return
+      if (isNaN(num)) {
+        return -1
+      }
 
       // Bulk delete has a limit of 100
       // Possible todo: expand to allow more than 100?

@@ -53,7 +53,7 @@ module.exports = {
   name: 'role',
   description: 'Assign a role to yourself',
   aliases: ['roleme', 'assign', 'setrole'],
-  cooldown: 3,
+  cooldown: 10,
   execute(message, args, client) {
     const user = message.member
     const roleData = client.serverRoles.get(user.guild.id)
@@ -63,15 +63,15 @@ module.exports = {
     // Handle no arguments with some help text
     if (!args.length || args.length < 1) {
       generateHelpText(message, roleData)
-      return
+      return -1
     }
 
     // Make sure we don't get a whole bunch of roles given
     // We use a pretty messy for loop in this command
     // and we don't want things to get out of hand
-    if (args.length > 10) {
-      message.channel.send('Please limit role changes to 10 at a time')
-      return
+    if (args.length > 5) {
+      message.channel.send('Please limit role changes to 5 at a time')
+      return -1
     }
 
     const userRoles = message.member.roles.cache
@@ -129,7 +129,7 @@ module.exports = {
     // Error message if no valid roles are given
     if (!messageStack) {
       message.channel.send('Please specify valid roles.')
-      return
+      return -1
     }
 
     // Roles have been processed, now apply our changes

@@ -78,7 +78,7 @@ module.exports = {
       let betNumber = parseInt(args[0])
       if (isNaN(betNumber) || betNumber < 0 || betNumber > 36) {
         message.channel.send('Please enter a number between 0 and 36')
-        return
+        return -1
       }
       betType = betNumber
     }
@@ -90,13 +90,13 @@ module.exports = {
       let amount = parseInt(args[1])
       if (isNaN(amount)) {
         message.channel.send('Please enter a valid bet amount!')
-        return
+        return -1
       } else if (amount < 50) {
         message.channel.send('You must bet at least **50** coins!')
-        return
+        return -1
       } else if (amount > 500) {
         message.channel.send('You can only bet up to **500** coins.')
-        return
+        return -1
       }
 
       // Set the bet amount if all else is fine
@@ -107,7 +107,7 @@ module.exports = {
     arcade.getArcadeCredits(message.member.id).then(amount => {
       if (amount < betAmount) {
         message.channel.send(`You don't have enough coins for this!`)
-        return
+        return -1
       }
 
       // Send a confirmation message

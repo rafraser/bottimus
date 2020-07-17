@@ -89,7 +89,7 @@ module.exports = {
       } else {
         const categoriesString = Object.keys(categories).join(' ')
         message.channel.send('Category choices: (leave blank for any): ```' + categoriesString + '```')
-        return
+        return -1
       }
     }
 

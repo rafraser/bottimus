@@ -139,7 +139,6 @@ client.on('message', message => {
   // Check for cooldowns
   let cooldown = client.checkCooldown(command, message.member.id)
   if (cooldown !== false) {
-    console.log(cooldown)
     message.channel.send('Slow down! Try again in ' + client.timeToString(cooldown))
     return
   }
@@ -165,7 +164,6 @@ client.checkCooldown = function (command, user) {
 
       // Cooldown is still active: send a warning message
       if (elapsed < command.cooldown * 1000) {
-        console.log((command.cooldown * 1000) - elapsed)
         return (command.cooldown * 1000) - elapsed
       }
     }

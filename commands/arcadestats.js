@@ -233,7 +233,7 @@ module.exports = {
     if (!args || args.length < 1) {
       const games = Object.keys(embedFunctions).join(' ')
       message.channel.send('Pick stats to see:```' + games + '```')
-      return
+      return -1
     }
 
     const user = client.findUser(message, args, true)

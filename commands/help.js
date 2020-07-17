@@ -37,7 +37,7 @@ module.exports = {
       const cmd = args.shift().toLowerCase()
       if (!client.commands.has(cmd)) {
         message.channel.send('Command not found')
-        return
+        return -1
       }
 
       // Build and send a description embed
