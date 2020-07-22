@@ -16,11 +16,11 @@ module.exports = {
 
     let queryString
     if (args[0].toLowerCase() === 'percentage') {
-      queryString = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia GROUP BY discordid HAVING SUM(attempted) >= 10 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
+      queryString = "SELECT u.username, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia t LEFT JOIN bottimus_userdata u on t.discordid = u.discordid GROUP BY t.discordid HAVING SUM(attempted) >= 10 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
     } else if (args[0].toLowerCase() === 'total') {
-      queryString = 'SELECT discordid, SUM(correct) AS score FROM arcade_trivia GROUP BY discordid ORDER BY score DESC LIMIT 10;'
+      queryString = 'SELECT u.username, SUM(correct) AS score FROM arcade_trivia t LEFT JOIN bottimus_userdata u on t.discordid = u.discordid GROUP BY t.discordid ORDER BY score DESC LIMIT 10;'
     } else {
-      queryString = "SELECT discordid, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia WHERE category = ? GROUP BY discordid HAVING SUM(attempted) >= 5 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
+      queryString = "SELECT u.username, CONCAT(FLOOR(SUM(correct)/SUM(attempted)*100), '%') AS score FROM arcade_trivia t LEFT JOIN bottimus_userdata u on t.discordid = u.discordid WHERE category = ? GROUP BY t.discordid HAVING SUM(attempted) >= 5 ORDER BY SUM(correct)/SUM(attempted) DESC LIMIT 10;"
     }
 
     // Query database
@@ -33,9 +33,7 @@ module.exports = {
           let codestring = '```yaml\nNum  Username                Score\n----------------------------------\n'
           let i = 1
           for (const result of results) {
-            const u = client.users.cache.get(result.discordid)
-            let display = result.discordid
-            if (u) { display = u.username }
+            let display = result.username
 
             const position = client.padOrTrim(`#${i}.`, 5)
             const name = client.padOrTrim(display, 25)
