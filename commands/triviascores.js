@@ -39,7 +39,7 @@ module.exports = {
 
             const position = client.padOrTrim(`#${i}.`, 5)
             const name = client.padOrTrim(display, 25)
-            const score = client.padOrTrim(result.score, 5)
+            const score = client.padOrTrim(result.score.toString(), 5)
             codestring += `${position}${name}${score}\n`
             i++
           }
