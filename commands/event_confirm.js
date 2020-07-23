@@ -2,18 +2,17 @@ const discord = require('discord.js')
 const events = require('../util/events')
 const updater = require('../handlers/updaters/eventhandler')
 
-function approveEvent(event, client) {
-  if (client.eventsData == null) {
-    client.eventsData = new discord.Collection()
-  }
-
+function approveEvent(event, guild, client) {
+  // Add the event to the guild events list
+  const guildEvents = events.getGuildEvents(client, guild)
   const snowflake = discord.SnowflakeUtil.generate()
-  client.eventsData.set(snowflake, event)
+  guildEvents.set(snowflake, event)
   client.writeDataFile('events', snowflake, event)
 
+  // Update the upcoming event (if applicable)
   // Update the next upcoming event (if applicable)
-  client.upcomingEvent = events.getNextEvent(client)
-  if (client.upcomingEvent.title === event.title && client.upcomingEvent.description === event.description) {
+  const upcomingEvent = events.getNextEvent(client, guild)
+  if (upcomingEvent.title == event.title && upcomingEvent.description == event.description) {
     updater.execute(client, true)
   }
 }
@@ -57,7 +56,7 @@ module.exports = {
       collector.on('collect', r => {
         // Approve or deny the event
         if (r.emoji.name === '✅') {
-          approveEvent(event, client)
+          approveEvent(event, message.guild.id, client)
           msg.channel.send('Event approved!')
         } else if (r.emoji.name === '❎') {
           msg.channel.send('Event denied!')

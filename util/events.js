@@ -108,6 +108,7 @@ function generateCompletedEventEmbed(event) {
 function generateEvent(member, title, description, time, forcetype) {
   const event = {}
   event.scheduler = member.displayName
+  event.guild = member.guild.id
   event.title = title
   event.description = description
   event.time = time
@@ -116,27 +117,44 @@ function generateEvent(member, title, description, time, forcetype) {
   return event
 }
 
-function getSortedEvents(client) {
-  // Sort the events by whichever is soonest
-  return client.eventsData.sort((a, b) => {
-    return a.time - b.time
-  }).array()
+function getGuildEvents(client, guild) {
+  if (!client.eventsData) {
+    client.eventsData = new discord.Collection()
+    return
+  }
+
+  let events = client.eventsData.get(guild)
+  if (!events) {
+    events = new discord.Collection()
+    client.eventsData.set(guild, events)
+  }
+  return events
 }
 
-function getNextEvent(client) {
-  const events = getSortedEvents(client)
+function getSortedEvents(client, guild) {
+  const events = getGuildEvents(client, guild)
+  if (!events) return []
+
+  return [...events.entries()].sort((a, b) => a.time - b.time)
+}
+
+function getNextEvent(client, guild) {
+  const events = getSortedEvents(client, guild)
+  if (!events) return
+
   return events.find(e => !e.complete)
 }
 
-function generateCalendar(client) {
+function generateCalendar(client, guild) {
+  const events = getGuildEvents(client, guild)
   return new Promise((resolve, reject) => {
-    if (!client.eventsData || client.eventsData.size < 1) {
-      reject(new Error('No events are currently scheduled'))
+    if (!events || events.size < 1) {
+      reject(new Error('No events are currently scheduled in this server'))
     }
 
-    let events2 = []
-    for (let event of client.eventsData.values()) {
-      events2.push(`${event.time.toUTCString()}.${event.category}.${event.title}`)
+    let events2 = ['--events']
+    for (let event of events.values()) {
+      events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
     }
 
     client.executePython('calendar_display', events2).then(() => {
@@ -145,12 +163,16 @@ function generateCalendar(client) {
   })
 }
 
+const approvedGuilds = ['309951255575265280']
+
 module.exports.addEventHistory = addEventHistory
 module.exports.formatEventDate = formatEventDate
 module.exports.generateEventEmbed = generateEventEmbed
 module.exports.generateCompletedEventEmbed = generateCompletedEventEmbed
 module.exports.generateEvent = generateEvent
+module.exports.getGuildEvents = getGuildEvents
 module.exports.getSortedEvents = getSortedEvents
 module.exports.getNextEvent = getNextEvent
 module.exports.generateCalendar = generateCalendar
 module.exports.eventCategories = eventList
+module.exports.approvedGuilds = approvedGuilds

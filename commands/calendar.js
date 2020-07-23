@@ -1,24 +1,17 @@
 const discord = require('discord.js')
+const events = require('../util/events')
 
 module.exports = {
   name: 'calendar',
   description: 'Display the current event calendar',
-  guilds: ['309951255575265280'],
-  cooldown: 30,
+  guilds: events.approvedGuilds,
+  cooldown: 20,
   execute(message, args, client) {
-    if (!client.eventsData || client.eventsData.size < 1) {
-      message.channel.send('No events are currently scheduled!')
-      return -1
-    }
-
-    const events2 = ['--events']
-    for (const event of client.eventsData.values()) {
-      events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
-    }
-
-    client.executePython('calendar_display', events2).then(() => {
-      const attachment = new discord.MessageAttachment('./img/calendar.png')
+    events.generateCalendar(client, message.guild.id).then(filename => {
+      const attachment = new discord.MessageAttachment(filename)
       message.channel.send(attachment)
+    }).catch(e => {
+      message.channel.send(e.message)
     })
   }
 }

@@ -1,4 +1,4 @@
-const events = require('../../util/events')
+const eventlib = require('../../util/events')
 
 const notificationChannel = '309951255575265280'
 const displayChannel = '621422264251973664'
@@ -31,19 +31,19 @@ function updateEventMessage(client, eventChannel, event) {
           channel.send(`Event **${event.title}** is now starting!\n${pingString}`)
 
           const amount = users.filter(user => !user.bot).size
-          events.addEventHistory(event, amount)
+          eventlib.addEventHistory(event, amount)
         })
       }
 
       // Cleanup the event
       event.complete = true
-      displayMessage.edit(events.generateCompletedEventEmbed(event))
+      displayMessage.edit(eventlib.generateCompletedEventEmbed(event))
 
-      client.upcomingEvent = events.getNextEvent(client)
+      client.upcomingEvent = eventlib.getNextEvent(client)
       updateEvent(client, true)
     } else {
       const timeLeft = client.timeToString(event.time - Date.now(), 2)
-      const embed = events.generateEventEmbed(event, timeLeft)
+      const embed = eventlib.generateEventEmbed(event, timeLeft)
       displayMessage.edit('', embed)
 
       // Add a bell icon if one doesn't exist
@@ -54,36 +54,38 @@ function updateEventMessage(client, eventChannel, event) {
   }).catch(console.error)
 }
 
-function updateEvent(client, sendNew = false, ignoreTime = false) {
-  if (!client.eventsData) return
-
-  // Get the next event if required
-  if (!client.upcomingEvent) {
-    client.upcomingEvent = events.getNextEvent(client)
-  }
-
+function updateEvent(client, guild, events, sendNew = false, ignoreTime = false) {
   // Find the event display message
   const eventChannel = client.channelWithTesting(displayChannel)
-  const event = client.upcomingEvent
-  if (!event) {
-    return
-  }
+  let upcomingEvent = eventlib.getNextEvent(client, guild)
+  if (!upcomingEvent) return
 
   // Don't display events that are further than 24 hours away
-  if (Date.now() + (24 * 3600 * 1000) < event.time && !ignoreTime) {
+  if (Date.now() + (24 * 3600 * 1000) < upcomingEvent.time && !ignoreTime) {
     return
   }
 
   // Send a new message for the next event (if applicable)
   if (sendNew) {
-    eventChannel.send('[Next Event]').then(() => updateEventMessage(client, eventChannel, event))
+    eventChannel.send('[Next Event]').then(() => updateEventMessage(client, eventChannel, upcomingEvent))
   } else {
-    updateEventMessage(client, eventChannel, event)
+    updateEventMessage(client, eventChannel, upcomingEvent)
+  }
+}
+
+function updateEvents(client, sendNew = false, ignoreTime = false) {
+  if (!client.eventsData) return
+
+  for (const entry of client.eventsData.entries()) {
+    const guild = entry[0]
+    const events = entry[1]
+
+    updateEvent(client, guild, events, sendNew, ignoreTime)
   }
 }
 
 module.exports = {
   description: 'Handles updating event details',
   frequency: 3,
-  execute: updateEvent
+  execute: updateEvents
 }
