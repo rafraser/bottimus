@@ -1,4 +1,4 @@
-const events = require('../util/events')
+const eventlib = require('../util/events')
 
 module.exports = {
   name: 'eventlist',
@@ -7,15 +7,11 @@ module.exports = {
   guilds: ['309951255575265280'],
   cooldown: 10,
   execute(message, args, client) {
-    if (!client.eventsData || client.eventsData.size < 1) {
+    const events = eventlib.getSortedEvents(client, message.guild.id)
+    if (!events || events.size < 1) {
       message.channel.send('No events are currently scheduled!')
       return
     }
-
-    // Sort the events by whichever is soonest
-    const sortedEvents = client.eventsData.sort((a, b) => {
-      return a.time - b.time
-    }).array()
 
     // Get timezone from arguments
     let timezone = 'AEST'
@@ -25,12 +21,12 @@ module.exports = {
 
     // Generate a code block list
     let outputString = '```cs\n# Upcoming Events #'
-    let now = Date.now()
-    sortedEvents.forEach((item, index) => {
-      if (Date.now() > item.time) return
+    events.forEach((item, index) => {
+      let event = item[1]
+      if (Date.now() > event.time) return
 
-      let name = item.title.replace("'", "")
-      let timeString = events.formatEventDate(item.time, false, timezone)
+      let name = event.title.replace("'", "")
+      let timeString = eventlib.formatEventDate(event.time, false, timezone)
 
       outputString += '\n' + client.padOrTrim(name, 20) + '  ' + client.padOrTrim(timeString, 25)
     })
