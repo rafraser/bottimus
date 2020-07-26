@@ -55,10 +55,10 @@ function startMiningTrip(msg, member, client) {
       // Announce results
       const coin = client.emojis.cache.get('631834832300670976')
       generateMiningEmbed(msg, member.displayName, amount, true)
-      msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${amount * 5} coins earned`)
+      msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${amount * 2} coins earned`)
 
       // Send results to the database
-      arcade.incrementArcadeCredits(member.id, amount * 5)
+      arcade.incrementArcadeCredits(member.id, amount * 2)
       incrementStatScore(member.id, amount)
     })
   })
@@ -66,29 +66,11 @@ function startMiningTrip(msg, member, client) {
 
 module.exports = {
   name: 'mine',
-  description: 'Mine diamonds to earn coins. Each diamond is worth 5 coins.\nClick on the pickaxe repeatedly. Due to Discord limits, it may take a moment before each diamond is mined.',
-  cooldown: 180,
+  description: 'Mine diamonds to earn coins. Each diamond is worth 2 coins.\nClick on the pickaxe repeatedly. Due to Discord limits, it may take a moment before each diamond is mined.',
+  cooldown: 200,
   execute(message, args, client) {
-    arcade.getArcadeCredits(message.member.id).then(amount => {
-      if (amount < 25) {
-        message.channel.send('You need at least 25 coins for this!')
-      } else {
-        // Send a confirmation message
-        message.channel.send('Going on a mining expedition costs 25 coins: react to confirm').then(msg => {
-          msg.react('✅')
-          const filter = function (reaction, user) {
-            return user.id === message.member.id && reaction.emoji.name === '✅'
-          }
-
-          const collector = msg.createReactionCollector(filter, { time: 10000 })
-          collector.on('collect', () => {
-            // Confirmation received!
-            collector.stop()
-            arcade.incrementArcadeCredits(message.member.id, -25)
-            startMiningTrip(msg, message.member, client)
-          })
-        })
-      }
+    message.channel.send('Get ready!').then(msg => {
+      startMiningTrip(msg, message.member, client)
     })
   }
 }
