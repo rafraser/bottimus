@@ -9,7 +9,7 @@
     "dependencies": {
         "discord.js": "^12.2.0",
         "dotenv": "^6.2.0",
-        "gamedig": "^2.0.14",
+        "gamedig": "^2.0.21",
         "html-entities": "^1.2.1",
         "mysql": "^2.16.0"
     },
@@ -18,5 +18,7 @@
         "serve": "node dist/bottimus.js",
         "build-serve": "npm run build && npm run serve"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@types/ws": "^7.2.6"
+    }
 }
