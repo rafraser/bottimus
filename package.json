@@ -1,12 +1,22 @@
 {
-    "name": "fluffy-bottimus",
-    "version": "0.0.1",
+    "name": "bottimus",
+    "author": "Robert A Fraser (FluffyXVI)",
+    "version": "2.0.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rafraser/bottimus.git"
+    },
     "dependencies": {
         "discord.js": "^12.2.0",
         "dotenv": "^6.2.0",
         "gamedig": "^2.0.14",
         "html-entities": "^1.2.1",
         "mysql": "^2.16.0"
+    },
+    "scripts": {
+        "build": "tsc",
+        "serve": "node dist/bottimus.js",
+        "build-serve": "npm run build && npm run serve"
     },
     "devDependencies": {}
 }
