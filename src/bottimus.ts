@@ -7,17 +7,4 @@ const client = new BottimusClient((process.env.ENV === "development"), {
     }
 })
 
-// Typescript testing
-client.on('ready', () => {
-    console.log(`Logged in as: ${client.user.tag}`)
-    console.log(`Testing mode: ${client.testingMode}`)
-})
-
-// Pass through everything to command handler
-client.on('message', (message) => {
-    client.commandParser(message)
-})
-
-// Everything is ready - let's get started
-client.loadCommands()
 client.login(process.env.DISCORD)
