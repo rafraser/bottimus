@@ -20,6 +20,7 @@
         "build-serve": "npm run build && npm run serve"
     },
     "devDependencies": {
+        "@types/gamedig": "^2.0.0",
         "@types/node-fetch": "^2.5.7",
         "@types/ws": "^7.2.6"
     }

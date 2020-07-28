@@ -3,6 +3,7 @@ import Client from "./client"
 export interface Updater {
     description: string
     frequency: number
+    testingAllowed?: boolean
 
     execute: (client: Client) => void
 }

@@ -167,7 +167,7 @@ export default class BottimusClient extends Client {
         let files = await readdirAsync(path.resolve(__dirname, "updaters"))
         files.forEach(file => {
             let p = path.parse(file)
-            if (p.ext === ".js") this.loadCommand(p.name)
+            if (p.ext === ".js") this.loadUpdater(p.name)
         })
     }
 
@@ -180,12 +180,13 @@ export default class BottimusClient extends Client {
     public runUpdaters() {
         const n = new Date().getMinutes()
         for (const update of this.updaters) {
+            if (this.testingMode && !update.testingAllowed) continue
+
             if (n % update.frequency === 0) {
                 update.execute(this)
             }
         }
     }
-
 
     public isAdministrator(member: GuildMember): boolean {
         if (member.hasPermission('ADMINISTRATOR')) return true
@@ -257,7 +258,7 @@ export default class BottimusClient extends Client {
     private registerEventHandlers() {
         this.on('message', this.commandParser)
 
-        this.updateInterval = setInterval(this.runUpdaters, 60 * 1000)
+        this.updateInterval = setInterval(_ => { this.runUpdaters() }, 60 * 1000)
     }
 
     private stopUpdates() {
