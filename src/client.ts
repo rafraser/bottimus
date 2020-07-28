@@ -5,6 +5,7 @@ import { Updater } from "./updater"
 import { timeToString } from "./time"
 import fs from "fs"
 import path from "path"
+import { spawn } from "child_process"
 
 const readdirAsync = promisify(fs.readdir)
 const existsAsync = promisify(fs.exists)
@@ -21,6 +22,7 @@ export default class BottimusClient extends Client {
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, any>
+    public eventsData: any
 
     private updateInterval: NodeJS.Timeout
 
@@ -242,12 +244,72 @@ export default class BottimusClient extends Client {
         })
     }
 
-    public findUser(message: Message, args: string[], retself: boolean = false) {
+    public findUser(message: Message, args: string[], retself: boolean = false): GuildMember {
+        // Return mentioned user if any were in the message
+        if (message.mentions.members.size >= 1) {
+            return message.mentions.members.first()
+        }
 
+        // Handle case with 0 arguments
+        if (!args || args.length < 1) {
+            if (retself) {
+                return message.member
+            } else {
+                throw new Error('No user found!')
+            }
+        }
+
+        // Search the list of users for matching names
+        const search = args.shift().toLowerCase()
+        const results = message.guild.members.cache.filter(u => {
+            return u.displayName.toLowerCase().includes(search)
+                || u.user.username.toLowerCase().includes(search)
+                || u.user.tag.toLowerCase() == search
+        })
+
+        // Return results or raise an error
+        // In the event no user was found, shove the argument back on the list
+        if (results.size > 1) {
+            throw new Error('More than one user matched!')
+        } else if (results.size < 1) {
+            if (retself) {
+                args.unshift(search)
+                return message.member
+            } else {
+                args.unshift(search)
+                throw new Error('No user found!')
+            }
+        } else {
+            return results.first()
+        }
     }
 
     public executePython(script: string, args: string[]) {
+        return new Promise((resolve, reject) => {
+            let python
+            if (args) {
+                if (!Array.isArray(args)) {
+                    args = [args]
+                }
+                args.unshift('python/' + script + '.py')
+                python = spawn('python3', args)
+            } else {
+                python = spawn('python3', ['python/' + script + '.py'])
+            }
 
+            let data = ''
+            python.stdout.on('data', d => data += d)
+            python.stderr.on('data', d => data += d)
+
+            python.on('close', code => {
+                data = data.trim()
+                if (code === 0) {
+                    resolve(data)
+                } else {
+                    reject(data)
+                }
+            })
+        })
     }
 
     public padOrTrim(string: string, length: number) {
