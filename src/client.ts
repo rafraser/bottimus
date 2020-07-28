@@ -2,6 +2,7 @@ import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember } f
 import { promisify } from "util"
 import { Command } from "./command"
 import { Updater } from "./updater"
+import { timeToString } from "./time"
 import fs from "fs"
 import path from "path"
 
@@ -17,6 +18,8 @@ export default class BottimusClient extends Client {
 
     public commands: Map<string, Command>
     public updaters: Updater[]
+
+    public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, any>
 
     private updateInterval: NodeJS.Timeout
@@ -116,7 +119,11 @@ export default class BottimusClient extends Client {
         }
 
         // Cooldowns
-        // TBD
+        let cooldown = this.checkCooldown(command, message.member.id)
+        if (cooldown !== false) {
+            message.channel.send(`Slow down! Try again in ${timeToString(cooldown)}`)
+            return
+        }
 
         // Execute the command!
         // This includes some terrible error handling!
@@ -125,6 +132,33 @@ export default class BottimusClient extends Client {
         } catch (err) {
             message.channel.send(err.message)
         }
+    }
+
+    public checkCooldown(command: Command, user: string) {
+        if (!command.cooldown) return false
+        const cools = this.cooldowns.get(command.name)
+        if (cools && cools.has(user)) {
+            const elapsed = Date.now() - cools.get(user)
+
+            // Send remaining time for a warning message
+            if (elapsed < command.cooldown * 1000) {
+                return (command.cooldown * 1000) - elapsed
+            }
+        } else {
+            this.cooldowns.set(command.name, new Map())
+            return false
+        }
+
+        return false
+    }
+
+    public updateCooldown(command: Command, user: string) {
+        if (!command.cooldown) return
+        if (!this.cooldowns.get(command.name)) {
+            this.cooldowns.set(command.name, new Map())
+        }
+
+        this.cooldowns.get(command.name).set(user, Date.now())
     }
 
     public async loadUpdaters() {

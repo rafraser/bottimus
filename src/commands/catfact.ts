@@ -16,5 +16,7 @@ export default {
       .setColor('#9c88ff')
       .setDescription(fact)
     message.channel.send(embed)
+
+    client.updateCooldown(this, message.member.id)
   }
 }
