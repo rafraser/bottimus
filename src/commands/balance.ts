@@ -11,6 +11,7 @@ export default {
         const user = client.findUser(message, args, true)
         const amount = await getArcadeCredits(user.id)
         const coin = client.emojis.cache.get('631834832300670976')
+        client.updateCooldown(this, message.member.id)
 
         if (amount > 0) {
             message.channel.send(`${user.displayName}'s Balance: ${coin} **${amount}**`)

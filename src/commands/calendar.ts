@@ -18,9 +18,10 @@ export default {
             events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
         }
 
-        client.executePython('calendar_display', events2).then(() => {
-            const attachment = new MessageAttachment('./img/calendar.png')
-            message.channel.send(attachment)
-        })
+        await client.executePython('calendar_display', events2)
+
+        const attachment = new MessageAttachment('./img/calendar.png')
+        message.channel.send(attachment)
+        client.updateCooldown(this, message.member.id)
     }
 }

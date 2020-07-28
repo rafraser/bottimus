@@ -225,5 +225,6 @@ export default {
                 message.channel.send(results[i])
             }
         }
+        client.updateCooldown(this, message.member.id)
     }
 }
