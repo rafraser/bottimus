@@ -11,7 +11,8 @@
         "dotenv": "^6.2.0",
         "gamedig": "^2.0.21",
         "html-entities": "^1.2.1",
-        "mysql": "^2.16.0"
+        "mysql": "^2.16.0",
+        "node-fetch": "^2.6.0"
     },
     "scripts": {
         "build": "tsc",
@@ -19,6 +20,7 @@
         "build-serve": "npm run build && npm run serve"
     },
     "devDependencies": {
+        "@types/node-fetch": "^2.5.7",
         "@types/ws": "^7.2.6"
     }
 }
