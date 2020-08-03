@@ -102,7 +102,7 @@ embedFunctions.trivia = async function (user: GuildMember): Promise<MessageEmbed
 
 // Generate a nice embed for Typeracer information
 embedFunctions.typeracer = async function (user: GuildMember): Promise<MessageEmbed> {
-    const results = await fetchTriviaStatistics(user.id)
+    const results = await fetchTyperacerStatistics(user.id)
     const r = results[0]
     const username = user.displayName
 

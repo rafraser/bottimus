@@ -25,6 +25,8 @@ export default class BottimusClient extends Client {
     public serverSettings: Map<string, any>
     public eventsData: any
 
+    public typeracerSessions: Map<string, boolean> = new Map()
+
     private updateInterval: NodeJS.Timeout
 
     private static primaryGuild: string = '309951255575265280'
@@ -318,7 +320,7 @@ export default class BottimusClient extends Client {
         return trimmed.padEnd(length, ' ')
     }
 
-    public queryHelper(queryString: string, args: string[]): Promise<any[]> {
+    public queryHelper(queryString: string, args: any[]): Promise<any[]> {
         return new Promise((resolve, reject) => {
             pool.query(queryString, args, (err, results) => {
                 if (err) {
