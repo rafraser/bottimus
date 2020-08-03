@@ -26,6 +26,7 @@ export default class BottimusClient extends Client {
     public eventsData: any
 
     public typeracerSessions: Map<string, boolean> = new Map()
+    public hangmanSessions: Map<string, boolean> = new Map()
 
     private updateInterval: NodeJS.Timeout
 
