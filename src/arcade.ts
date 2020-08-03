@@ -86,7 +86,7 @@ export function incrementArcadeCredits(userid: string, amount: number) {
     })
 }
 
-export function getArcadeCredits(userid: string) {
+export function getArcadeCredits(userid: string): Promise<number> {
     return new Promise((resolve, reject) => {
         const queryString = 'SELECT * FROM arcade_currency WHERE userid = ?;'
         pool.query(queryString, [userid], (err, results) => {
@@ -117,7 +117,7 @@ export function unlockArcadePrize(userid: string, prize: string) {
     })
 }
 
-export function getArcadePrizes(userid: string) {
+export function getArcadePrizes(userid: string): Promise<Prize[]> {
     return new Promise((resolve, reject) => {
         const queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
         pool.query(queryString, [userid], (err, results) => {

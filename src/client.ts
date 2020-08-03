@@ -284,7 +284,7 @@ export default class BottimusClient extends Client {
         }
     }
 
-    public executePython(script: string, args: string[]) {
+    public executePython(script: string, args: string[]): Promise<string> {
         return new Promise((resolve, reject) => {
             let python
             if (args) {
