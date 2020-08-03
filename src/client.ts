@@ -3,6 +3,7 @@ import { promisify } from "util"
 import { Command } from "./command"
 import { Updater } from "./updater"
 import { timeToString } from "./time"
+import pool from "./database"
 import fs from "fs"
 import path from "path"
 import { spawn } from "child_process"
@@ -312,9 +313,21 @@ export default class BottimusClient extends Client {
         })
     }
 
-    public padOrTrim(string: string, length: number) {
+    public padOrTrim(string: string, length: number): string {
         const trimmed = string.length > length ? string.substring(0, length) : string
         return trimmed.padEnd(length, ' ')
+    }
+
+    public queryHelper(queryString: string, args: string[]): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            pool.query(queryString, args, (err, results) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
     }
 
     private registerEventHandlers() {
