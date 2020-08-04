@@ -9,18 +9,22 @@ export default {
     cooldown: 15,
 
     async execute(client: Client, message: Message, args: string[]) {
-        const user = await client.findUser(message, args, true)
-        const prizes = await getArcadePrizes(user.id)
+        try {
+            const user = await client.findUser(message, args, true)
+            const prizes = await getArcadePrizes(user.id)
 
-        let python_args = ['--prizes']
-        for (const prize in prizes) {
-            python_args.push(prize + ':' + prizes[prize])
+            let python_args = ['--prizes']
+            for (const prize in prizes) {
+                python_args.push(prize + ':' + prizes[prize])
+            }
+
+            await client.executePython('inventory', python_args)
+            const attachment = new MessageAttachment('./img/inventory.png')
+            message.channel.send(attachment)
+
+            client.updateCooldown(this, message.member.id)
+        } catch (e) {
+            message.channel.send(e.message)
         }
-
-        await client.executePython('inventory', python_args)
-        const attachment = new MessageAttachment('./img/inventory.png')
-        message.channel.send(attachment)
-
-        client.updateCooldown(this, message.member.id)
     }
 }

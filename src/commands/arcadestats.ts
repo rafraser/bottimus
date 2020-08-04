@@ -182,33 +182,39 @@ export default {
             message.channel.send('Pick stats to see:```' + games + '```')
             return
         }
-        const user = await client.findUser(message, args, true)
 
-        let promises = []
-        for (let arg of args) {
-            arg = arg.toLowerCase()
-            if (embedFunctions[arg]) {
-                promises.push(embedFunctions[arg](user))
+        try {
+            const user = await client.findUser(message, args, true)
+
+            let promises = []
+            for (let arg of args) {
+                arg = arg.toLowerCase()
+                if (embedFunctions[arg]) {
+                    promises.push(embedFunctions[arg](user))
+                }
             }
-        }
 
-        // Fancy promise stuff
-        // This runs all of the given promises, ignoring any errors
-        let m = promises.map(p => {
-            return p.catch(err => {
-                return null
+            // Fancy promise stuff
+            // This runs all of the given promises, ignoring any errors
+            let m = promises.map(p => {
+                return p.catch(err => {
+                    return null
+                })
             })
-        })
 
-        const results = await Promise.all(m)
-        if (results.length < 1) {
-            message.channel.send('No data available')
-        } else {
-            for (let i = 0; i < results.length; i++) {
-                if (results[i] == null) { continue }
-                message.channel.send(results[i])
+            const results = await Promise.all(m)
+            if (results.length < 1) {
+                message.channel.send('No data available')
+            } else {
+                for (let i = 0; i < results.length; i++) {
+                    if (results[i] == null) { continue }
+                    message.channel.send(results[i])
+                }
             }
+            client.updateCooldown(this, message.member.id)
+
+        } catch (e) {
+            message.channel.send(e.message)
         }
-        client.updateCooldown(this, message.member.id)
     }
 }

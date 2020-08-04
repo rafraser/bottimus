@@ -55,32 +55,35 @@ export default {
             return
         }
 
-        const target = await client.findUser(message, args)
-
         // Check if a ticket is already owned
-        const ticketData = await isTicketed(message.guild, target)
-        if (ticketData) {
-            revokeTicket(client, message.guild, target, ticketData as [string, string, Date])
-            message.channel.send('Ticket revoked!')
-        } else {
-            // Search the arguments until a duration is found
-            let duration = 60
-            for (let i = 0; i < args.length; i++) {
-                let a = parseInt(args[i], 10)
-                if (!isNaN(a)) {
-                    duration = a
-                    break
+        try {
+            const target = await client.findUser(message, args)
+            const ticketData = await isTicketed(message.guild, target)
+            if (ticketData) {
+                revokeTicket(client, message.guild, target, ticketData as [string, string, Date])
+                message.channel.send('Ticket revoked!')
+            } else {
+                // Search the arguments until a duration is found
+                let duration = 60
+                for (let i = 0; i < args.length; i++) {
+                    let a = parseInt(args[i], 10)
+                    if (!isNaN(a)) {
+                        duration = a
+                        break
+                    }
                 }
+
+                const channel = message.channel as TextChannel
+                await addTicket(message.guild, target, ticket, channel, duration)
+
+                let embed = new MessageEmbed()
+                    .setColor('#ff9f43')
+                    .setTitle('🎟️ ' + target.displayName + ' has a ticket 🎟️')
+                    .setDescription('It is valid for the next ' + timeToString(duration * 60 * 1000))
+                message.channel.send(embed)
             }
-
-            const channel = message.channel as TextChannel
-            await addTicket(message.guild, target, ticket, channel, duration)
-
-            let embed = new MessageEmbed()
-                .setColor('#ff9f43')
-                .setTitle('🎟️ ' + target.displayName + ' has a ticket 🎟️')
-                .setDescription('It is valid for the next ' + timeToString(duration * 60 * 1000))
-            message.channel.send(embed)
+        } catch (e) {
+            message.channel.send(e.message)
         }
     }
 }

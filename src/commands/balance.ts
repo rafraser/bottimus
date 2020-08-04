@@ -8,15 +8,19 @@ export default {
     aliases: ['credits', 'bal'],
 
     async execute(client: Client, message: Message, args: string[]) {
-        const user = await client.findUser(message, args, true)
-        const amount = await getArcadeCredits(user.id)
-        const coin = client.emojis.cache.get('631834832300670976')
-        client.updateCooldown(this, message.member.id)
+        try {
+            const user = await client.findUser(message, args, true)
+            const amount = await getArcadeCredits(user.id)
+            const coin = client.emojis.cache.get('631834832300670976')
+            client.updateCooldown(this, message.member.id)
 
-        if (amount > 0) {
-            message.channel.send(`${user.displayName}'s Balance: ${coin} **${amount}**`)
-        } else {
-            message.channel.send(`No coins! Go play some games and earn some ${coin}`)
+            if (amount > 0) {
+                message.channel.send(`${user.displayName}'s Balance: ${coin} **${amount}**`)
+            } else {
+                message.channel.send(`No coins! Go play some games and earn some ${coin}`)
+            }
+        } catch (e) {
+            message.channel.send(e.message)
         }
     }
 }
