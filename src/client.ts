@@ -17,6 +17,7 @@ export default class BottimusClient extends Client {
 
     public commands: Map<string, Command>
     public updaters: Updater[]
+    public welcomers: Map<string, (member: GuildMember) => any>
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
@@ -39,10 +40,12 @@ export default class BottimusClient extends Client {
         // Load up the essentials
         this.loadCommands()
         this.loadUpdaters()
+        this.loadWelcomes()
 
         // Register events
         this.registerEventHandlers()
 
+        // Log to console on startup
         this.on('ready', () => {
             console.log(`Logged in as: ${this.user.tag}`)
             console.log(`Testing mode: ${this.testingMode}`)
@@ -192,6 +195,29 @@ export default class BottimusClient extends Client {
         }
     }
 
+    public async loadWelcomes() {
+        this.welcomers = new Map()
+        let files = await readdirAsync(path.resolve(__dirname, "welcome"))
+        files.forEach(file => {
+            let p = path.parse(file)
+            if (p.ext === ".js") this.loadWelcome(p.name)
+        })
+    }
+
+    public async loadWelcome(path: string) {
+        let module = await import("./welcome/" + path + ".js")
+        let welcome = module.default as (member: GuildMember) => any
+        this.welcomers.set(path, welcome)
+    }
+
+    public async welcomeGreeter(member: GuildMember) {
+        if (this.testingMode) return
+        let welcome = this.welcomers.get(member.guild.id)
+        if (welcome) {
+            welcome(member)
+        }
+    }
+
     public async loadServerSettings() {
         const servers = await loadAllServerSettings()
         this.serverSettings = servers.reduce((curr, value) => curr.set(value[0], value[1]), new Map())
@@ -331,6 +357,8 @@ export default class BottimusClient extends Client {
 
     private registerEventHandlers() {
         this.on('message', this.commandParser)
+        this.on('guildMemberAdd', this.welcomeGreeter)
+
 
         this.updateInterval = setInterval(_ => { this.runUpdaters() }, 60 * 1000)
     }
