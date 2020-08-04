@@ -41,6 +41,7 @@ export default class BottimusClient extends Client {
         this.loadCommands()
         this.loadUpdaters()
         this.loadWelcomes()
+        this.loadServerSettings()
 
         // Register events
         this.registerEventHandlers()
