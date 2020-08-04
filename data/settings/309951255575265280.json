@@ -1,0 +1,17 @@
+{
+    "roles": {
+        "mod": "Moderator",
+        "admin": "Administrator",
+        "muted": "495945521408770049",
+        "ticket": "689083326933631013",
+        "choices": [
+            {
+            "options": {
+                "minigames": "621421798478839819",
+                "event": "535346825423749120",
+                "beta": "720257345405583390"
+            }
+            }
+        ]
+    }
+}
