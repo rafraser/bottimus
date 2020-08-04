@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS `mute_data` (
   `member` varchar(64) NOT NULL,
   `channel` varchar(64) NOT NULL,
   `expiry` datetime NOT NULL,
+  `roles` text,
   `active` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`guild`, `member`, `expiry`)
 );
