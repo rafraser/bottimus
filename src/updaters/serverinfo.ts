@@ -35,8 +35,6 @@ async function updateMinigames(message: Message) {
         .setThumbnail(`https://fluffyservers.com/mg/maps/${gamedata.map}.jpg`)
         .setTimestamp()
     message.edit(embed)
-
-    console.log('Updated Minigames')
 }
 
 export default {

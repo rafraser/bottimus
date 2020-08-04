@@ -196,7 +196,6 @@ export default {
         // This runs all of the given promises, ignoring any errors
         let m = promises.map(p => {
             return p.catch(err => {
-                console.log(err)
                 return null
             })
         })
