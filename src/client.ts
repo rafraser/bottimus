@@ -184,13 +184,13 @@ export default class BottimusClient extends Client {
         this.updaters.push(updater)
     }
 
-    public runUpdaters() {
+    public async runUpdaters() {
         const n = new Date().getMinutes()
         for (const update of this.updaters) {
-            if (this.testingMode && !update.testingAllowed) continue
+            // if (this.testingMode && !update.testingAllowed) continue
 
             if (n % update.frequency === 0) {
-                update.execute(this)
+                await update.execute(this)
             }
         }
     }
@@ -358,7 +358,6 @@ export default class BottimusClient extends Client {
     private registerEventHandlers() {
         this.on('message', this.commandParser)
         this.on('guildMemberAdd', this.welcomeGreeter)
-
 
         this.updateInterval = setInterval(_ => { this.runUpdaters() }, 60 * 1000)
     }

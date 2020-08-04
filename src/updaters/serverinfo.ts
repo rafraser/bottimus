@@ -41,7 +41,7 @@ export default {
     description: "Update game server information in the welcome channel",
     frequency: 5,
 
-    execute(client: Client) {
+    async execute(client: Client) {
         const channel = client.channels.cache.get(serverChannel) as TextChannel
         channel.messages.fetch(murderMessage).then(updateMurder)
         channel.messages.fetch(minigamesMessage).then(updateMinigames)

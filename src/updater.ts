@@ -5,7 +5,7 @@ export interface Updater {
     frequency: number
     testingAllowed?: boolean
 
-    execute: (client: Client) => void
+    execute: (client: Client) => Promise<any>
 }
 
 // Export these along so we can do a neat import in updater implementations
