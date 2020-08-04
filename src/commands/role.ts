@@ -132,11 +132,12 @@ export default {
         // Error message if no valid roles are given
         if (!messageStack) {
             message.channel.send('Please specify valid roles.')
-            return -1
+            return
         }
 
         // Roles have been processed, now apply our changes
         user.roles.remove(removeStack).then(() => { user.roles.add(addStack) })
         message.channel.send(messageStack)
+        client.updateCooldown(this, message.member.id)
     }
 }

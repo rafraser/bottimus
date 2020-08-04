@@ -18,7 +18,6 @@ export default {
     name: 'serverlist',
     description: 'List all servers that the bot is in',
     guilds: ['309951255575265280'],
-    cooldown: 30,
 
     async execute(client: Client, message: Message, args: string[]) {
         // Restrict to administrators
@@ -27,7 +26,6 @@ export default {
         }
 
         // Build a table of server names and owners
-        let serverList = '```\n'
         const servers = await Promise.all(client.guilds.cache.map(x => getServerData(client, x)))
         const serverString = servers.reduce((str, server) => str + `${server[0]}  ${server[1]}\n`, '```\n')
         message.channel.send(serverString + '```')

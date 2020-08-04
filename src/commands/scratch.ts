@@ -121,6 +121,7 @@ export default {
             collector.stop()
             incrementArcadeCredits(message.member.id, -250)
             generateScratchCard(client, confirm_msg, message.member)
+            client.updateCooldown(this, message.member.id)
         })
 
     }

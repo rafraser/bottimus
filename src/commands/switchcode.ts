@@ -27,6 +27,8 @@ export default {
 
     async execute(client: Client, message: Message, args: string[]) {
         // If ran with no arguments, list all user codes
+        client.updateCooldown(this, message.member.id)
+
         let channel = message.channel as TextChannel
         if (args.length < 1) {
             buildFriendsTable(client, message, channel.guild.id)

@@ -10,7 +10,7 @@ export default {
     async execute(client: Client, message: Message, args: string[]) {
         if (!client.eventsData || client.eventsData.size < 1) {
             message.channel.send('No events are currently scheduled!')
-            return -1
+            return
         }
 
         const events2 = ['--events']

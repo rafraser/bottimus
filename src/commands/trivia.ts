@@ -60,6 +60,8 @@ export default {
     cooldown: 12,
 
     async execute(client: Client, message: Message, args: string[]) {
+        client.updateCooldown(this, message.member.id)
+
         // Get category from arguments
         let category = 9
         if (!args || args.length < 1) {

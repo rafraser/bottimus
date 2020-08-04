@@ -120,6 +120,7 @@ module.exports = {
             // Spin the wheel
             incrementArcadeCredits(message.member.id, -betAmount)
             spinRoulette(client, message, betType, betAmount)
+            client.updateCooldown(this, message.member.id)
         })
 
 
