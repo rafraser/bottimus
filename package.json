@@ -23,6 +23,7 @@
         "@types/gamedig": "^2.0.0",
         "@types/mysql": "^2.15.15",
         "@types/node-fetch": "^2.5.7",
-        "@types/ws": "^7.2.6"
+        "@types/ws": "^7.2.6",
+        "@types/html-entities": "^1.2.16"
     }
 }
