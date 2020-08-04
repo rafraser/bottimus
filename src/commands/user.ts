@@ -32,7 +32,7 @@ export default {
             } else {
                 try {
                     // Try searching for a user in the args
-                    user = client.findUser(message, args.slice())
+                    user = await client.findUser(message, args.slice())
                     ranking = rankings.indexOf(user)
                 } catch (e) {
                     // If all else fails, return self

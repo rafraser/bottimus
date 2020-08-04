@@ -182,7 +182,7 @@ export default {
             message.channel.send('Pick stats to see:```' + games + '```')
             return
         }
-        const user = client.findUser(message, args, true)
+        const user = await client.findUser(message, args, true)
 
         let promises = []
         for (let arg of args) {

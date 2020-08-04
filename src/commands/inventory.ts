@@ -9,7 +9,7 @@ export default {
     cooldown: 15,
 
     async execute(client: Client, message: Message, args: string[]) {
-        const user = client.findUser(message, args, true)
+        const user = await client.findUser(message, args, true)
         const prizes = await getArcadePrizes(user.id)
 
         let python_args = ['--prizes']

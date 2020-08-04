@@ -8,7 +8,7 @@ export default {
     aliases: ['credits', 'bal'],
 
     async execute(client: Client, message: Message, args: string[]) {
-        const user = client.findUser(message, args, true)
+        const user = await client.findUser(message, args, true)
         const amount = await getArcadeCredits(user.id)
         const coin = client.emojis.cache.get('631834832300670976')
         client.updateCooldown(this, message.member.id)

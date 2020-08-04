@@ -251,7 +251,7 @@ export default class BottimusClient extends Client {
         })
     }
 
-    public findUser(message: Message, args: string[], retself: boolean = false): GuildMember {
+    public async findUser(message: Message, args: string[], retself: boolean = false): Promise<GuildMember> {
         // Return mentioned user if any were in the message
         if (message.mentions.members.size >= 1) {
             return message.mentions.members.first()
@@ -264,6 +264,11 @@ export default class BottimusClient extends Client {
             } else {
                 throw new Error('No user found!')
             }
+        }
+
+        // Fetch the guild members if it's not cached for some reason
+        if (message.guild.members.cache.size <= 2) {
+            await message.guild.members.fetch()
         }
 
         // Search the list of users for matching names

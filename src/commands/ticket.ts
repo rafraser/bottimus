@@ -55,7 +55,7 @@ export default {
             return
         }
 
-        const target = client.findUser(message, args)
+        const target = await client.findUser(message, args)
 
         // Check if a ticket is already owned
         const ticketData = await isTicketed(message.guild, target)

@@ -24,7 +24,7 @@ export default {
     description: 'Fetchs statistics from Trivia\nTo view someone else\'s statistics: `!triviastats [user]`',
 
     async execute(client: Client, message: Message, args: string[]) {
-        const user = client.findUser(message, args, true)
+        const user = await client.findUser(message, args, true)
         const results = await fetchStatistics(client, user.id)
 
         const username = user.displayName
