@@ -1,11 +1,13 @@
-import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember } from "discord.js"
+
 import { Command } from "./command"
 import { Updater } from "./updater"
+import { ServerSettings, loadAllServerSettings } from "./settings"
 import { timeToString, readdirAsync, existsAsync, writeFileAsync } from "./utils"
+
 import fs from "fs"
 import path from "path"
 import { spawn } from "child_process"
-import { ServerSettings, loadAllServerSettings } from "./settings"
+import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember } from "discord.js"
 
 export default class BottimusClient extends Client {
     public static prefixes = ['!', 'Bottimus, ']
@@ -20,6 +22,7 @@ export default class BottimusClient extends Client {
     public serverSettings: Map<string, ServerSettings> = new Map()
     public eventsData: any
 
+    // Command-specific data
     public typeracerSessions: Map<string, boolean> = new Map()
     public hangmanSessions: Map<string, boolean> = new Map()
 
