@@ -1,12 +1,12 @@
 import { Client, Message } from "../command"
 import { MessageEmbed, User, MessageReaction } from "discord.js"
 import { incrementArcadeCredits } from "../arcade"
-import pool from "../database"
+import { queryHelper } from "../database"
 import fetch from "node-fetch"
 
 function incrementStatScore(userid: string, amount: number) {
     const queryString = 'INSERT INTO arcade_mining VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE number = number + 1, diamonds = diamonds + VALUES(diamonds)'
-    pool.query(queryString, [userid, amount])
+    return queryHelper(queryString, [userid, amount])
 }
 
 function generateMiningEmbed(msg: Message, name: string, amount: number, over: boolean = false) {

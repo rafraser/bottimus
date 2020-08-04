@@ -1,4 +1,4 @@
-import pool from "./database"
+import { queryHelper } from "./database"
 
 type Prize = [string, string, number]
 
@@ -79,60 +79,32 @@ export function testPrizePicking() {
 
 export function incrementArcadeCredits(userid: string, amount: number) {
     const queryString = 'INSERT INTO arcade_currency VALUES(?, ?) ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);'
-    pool.query(queryString, [userid, amount], (err, results) => {
-        if (err) {
-            console.log(err)
-        }
-    })
+    return queryHelper(queryString, [userid, amount])
 }
 
-export function getArcadeCredits(userid: string): Promise<number> {
-    return new Promise((resolve, reject) => {
-        const queryString = 'SELECT * FROM arcade_currency WHERE userid = ?;'
-        pool.query(queryString, [userid], (err, results) => {
-            if (err) {
-                resolve(0)
-            } else {
-                if (results.length < 1 || !results[0]) {
-                    resolve(0)
-                    return
-                }
-                resolve(results[0].amount || 0)
-            }
-        })
-    })
+export async function getArcadeCredits(userid: string): Promise<number> {
+    const queryString = 'SELECT * FROM arcade_currency WHERE userid = ?;'
+    const results = await queryHelper(queryString, [userid])
+    if (results.length < 1 || !results[0]) {
+        return 0
+    }
+    return (results[0].amount || 0)
 }
 
-export function unlockArcadePrize(userid: string, prize: string) {
-    return new Promise((resolve, reject) => {
-        const queryString = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
-        pool.query(queryString, [userid, prize], (err, results) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            } else {
-                resolve(results)
-            }
-        })
-    })
+export async function unlockArcadePrize(userid: string, prize: string) {
+    const queryString = 'INSERT INTO arcade_prizes VALUES(?, ?, 1) ON DUPLICATE KEY UPDATE amount = amount + 1;'
+    return queryHelper(queryString, [userid, prize])
 }
 
-export function getArcadePrizes(userid: string): Promise<Prize[]> {
-    return new Promise((resolve, reject) => {
-        const queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
-        pool.query(queryString, [userid], (err, results) => {
-            if (err) {
-                reject(err)
-            } else {
-                const prizes = {} as any
-                for (let i = 0; i < results.length; i++) {
-                    const name = results[i].prize
-                    const amount = results[i].amount
-                    prizes[name] = amount
-                }
+export async function getArcadePrizes(userid: string): Promise<Prize[]> {
+    const queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
+    const results = await queryHelper(queryString, [userid])
+    const prizes = {} as any
+    for (let i = 0; i < results.length; i++) {
+        const name = results[i].prize
+        const amount = results[i].amount
+        prizes[name] = amount
+    }
 
-                resolve(prizes)
-            }
-        })
-    })
+    return prizes
 }

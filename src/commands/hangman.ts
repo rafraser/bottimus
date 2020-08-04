@@ -2,12 +2,13 @@ import { Client, Message } from "../command"
 import { incrementArcadeCredits } from "../arcade"
 import { hangmanWords } from "../words/hangman"
 import { Guild, MessageEmbed } from "discord.js"
+import { queryHelper } from "../database"
 
 const NUM_ATTEMPTS = 8
 
 async function incrementStatScore(client: Client, userid: string, guesses: number, correct: number, revealed: number, won: number, contribution: number) {
     const queryString = 'INSERT INTO arcade_hangman VALUES(?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE guesses = guesses + VALUES(guesses), correct = correct + VALUES(correct), revealed = revealed + VALUES(revealed), contribution = ((contribution*words)+VALUES(contribution))/(words+1), words = words + VALUES(words);'
-    return client.queryHelper(queryString, [userid, guesses, correct, revealed, won, contribution])
+    return queryHelper(queryString, [userid, guesses, correct, revealed, won, contribution])
 }
 
 function getRandomWord() {

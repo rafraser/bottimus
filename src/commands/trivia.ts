@@ -1,5 +1,6 @@
 import { Client, Message } from "../command"
 import { incrementArcadeCredits } from "../arcade"
+import { queryHelper } from "../database"
 import { MessageEmbed, ReactionEmoji, MessageReaction } from "discord.js"
 import { AllHtmlEntities } from "html-entities"
 import fetch from "node-fetch"
@@ -27,7 +28,7 @@ function getCategoryId(category: string): number {
 
 async function incrementStatScore(client: Client, userid: string, category: string, correct: number) {
     const queryString = 'INSERT INTO arcade_trivia VALUES(?, ?, 1, ?) ON DUPLICATE KEY UPDATE attempted = attempted + 1, correct = correct + VALUES(correct);'
-    return await client.queryHelper(queryString, [userid, category, correct])
+    return await queryHelper(queryString, [userid, category, correct])
 }
 
 async function getQuestionData(category: number) {

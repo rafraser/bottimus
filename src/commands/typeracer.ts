@@ -1,6 +1,7 @@
 import { Client, Message } from "../command"
 import { shuffle } from "../utils"
 import { incrementArcadeCredits } from "../arcade"
+import { queryHelper } from "../database"
 import { Guild, MessageAttachment } from "discord.js"
 import { easyWords, hardWords } from "../words/typeracer"
 
@@ -13,11 +14,11 @@ async function incrementStatScore(client: Client, userid: string, speed: number)
     const queryThree = 'UPDATE arcade_typeracer SET speed_best = ?, date_best = ? WHERE discordid = ?;'
 
     return new Promise(async (resolve, reject) => {
-        await client.queryHelper(queryOne, [userid, speed])
-        let speed_results = await client.queryHelper(queryTwo, [userid])
+        await queryHelper(queryOne, [userid, speed])
+        let speed_results = await queryHelper(queryTwo, [userid])
         const best = speed_results[0].speed_best
         if (speed > best) {
-            await client.queryHelper(queryThree, [speed, new Date(), userid])
+            await queryHelper(queryThree, [speed, new Date(), userid])
             resolve([true, userid, speed])
         } else {
             resolve([false])

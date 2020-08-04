@@ -1,8 +1,8 @@
 import { User, MessageAttachment } from "discord.js"
 import { Client, Message } from "../command"
-import { timeToString } from "../time"
+import { timeToString } from "../utils"
 import { incrementArcadeCredits } from "../arcade"
-import pool from "../database"
+import { pool } from "../database"
 
 const SPIN_TIME = 12 * 3600 * 1000
 const GAME_WHEELS = [

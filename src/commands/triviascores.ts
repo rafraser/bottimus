@@ -1,4 +1,5 @@
 import { Client, Message } from "../command"
+import { queryHelper } from "../database"
 
 export default {
     name: 'triviascores',
@@ -25,7 +26,7 @@ export default {
         }
 
         // Run the query
-        const results = await client.queryHelper(queryString, [args[0]])
+        const results = await queryHelper(queryString, [args[0]])
         let codestring = '```yaml\nNum  Username                Score\n----------------------------------\n'
         let i = 1
         for (const result of results) {

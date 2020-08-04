@@ -1,7 +1,6 @@
 import { Client, Message } from "../command"
 import { GuildMember, MessageEmbed } from "discord.js"
-// import { getArcadeCredits } from "../arcade"
-import pool from "../database"
+import { queryHelper } from "../database"
 
 // Calculate the totals across all trivia categories
 function calculateTriviaTotals(results: any[]) {
@@ -15,53 +14,39 @@ function calculateTriviaTotals(results: any[]) {
 
     return [totalGuesses, totalCorrect]
 }
-
-// Helper function to get statistics
-function queryHelper(queryString: string, id: string): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-        pool.query(queryString, [id], (err, results) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(results)
-            }
-        })
-    })
-}
-
 // Retrieve Hangman statistics for a given ID from the database
 function fetchHangmanStatistics(id: string): Promise<any[]> {
-    return queryHelper('SELECT guesses, correct, revealed, words, contribution, (correct/guesses) AS percent FROM arcade_hangman WHERE discordid = ?;', id)
+    return queryHelper('SELECT guesses, correct, revealed, words, contribution, (correct/guesses) AS percent FROM arcade_hangman WHERE discordid = ?;', [id])
 }
 
 // Retrieve Trivia statistics for a given ID from the database
 function fetchTriviaStatistics(id: string): Promise<any[]> {
-    return queryHelper('SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;', id)
+    return queryHelper('SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;', [id])
 }
 
 // Retrieve Typeracer statistics for a given ID from the database
 function fetchTyperacerStatistics(id: string): Promise<any[]> {
-    return queryHelper('SELECT completed, speed_average, speed_best, date_best FROM arcade_typeracer WHERE discordid = ?;', id)
+    return queryHelper('SELECT completed, speed_average, speed_best, date_best FROM arcade_typeracer WHERE discordid = ?;', [id])
 }
 
 // Retrieve Scratchcard statistics for a given ID from the database
 function fetchScratchcardStatistics(id: string): Promise<any[]> {
-    return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS average FROM arcade_scratchcard WHERE discordid = ?;', id)
+    return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS average FROM arcade_scratchcard WHERE discordid = ?;', [id])
 }
 
 // Retrieve Mining statistics for a given ID from the database
 function fetchMiningStatistics(id: string): Promise<any[]> {
-    return queryHelper('SELECT number, diamonds, FLOOR(diamonds/number) AS average FROM arcade_mining WHERE discordid = ?;', id)
+    return queryHelper('SELECT number, diamonds, FLOOR(diamonds/number) AS average FROM arcade_mining WHERE discordid = ?;', [id])
 }
 
 // Retrieve Prize statistics for a given ID from the database
 function fetchPrizeStatistics(id: string): Promise<any[]> {
-    return queryHelper('SELECT SUM(amount) AS total, COUNT(amount) AS collected FROM arcade_prizes WHERE discordid = ?;', id)
+    return queryHelper('SELECT SUM(amount) AS total, COUNT(amount) AS collected FROM arcade_prizes WHERE discordid = ?;', [id])
 }
 
 // Retrieve Roulette statistics for a given ID from the database
 function fetchRouletteStatistics(id: string): Promise<any[]> {
-    return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS payout_average, ROUND(bet_total/number, 2) AS bet_average, bet_total FROM arcade_roulette WHERE discordid = ?;', id)
+    return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS payout_average, ROUND(bet_total/number, 2) AS bet_average, bet_total FROM arcade_roulette WHERE discordid = ?;', [id])
 }
 
 // Keep the embed functions in an object for modular lookup

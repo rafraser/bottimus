@@ -1,16 +1,11 @@
 import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember } from "discord.js"
-import { promisify } from "util"
 import { Command } from "./command"
 import { Updater } from "./updater"
-import { timeToString } from "./time"
-import pool from "./database"
+import { timeToString, readdirAsync, existsAsync, writeFileAsync } from "./utils"
 import fs from "fs"
 import path from "path"
 import { spawn } from "child_process"
-
-const readdirAsync = promisify(fs.readdir)
-const existsAsync = promisify(fs.exists)
-const writeFileAsync = promisify(fs.writeFile)
+import { ServerSettings, loadAllServerSettings } from "./settings"
 
 export default class BottimusClient extends Client {
     public static prefixes = ['!', 'Bottimus, ']
@@ -22,7 +17,7 @@ export default class BottimusClient extends Client {
     public updaters: Updater[]
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
-    public serverSettings: Map<string, any>
+    public serverSettings: Map<string, ServerSettings>
     public eventsData: any
 
     public typeracerSessions: Map<string, boolean> = new Map()
@@ -194,6 +189,11 @@ export default class BottimusClient extends Client {
         }
     }
 
+    public async loadServerSettings() {
+        const servers = await loadAllServerSettings()
+        this.serverSettings = servers.reduce((curr, value, id) => curr.set(id, value), new Map())
+    }
+
     public isAdministrator(member: GuildMember): boolean {
         if (member.hasPermission('ADMINISTRATOR')) return true
 
@@ -319,18 +319,6 @@ export default class BottimusClient extends Client {
     public padOrTrim(string: string, length: number): string {
         const trimmed = string.length > length ? string.substring(0, length) : string
         return trimmed.padEnd(length, ' ')
-    }
-
-    public queryHelper(queryString: string, args: any[]): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            pool.query(queryString, args, (err, results) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(results)
-                }
-            })
-        })
     }
 
     private registerEventHandlers() {

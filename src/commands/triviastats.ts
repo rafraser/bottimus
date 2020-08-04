@@ -1,5 +1,6 @@
 import { Client, Message } from "../command"
 import { MessageEmbed } from "discord.js"
+import { queryHelper } from "../database"
 
 function calculateTotals(results: any[]) {
     let totalGuesses = 0
@@ -15,7 +16,7 @@ function calculateTotals(results: any[]) {
 
 function fetchStatistics(client: Client, id: string) {
     const queryString = 'SELECT category, attempted, correct, (correct/attempted) AS percent FROM arcade_trivia WHERE discordid = ? ORDER BY (correct/attempted) DESC;'
-    return client.queryHelper(queryString, [id])
+    return queryHelper(queryString, [id])
 }
 
 export default {

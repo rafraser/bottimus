@@ -1,10 +1,10 @@
 import { Client, Message } from "../command"
 import { User } from "discord.js"
-import pool from "../database"
+import { queryHelper } from "../database"
 
 function updateUserData(user: User) {
     const queryString = 'INSERT INTO bottimus_userdata VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE username = VALUES(username), tag = VALUES(tag), avatar = VALUES(avatar)';
-    pool.query(queryString, [user.id, user.username, user.tag, user.displayAvatarURL()])
+    return queryHelper(queryString, [user.id, user.username, user.tag, user.displayAvatarURL()])
 }
 
 export default {
@@ -40,17 +40,11 @@ export default {
         const partialQuery = 'SELECT userid FROM arcade_currency WHERE userid NOT IN (SELECT discordid FROM bottimus_userdata);'
         const forceQuery = 'SELECT userid FROM arcade_currency'
         const queryString = forceMode ? forceQuery : partialQuery
-        pool.query(queryString, async (err, results) => {
-            if (err) {
-                message.channel.send(err.toString())
-                return
-            }
-
-            for (let result of results) {
-                const user = await client.users.fetch(result.userid, false)
-                updateUserData(user)
-            }
-            message.channel.send(`Updated ${results.length} users.`)
-        })
+        const results = await queryHelper(queryString, [])
+        for (let result of results) {
+            const user = await client.users.fetch(result.userid, false)
+            updateUserData(user)
+        }
+        message.channel.send(`Updated ${results.length} users.`)
     }
 }

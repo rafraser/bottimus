@@ -1,14 +1,11 @@
 import { Client, Message } from "../command"
-import pool from "../database"
+import { queryHelper } from "../database"
 import { getArcadeCredits, incrementArcadeCredits } from "../arcade"
 import { User, MessageReaction, MessageAttachment } from "discord.js"
 
 function updateRouletteStat(userid: string, winnings: number, bet: number) {
     const queryString = 'INSERT INTO arcade_roulette VALUES(?, 1, ?, ?) ON DUPLICATE KEY UPDATE number = number + 1, winnings = winnings + VALUES(winnings), bet_total = bet_total + VALUES(bet_total);'
-
-    pool.query(queryString, [userid, winnings, bet], (err, results) => {
-        if (err) console.log(err)
-    })
+    return queryHelper(queryString, [userid, winnings, bet])
 }
 
 const bet_functions = {} as { [name: string]: (result: number) => boolean }

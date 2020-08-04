@@ -1,9 +1,10 @@
 import { Client, Message } from "../command"
 import { Guild } from "discord.js"
+import { queryHelper } from "../database"
 
 async function getServerData(client: Client, guild: Guild): Promise<[string, string]> {
     let id = guild.ownerID
-    let owner = (await client.queryHelper('SELECT tag FROM bottimus_userdata WHERE discordid = ?', [id]))[0]
+    let owner = (await queryHelper('SELECT tag FROM bottimus_userdata WHERE discordid = ?', [id]))[0]
     if (owner) {
         owner = owner.tag
     } else {

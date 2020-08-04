@@ -1,11 +1,11 @@
 import { Client, Message } from "../command"
 import { User, MessageReaction, GuildMember, MessageAttachment, MessageEmbed } from "discord.js"
 import { getArcadeCredits, incrementArcadeCredits } from "../arcade"
-import pool from "../database"
+import { queryHelper } from "../database"
 
 function updateScratch(id: string, amount: number) {
     const queryString = 'INSERT INTO arcade_scratchcard VALUES(?, 1, ?) ON DUPLICATE KEY UPDATE winnings = winnings + VALUES(winnings), number = number + VALUES(number)'
-    pool.query(queryString, [id, amount])
+    return queryHelper(queryString, [id, amount])
 }
 
 type ScratchPrize = [string, number, number]
