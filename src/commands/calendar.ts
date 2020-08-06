@@ -1,4 +1,5 @@
 import { Client, Message } from "../command"
+import { getSortedEvents } from "../events"
 import { MessageAttachment } from "discord.js"
 
 export default {
@@ -8,13 +9,14 @@ export default {
     cooldown: 15,
 
     async execute(client: Client, message: Message, args: string[]) {
-        if (!client.eventsData || client.eventsData.size < 1) {
-            message.channel.send('No events are currently scheduled!')
+        let events = getSortedEvents(client.eventsData, message.guild)
+        if (events.length < 1) {
+            message.channel.send('No events are currently on the calendar!')
             return
         }
 
         const events2 = ['--events']
-        for (const event of client.eventsData.values()) {
+        for (const event of events) {
             events2.push(`${event.time.toUTCString()}|${event.category}|${event.title}`)
         }
 
