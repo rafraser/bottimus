@@ -73,3 +73,8 @@ export function timeToString(ms: number, depth: number = 1): string {
         return '<1 second'
     }
 }
+
+export function padOrTrim(string: string, length: number): string {
+    const trimmed = string.length > length ? string.substring(0, length) : string
+    return trimmed.padEnd(length, ' ')
+}

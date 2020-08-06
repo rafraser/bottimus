@@ -1,6 +1,7 @@
 import { Client, Message } from "../command"
 import { MessageEmbed } from "discord.js"
 import { queryHelper } from "../database"
+import { padOrTrim } from "../utils"
 
 function calculateTotals(results: any[]) {
     let totalGuesses = 0
@@ -49,7 +50,7 @@ export default {
                 for (const result of results) {
                     const qstring = (result.correct + '/' + result.attempted).padStart(8, ' ')
                     const pcstring = ' (' + Math.floor(result.percent * 100) + '%)'
-                    const category = client.padOrTrim(result.category, 35)
+                    const category = padOrTrim(result.category, 35)
                     codestring += category + qstring + pcstring + '\n'
                 }
                 codestring += '```'

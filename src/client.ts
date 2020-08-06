@@ -1,13 +1,14 @@
 
 import { Command } from "./command"
 import { Updater } from "./updater"
-import { ServerSettings, loadAllServerSettings } from "./settings"
+import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole, getJunkyardChannel } from "./settings"
 import { timeToString, readdirAsync, existsAsync, writeFileAsync } from "./utils"
+import { Event, loadEvents } from "./events"
 
 import fs from "fs"
 import path from "path"
 import { spawn } from "child_process"
-import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember } from "discord.js"
+import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember, SnowflakeUtil, MessageManager } from "discord.js"
 
 export default class BottimusClient extends Client {
     public static prefixes = ['!', 'Bottimus, ']
@@ -21,7 +22,9 @@ export default class BottimusClient extends Client {
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
-    public eventsData: any
+
+    public eventsData: Event[] = []
+    public guildsWithEvents: string[] = []
 
     // Command-specific data
     public typeracerSessions: Map<string, boolean> = new Map()
@@ -50,7 +53,16 @@ export default class BottimusClient extends Client {
         this.on('ready', () => {
             console.log(`Logged in as: ${this.user.tag}`)
             console.log(`Testing mode: ${this.testingMode}`)
+            loadEvents(this)
         })
+    }
+
+    public async setupLogging() {
+        if (this.testingMode) return
+        fs.mkdir('logs', { recursive: true }, (e) => console.error(e))
+        const snowflake = SnowflakeUtil.generate()
+        const logFile = fs.createWriteStream(`logs/${snowflake}.txt`)
+        process.stdout.write = process.stderr.write = logFile.write.bind(logFile)
     }
 
     public async writeDataFile(directory: string, name: string, data: string) {
@@ -219,30 +231,55 @@ export default class BottimusClient extends Client {
         }
     }
 
+    public async messageDeletion(message: Message) {
+        if (this.testingMode) return
+        if (message.member.user.bot) return
+
+        let mchannel = message.channel as TextChannel
+        if (mchannel.name === 'bottimus') return
+        if (mchannel.name === 'administration') return
+        if (mchannel.name === 'bottimus-test-track') return
+        if (message.content.startsWith('!say')) return
+
+        // Get the junkyard channel for this server
+        const channelId = getJunkyardChannel(this.serverSettings, message.guild.id)
+        if (!channelId) return
+        const channel = message.guild.channels.cache.get(channelId) as TextChannel
+
+        // Send with attachment if applicable
+        const attachment = message.attachments.first()
+        if (attachment) {
+            channel.send(`Deleted message by **${message.member.displayName}** in **#${mchannel.name}**:\n${message.cleanContent}`, { files: [attachment.proxyURL] })
+        } else {
+            channel.send(`Deleted message by **${message.member.displayName}** in **#${mchannel.name}**:\n${message.cleanContent}`)
+        }
+    }
+
     public async loadServerSettings() {
         const servers = await loadAllServerSettings()
-        this.serverSettings = servers.reduce((curr, value) => curr.set(value[0], value[1]), new Map())
+        this.serverSettings = servers.reduce((curr, value) => {
+            if (value[1].channels && value[1].channels.event) {
+                this.guildsWithEvents.push(value[0])
+            }
+            return curr.set(value[0], value[1])
+        }, new Map())
     }
 
     public isAdministrator(member: GuildMember): boolean {
         if (member.hasPermission('ADMINISTRATOR')) return true
 
-        // Get the role information from the server
-        // const roleData = this.serverRoles.get(member.guild.id)
-        const roleData = {} as any
+        const adminRole = getAdminRole(this.serverSettings, member.guild.id)
+        if (!adminRole) return false
 
-        if (!roleData) return false
-        if (!roleData.admin) return false
-
-        if (roleData.admin instanceof Array) {
+        if (adminRole instanceof Array) {
             // Treat arrays as a list of role IDs
             return member.roles.cache.some(role => {
-                return roleData.admin.includes(role.id)
+                return adminRole.includes(role.id)
             })
         } else {
             // Treat strings as a role suffix
             return member.roles.cache.some(role => {
-                return role.name.endsWith(roleData.admin)
+                return role.name.endsWith(adminRole)
             })
         }
     }
@@ -250,32 +287,38 @@ export default class BottimusClient extends Client {
     public isModerator(member: GuildMember): boolean {
         if (this.isAdministrator(member)) return true
 
-        // const roleData = this.serverSettings.get(member.guild.id)
-        const roleData = {} as any
+        const modRole = getModeratorRole(this.serverSettings, member.guild.id)
+        if (!modRole) return false
 
-        if (!roleData) return false
-        if (!roleData.mod) return false
-
-        if (roleData.mod instanceof Array) {
+        if (modRole instanceof Array) {
             // Treat arrays as a list of role IDs
             return member.roles.cache.some(role => {
-                return roleData.mod.includes(role.id)
+                return modRole.includes(role.id)
             })
         } else {
             // Treat strings as a role suffix
             return member.roles.cache.some(role => {
-                return role.name.endsWith(roleData.mod)
+                return role.name.endsWith(modRole)
             })
         }
     }
 
-    public isCommunityStar(member: GuildMember): boolean {
-        if (member.guild.id !== BottimusClient.primaryGuild) return false
-        if (this.isModerator(member)) return true
+    public isEventRole(member: GuildMember): boolean {
+        if (this.isAdministrator(member)) return true
 
-        return member.roles.cache.some(role => {
-            return role.name.endsWith('Community Star')
-        })
+        const eventRole = getEventRole(this.serverSettings, member.guild.id)
+        if (!eventRole) return false
+
+        if (eventRole instanceof Array) {
+            return member.roles.cache.some(role => {
+                return eventRole.includes(role.id)
+            })
+        } else {
+            // Treat strings as a role suffix
+            return member.roles.cache.some(role => {
+                return role.name.endsWith(eventRole)
+            })
+        }
     }
 
     public async findUser(message: Message, args: string[], retself: boolean = false): Promise<GuildMember> {
@@ -351,14 +394,10 @@ export default class BottimusClient extends Client {
         })
     }
 
-    public padOrTrim(string: string, length: number): string {
-        const trimmed = string.length > length ? string.substring(0, length) : string
-        return trimmed.padEnd(length, ' ')
-    }
-
     private registerEventHandlers() {
         this.on('message', this.commandParser)
         this.on('guildMemberAdd', this.welcomeGreeter)
+        this.on('messageDelete', this.messageDeletion)
 
         this.updateInterval = setInterval(_ => { this.runUpdaters() }, 60 * 1000)
     }

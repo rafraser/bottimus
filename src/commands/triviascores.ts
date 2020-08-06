@@ -1,5 +1,6 @@
 import { Client, Message } from "../command"
 import { queryHelper } from "../database"
+import { padOrTrim } from "../utils"
 
 export default {
     name: 'triviascores',
@@ -32,9 +33,9 @@ export default {
         for (const result of results) {
             let display = result.username
 
-            const position = client.padOrTrim(`#${i}.`, 5)
-            const name = client.padOrTrim(display, 25)
-            const score = client.padOrTrim(result.score.toString(), 5)
+            const position = padOrTrim(`#${i}.`, 5)
+            const name = padOrTrim(display, 25)
+            const score = padOrTrim(result.score.toString(), 5)
             codestring += `${position}${name}${score}\n`
             i++
         }

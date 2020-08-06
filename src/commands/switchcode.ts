@@ -1,6 +1,7 @@
 import { Client, Message } from "../command"
 import { TextChannel } from "discord.js"
 import { queryHelper } from "../database"
+import { padOrTrim } from "../utils"
 
 async function buildFriendsTable(client: Client, message: Message, gid: string) {
     const queryString = 'SELECT u.username, code FROM arcade_switchcode a LEFT JOIN bottimus_userdata u on a.discordid = u.discordid WHERE guild = ?'
@@ -11,7 +12,7 @@ async function buildFriendsTable(client: Client, message: Message, gid: string) 
         codeString += 'Nobody has listed their friend code yet - be the first!'
     }
     for (const result of results) {
-        const name = client.padOrTrim(result.username, 25)
+        const name = padOrTrim(result.username, 25)
         codeString += `${name} ${result.code}\n`
     }
 
