@@ -1,4 +1,5 @@
 import { queryHelper } from "./database"
+import { timeToString } from "./utils"
 import { Guild, GuildMember, SnowflakeUtil, MessageEmbed } from "discord.js"
 
 export function formatEventDate(date: Date, newline: boolean = true) {
@@ -76,8 +77,6 @@ export class Event {
         this.scheduler = member.displayName
         this.schedulerID = member.id
         this.time = time
-
-        this.updateDatabase()
     }
 
     public getCategoryFromInfo(): EventCategory {
@@ -97,20 +96,24 @@ export class Event {
         return `https://fluffyservers.com/img/events/${this.category}.gif`
     }
 
-    public approveEvent() {
+    public async registerEvent() {
+        await this.updateDatabase()
+    }
+
+    public async approveEvent() {
         this.approved = true
-        this.updateDatabase()
+        await this.updateDatabase()
     }
 
-    public cancelEvent() {
+    public async cancelEvent() {
         this.cancelled = true
-        this.updateDatabase()
+        await this.updateDatabase()
     }
 
-    public completeEvent(attendees: number) {
+    public async completeEvent(attendees: number) {
         this.completed = true
         this.attendees = attendees
-        this.updateDatabase()
+        await this.updateDatabase()
     }
 
     public generateEventEmbed() {
@@ -128,7 +131,7 @@ export class Event {
         } else if (this.cancelled) {
             embed.addField('CANCELLED', false)
         } else {
-            let timeLeft = 'help me i am stuck in an event making factory'
+            let timeLeft = timeToString(this.time.getTime() - Date.now(), 2)
             embed.addField('Starting in:', timeLeft, false)
         }
 
@@ -144,7 +147,7 @@ export class Event {
                 time = VALUES(time),
                 completed = VALUES(completed),
                 cancelled = VALUES(cancelled),
-                attendees = VALUES(attendees),
+                attendees = VALUES(attendees)
         `
         await queryHelper(queryString, [this.id, this.guild, this.title, this.description, this.category, this.scheduler, this.schedulerID, this.approved, this.time, this.completed, this.cancelled, this.attendees])
     }
@@ -154,6 +157,11 @@ export async function loadEvents() {
     const queryString = 'SELECT * FROM bottimus_events WHERE time > NOW() - INTERVAL 35 DAY'
     const results = await queryHelper(queryString, [])
     return results.map(r => r as Event)
+}
+
+export async function denyEvent(id: string) {
+    const queryString = 'DELETE FROM bottimus_events WHERE id = ? AND approved = 0'
+    return await queryHelper(queryString, [id])
 }
 
 export function getSortedEvents(events: Event[], guild: Guild) {
