@@ -1,6 +1,5 @@
 import { Client, Message } from "../command"
-import { getUpcomingEvents, formatEventDate } from "../events"
-import { padOrTrim } from "../utils"
+import { updateDisplayedEvent } from "../updaters/events"
 import { getUnapprovedEvent, denyEvent } from "../events"
 import { MessageReaction, User } from "discord.js"
 
@@ -16,7 +15,6 @@ export default {
         }
 
         const eventUnapproved = getUnapprovedEvent(client.eventsData, message.guild)
-        console.log(eventUnapproved)
         if (!eventUnapproved) {
             message.channel.send('No events are awaiting approval.')
             return
@@ -34,6 +32,7 @@ export default {
         const collector = msg.createReactionCollector(filter, { time: 25000 })
         collector.on('collect', async r => {
             collector.stop()
+            console.log('COLELCT!')
             if (r.emoji.name === '❎') {
                 denyEvent(eventUnapproved.id)
                 let idx = client.eventsData.indexOf(eventUnapproved)
@@ -43,8 +42,10 @@ export default {
 
                 message.channel.send('Event denied!')
             } else if (r.emoji.name === '✅') {
+                console.log('Approvingevent!')
                 eventUnapproved.approveEvent()
-                message.channel.send('Event approved!')
+                await updateDisplayedEvent(client, message.guild.id, false, false)
+                await message.channel.send('Event approved!')
             }
         })
     }

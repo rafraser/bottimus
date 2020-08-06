@@ -22,7 +22,9 @@ export default class BottimusClient extends Client {
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
+
     public eventsData: Event[] = []
+    public guildsWithEvents: string[] = []
 
     // Command-specific data
     public typeracerSessions: Map<string, boolean> = new Map()
@@ -231,7 +233,12 @@ export default class BottimusClient extends Client {
 
     public async loadServerSettings() {
         const servers = await loadAllServerSettings()
-        this.serverSettings = servers.reduce((curr, value) => curr.set(value[0], value[1]), new Map())
+        this.serverSettings = servers.reduce((curr, value) => {
+            if (value[1].channels && value[1].channels.event) {
+                this.guildsWithEvents.push(value[0])
+            }
+            return curr.set(value[0], value[1])
+        }, new Map())
     }
 
     public isAdministrator(member: GuildMember): boolean {
