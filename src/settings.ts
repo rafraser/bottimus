@@ -2,8 +2,9 @@ import { Server } from "ws"
 import { readdirAsync, readFileAsync } from "./utils"
 
 export type ServerRoles = {
-    mod?: string,
-    admin?: string,
+    mod?: string | string[],
+    admin?: string | string[],
+    event?: string | string[],
     muted?: string,
     ticket?: string,
     choices: RoleGroup[]
@@ -33,6 +34,12 @@ export function getAdminRole(settings: Map<string, ServerSettings>, id: string) 
     return server.roles.admin
 }
 
+export function getEventRole(settings: Map<string, ServerSettings>, id: string) {
+    let server = settings.get(id)
+    if (!server) return
+    return server.roles.event
+}
+
 export function getMutedRole(settings: Map<string, ServerSettings>, id: string) {
     let server = settings.get(id)
     if (!server) return
@@ -51,8 +58,15 @@ export function getChooseableRoles(settings: Map<string, ServerSettings>, id: st
     return server.roles.choices
 }
 
+export type ServerChannels = {
+    event?: string,
+    admin?: string,
+    junkyard?: string
+}
+
 export type ServerSettings = {
-    roles: ServerRoles
+    roles?: ServerRoles
+    channels?: ServerChannels
 }
 export type ServerSettingsList = Map<string, ServerSettings>
 

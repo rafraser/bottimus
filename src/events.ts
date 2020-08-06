@@ -161,6 +161,10 @@ export function getSortedEvents(events: Event[], guild: Guild) {
     return approvedEvents.sort((a, b) => a.time.getTime() - b.time.getTime())
 }
 
+export function getUpcomingEvents(events: Event[], guild: Guild) {
+    return getSortedEvents(events, guild).filter(e => !e.completed)
+}
+
 export function getNextEvent(events: Event[], guild: Guild) {
     return getSortedEvents(events, guild).find(e => !e.completed)
 }

@@ -1,7 +1,7 @@
 
 import { Command } from "./command"
 import { Updater } from "./updater"
-import { ServerSettings, loadAllServerSettings } from "./settings"
+import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole } from "./settings"
 import { timeToString, readdirAsync, existsAsync, writeFileAsync } from "./utils"
 import { Event, loadEvents } from "./events"
 
@@ -229,22 +229,18 @@ export default class BottimusClient extends Client {
     public isAdministrator(member: GuildMember): boolean {
         if (member.hasPermission('ADMINISTRATOR')) return true
 
-        // Get the role information from the server
-        // const roleData = this.serverRoles.get(member.guild.id)
-        const roleData = {} as any
+        const adminRole = getAdminRole(this.serverSettings, member.guild.id)
+        if (!adminRole) return false
 
-        if (!roleData) return false
-        if (!roleData.admin) return false
-
-        if (roleData.admin instanceof Array) {
+        if (adminRole instanceof Array) {
             // Treat arrays as a list of role IDs
             return member.roles.cache.some(role => {
-                return roleData.admin.includes(role.id)
+                return adminRole.includes(role.id)
             })
         } else {
             // Treat strings as a role suffix
             return member.roles.cache.some(role => {
-                return role.name.endsWith(roleData.admin)
+                return role.name.endsWith(adminRole)
             })
         }
     }
@@ -252,32 +248,38 @@ export default class BottimusClient extends Client {
     public isModerator(member: GuildMember): boolean {
         if (this.isAdministrator(member)) return true
 
-        // const roleData = this.serverSettings.get(member.guild.id)
-        const roleData = {} as any
+        const modRole = getModeratorRole(this.serverSettings, member.guild.id)
+        if (!modRole) return false
 
-        if (!roleData) return false
-        if (!roleData.mod) return false
-
-        if (roleData.mod instanceof Array) {
+        if (modRole instanceof Array) {
             // Treat arrays as a list of role IDs
             return member.roles.cache.some(role => {
-                return roleData.mod.includes(role.id)
+                return modRole.includes(role.id)
             })
         } else {
             // Treat strings as a role suffix
             return member.roles.cache.some(role => {
-                return role.name.endsWith(roleData.mod)
+                return role.name.endsWith(modRole)
             })
         }
     }
 
-    public isCommunityStar(member: GuildMember): boolean {
-        if (member.guild.id !== BottimusClient.primaryGuild) return false
-        if (this.isModerator(member)) return true
+    public isEventRole(member: GuildMember): boolean {
+        if (this.isAdministrator(member)) return true
 
-        return member.roles.cache.some(role => {
-            return role.name.endsWith('Community Star')
-        })
+        const eventRole = getEventRole(this.serverSettings, member.guild.id)
+        if (!eventRole) return false
+
+        if (eventRole instanceof Array) {
+            return member.roles.cache.some(role => {
+                return eventRole.includes(role.id)
+            })
+        } else {
+            // Treat strings as a role suffix
+            return member.roles.cache.some(role => {
+                return role.name.endsWith(eventRole)
+            })
+        }
     }
 
     public async findUser(message: Message, args: string[], retself: boolean = false): Promise<GuildMember> {
