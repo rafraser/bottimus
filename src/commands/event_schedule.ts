@@ -106,7 +106,6 @@ export default {
         const collector = msg.createReactionCollector(filter, { time: 25000 })
         collector.on('collect', async () => {
             collector.stop()
-            console.log('Confirmation!')
 
             // Send notification to administrators
             const channelID = getAdminChannel(client.serverSettings, message.guild.id)
@@ -116,6 +115,7 @@ export default {
             }
 
             await event.registerEvent()
+            client.eventsData.push(event)
             message.channel.send('Event has been sent to Administrators for approval!')
         })
     }

@@ -8,7 +8,7 @@ import { Event, loadEvents } from "./events"
 import fs from "fs"
 import path from "path"
 import { spawn } from "child_process"
-import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember } from "discord.js"
+import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember, SnowflakeUtil } from "discord.js"
 
 export default class BottimusClient extends Client {
     public static prefixes = ['!', 'Bottimus, ']
@@ -22,7 +22,7 @@ export default class BottimusClient extends Client {
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
-    public eventsData: Event[]
+    public eventsData: Event[] = []
 
     // Command-specific data
     public typeracerSessions: Map<string, boolean> = new Map()
@@ -43,7 +43,6 @@ export default class BottimusClient extends Client {
         this.loadUpdaters()
         this.loadWelcomes()
         this.loadServerSettings()
-        loadEvents().then(r => { this.eventsData = r })
 
         // Register events
         this.registerEventHandlers()
@@ -52,7 +51,16 @@ export default class BottimusClient extends Client {
         this.on('ready', () => {
             console.log(`Logged in as: ${this.user.tag}`)
             console.log(`Testing mode: ${this.testingMode}`)
+            loadEvents(this)
         })
+    }
+
+    public async setupLogging() {
+        if (this.testingMode) return
+        fs.mkdir('logs', { recursive: true }, (e) => console.error(e))
+        const snowflake = SnowflakeUtil.generate()
+        const logFile = fs.createWriteStream(`logs/${snowflake}.txt`)
+        process.stdout.write = process.stderr.write = logFile.write.bind(logFile)
     }
 
     public async writeDataFile(directory: string, name: string, data: string) {
