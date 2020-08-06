@@ -3,6 +3,7 @@ import { Command } from "./command"
 import { Updater } from "./updater"
 import { ServerSettings, loadAllServerSettings } from "./settings"
 import { timeToString, readdirAsync, existsAsync, writeFileAsync } from "./utils"
+import { Event, loadEvents } from "./events"
 
 import fs from "fs"
 import path from "path"
@@ -21,7 +22,7 @@ export default class BottimusClient extends Client {
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
-    public eventsData: any
+    public eventsData: Event[]
 
     // Command-specific data
     public typeracerSessions: Map<string, boolean> = new Map()
@@ -42,6 +43,7 @@ export default class BottimusClient extends Client {
         this.loadUpdaters()
         this.loadWelcomes()
         this.loadServerSettings()
+        loadEvents().then(r => { this.eventsData = r })
 
         // Register events
         this.registerEventHandlers()
