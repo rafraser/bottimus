@@ -1,6 +1,7 @@
 import { queryHelper } from "./database"
 import { timeToString } from "./utils"
 import { Guild, GuildMember, SnowflakeUtil, MessageEmbed } from "discord.js"
+import BottimusClient from "./client"
 
 export function formatEventDate(date: Date, newline: boolean = true) {
     // Robert A Fraser elite coding skills right here
@@ -153,10 +154,29 @@ export class Event {
     }
 }
 
-export async function loadEvents() {
+export async function loadEvents(client: BottimusClient) {
     const queryString = 'SELECT * FROM bottimus_events WHERE time > NOW() - INTERVAL 35 DAY'
     const results = await queryHelper(queryString, [])
-    return results.map(r => r as Event)
+
+    const rowToEvent = async (row: any) => {
+        let guild = client.guilds.cache.get(row.guild)
+        let member = await guild.members.fetch(row.schedulerID)
+        let event = new Event(guild, row.title, row.description, member, row.time)
+        event.id = row.id
+        event.category = row.category as EventCategory
+        event.approved = row.approved
+        event.completed = row.completed
+        event.cancelled = row.cancelled
+        event.attendees = row.attendees
+        return event
+    }
+
+    results.forEach(async result => {
+        if (client.guilds.cache.has(result.guild)) {
+            const event = await rowToEvent(result)
+            client.eventsData.push(event)
+        }
+    })
 }
 
 export async function denyEvent(id: string) {
