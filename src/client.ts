@@ -353,11 +353,6 @@ export default class BottimusClient extends Client {
         })
     }
 
-    public padOrTrim(string: string, length: number): string {
-        const trimmed = string.length > length ? string.substring(0, length) : string
-        return trimmed.padEnd(length, ' ')
-    }
-
     private registerEventHandlers() {
         this.on('message', this.commandParser)
         this.on('guildMemberAdd', this.welcomeGreeter)

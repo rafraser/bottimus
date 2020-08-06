@@ -1,6 +1,7 @@
 import { Client, Message } from "../command"
 import { Guild } from "discord.js"
 import { queryHelper } from "../database"
+import { padOrTrim } from "../utils"
 
 async function getServerData(client: Client, guild: Guild): Promise<[string, string]> {
     let id = guild.ownerID
@@ -11,7 +12,7 @@ async function getServerData(client: Client, guild: Guild): Promise<[string, str
         owner = 'Unknown Owner'
     }
 
-    return [client.padOrTrim(guild.name, 30), client.padOrTrim(owner, 20)]
+    return [padOrTrim(guild.name, 30), padOrTrim(owner, 20)]
 }
 
 export default {
