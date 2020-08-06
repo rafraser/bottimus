@@ -1,4 +1,15 @@
 import { Client, Message } from "../command"
+import { Guild } from "discord.js"
+
+const BANNERS = [
+    'brr', 'cabin', 'canada', 'citizen', 'fox', 'kablam', 'orange', 'pain', 'simple', 'vibing'
+]
+
+export function chooseRandomBanner(guild: Guild) {
+    const banner = BANNERS[Math.floor(Math.random() * BANNERS.length)]
+    const file = `./img/banner/${banner}.png`
+    guild.setBanner(file)
+}
 
 export default {
     name: 'banner',
@@ -8,7 +19,11 @@ export default {
     async execute(client: Client, message: Message, args: string[]) {
         if (client.isAdministrator(message.member)) {
             const file = args.shift()
-            message.guild.setBanner('./img/banner/' + file)
+            if (file) {
+                message.guild.setBanner('./img/banner/' + file)
+            } else {
+                chooseRandomBanner(message.guild)
+            }
         }
     }
 }
