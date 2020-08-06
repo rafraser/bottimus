@@ -1,14 +1,14 @@
 
 import { Command } from "./command"
 import { Updater } from "./updater"
-import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole } from "./settings"
+import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole, getJunkyardChannel } from "./settings"
 import { timeToString, readdirAsync, existsAsync, writeFileAsync } from "./utils"
 import { Event, loadEvents } from "./events"
 
 import fs from "fs"
 import path from "path"
 import { spawn } from "child_process"
-import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember, SnowflakeUtil } from "discord.js"
+import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember, SnowflakeUtil, MessageManager } from "discord.js"
 
 export default class BottimusClient extends Client {
     public static prefixes = ['!', 'Bottimus, ']
@@ -231,6 +231,30 @@ export default class BottimusClient extends Client {
         }
     }
 
+    public async messageDeletion(message: Message) {
+        if (this.testingMode) return
+        if (message.member.user.bot) return
+
+        let mchannel = message.channel as TextChannel
+        if (mchannel.name === 'bottimus') return
+        if (mchannel.name === 'administration') return
+        if (mchannel.name === 'bottimus-test-track') return
+        if (message.content.startsWith('!say')) return
+
+        // Get the junkyard channel for this server
+        const channelId = getJunkyardChannel(this.serverSettings, message.guild.id)
+        if (!channelId) return
+        const channel = message.guild.channels.cache.get(channelId) as TextChannel
+
+        // Send with attachment if applicable
+        const attachment = message.attachments.first()
+        if (attachment) {
+            channel.send(`Deleted message by **${message.member.displayName}** in **#${mchannel.name}**:\n${message.cleanContent}`, { files: [attachment.proxyURL] })
+        } else {
+            channel.send(`Deleted message by **${message.member.displayName}** in **#${mchannel.name}**:\n${message.cleanContent}`)
+        }
+    }
+
     public async loadServerSettings() {
         const servers = await loadAllServerSettings()
         this.serverSettings = servers.reduce((curr, value) => {
@@ -373,6 +397,7 @@ export default class BottimusClient extends Client {
     private registerEventHandlers() {
         this.on('message', this.commandParser)
         this.on('guildMemberAdd', this.welcomeGreeter)
+        this.on('messageDelete', this.messageDeletion)
 
         this.updateInterval = setInterval(_ => { this.runUpdaters() }, 60 * 1000)
     }
