@@ -22,8 +22,6 @@ export default {
 
         const embed = eventUnapproved.generateEventEmbed()
         const msg = await message.channel.send(embed)
-        await msg.react('✅')
-        await msg.react('❎')
 
         const filter = (reaction: MessageReaction, user: User) => {
             return user.id === message.member.id && (reaction.emoji.name === '✅' || reaction.emoji.name === '❎')
@@ -32,7 +30,6 @@ export default {
         const collector = msg.createReactionCollector(filter, { time: 25000 })
         collector.on('collect', async r => {
             collector.stop()
-            console.log('COLELCT!')
             if (r.emoji.name === '❎') {
                 denyEvent(eventUnapproved.id)
                 let idx = client.eventsData.indexOf(eventUnapproved)
@@ -42,11 +39,13 @@ export default {
 
                 message.channel.send('Event denied!')
             } else if (r.emoji.name === '✅') {
-                console.log('Approvingevent!')
                 eventUnapproved.approveEvent()
                 await updateDisplayedEvent(client, message.guild.id, false, false)
                 await message.channel.send('Event approved!')
             }
         })
+
+        await msg.react('✅')
+        await msg.react('❎')
     }
 }

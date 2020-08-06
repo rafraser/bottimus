@@ -49,10 +49,8 @@ async function updateEventMessage(client: Client, eventChannel: TextChannel, eve
 
 export async function updateDisplayedEvent(client: Client, guildId: string, sendNew: boolean = false, ignoreTime: boolean = false) {
     let upcomingEvent = getNextEvent(client.eventsData, guildId)
-    console.log('UPDATING: ', upcomingEvent.title)
     if (!upcomingEvent) return
     if (!ignoreTime && Date.now() + (24 * 3600 * 1000) < upcomingEvent.time.getTime()) return
-    console.log('Here we go...')
 
     let eventChannelId = client.serverSettings.get(guildId).channels.event
     let guild = client.guilds.cache.get(guildId)
@@ -61,7 +59,6 @@ export async function updateDisplayedEvent(client: Client, guildId: string, send
     if (sendNew) {
         let msg = await eventChannel.send('[Next Event]')
         msg.react('🔔')
-        console.log('Sent new message...')
     }
     updateEventMessage(client, eventChannel, upcomingEvent)
 }
