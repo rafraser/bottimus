@@ -2,11 +2,17 @@ import { Client, Message } from "../command"
 import { getUpcomingEvents, formatEventDate } from "../events"
 import { padOrTrim } from "../utils"
 import { Event } from "../events"
+import { Guild } from "discord.js"
+
+export function getEventTable(client: Client, guild: Guild) {
+    const events = getUpcomingEvents(client.eventsData, guild)
+    return events.reduce((acc, val) => acc + displayEvent(val), '```cs\n# Upcoming Events #') + '```'
+}
 
 function displayEvent(event: Event): string {
     let name = event.title.replace("'", "")
     let time = formatEventDate(event.time, false)
-    return '\n' + padOrTrim(name, 20) + ' ' + padOrTrim(time, 25)
+    return '\n' + padOrTrim(name, 38) + '   ' + padOrTrim(time, 25)
 }
 
 export default {
@@ -15,10 +21,6 @@ export default {
     aliases: ['events'],
 
     async execute(client: Client, message: Message, args: string[]) {
-        const events = getUpcomingEvents(client.eventsData, message.guild)
-
-        // Generate a code block list
-        const outputString = events.reduce((acc, val) => acc + displayEvent(val), '```cs\n# Upcoming Events #') + '```'
-        message.channel.send(outputString)
+        message.channel.send(getEventTable(client, message.guild))
     }
 }
