@@ -25,7 +25,7 @@ async function updateEventMessage(client: Client, eventChannel: TextChannel, eve
         const reaction = displayMessage.reactions.cache.get('🔔')
         if (reaction) {
             const users = await reaction.users.fetch()
-            const pingString = users.filter(u => !u.bot).reduce((acc, val) => acc + ' ' + val.toString(), '')
+            const pingString = users.filter(u => !u.bot).reduce((acc, val) => acc + val.toString() + ' ', '')
 
             const channel = eventChannel.guild.channels.cache.find(c => c.name === 'general') as TextChannel
             if (channel) {
