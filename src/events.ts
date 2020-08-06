@@ -94,7 +94,7 @@ export class Event {
     }
 
     public getEventIcon() {
-        return `https://fluffyservers.com/img/events/${this.category}.gif`
+        return `https://fluffyservers.com/img/events/${this.category}.png`
     }
 
     public async registerEvent() {
