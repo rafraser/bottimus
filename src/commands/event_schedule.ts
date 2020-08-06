@@ -92,7 +92,7 @@ export default {
 
         const event = new Event(message.guild, title, description, message.member, when)
         if (forcetype) {
-            event.category = EventCategory[forcetype as keyof typeof EventCategory]
+            event.category = forcetype as EventCategory
         }
         const embed = event.generateEventEmbed()
 
