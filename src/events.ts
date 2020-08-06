@@ -184,19 +184,21 @@ export async function denyEvent(id: string) {
     return await queryHelper(queryString, [id])
 }
 
-export function getSortedEvents(events: Event[], guild: Guild) {
-    let approvedEvents = events.filter(e => e.guild === guild.id).filter(e => e.approved)
+export function getSortedEvents(events: Event[], guild: string | Guild) {
+    let id = (typeof guild == "string") ? guild : guild.id
+    let approvedEvents = events.filter(e => e.guild === id).filter(e => e.approved)
     return approvedEvents.sort((a, b) => a.time.getTime() - b.time.getTime())
 }
 
-export function getUpcomingEvents(events: Event[], guild: Guild) {
+export function getUpcomingEvents(events: Event[], guild: string | Guild) {
     return getSortedEvents(events, guild).filter(e => !e.completed)
 }
 
-export function getNextEvent(events: Event[], guild: Guild) {
+export function getNextEvent(events: Event[], guild: string | Guild) {
     return getSortedEvents(events, guild).find(e => !e.completed)
 }
 
-export function getUnapprovedEvent(events: Event[], guild: Guild) {
-    return events.filter(e => e.guild === guild.id).find(e => !e.approved)
+export function getUnapprovedEvent(events: Event[], guild: string | Guild) {
+    let id = (typeof guild == "string") ? guild : guild.id
+    return events.filter(e => e.guild === id).find(e => !e.approved)
 }
