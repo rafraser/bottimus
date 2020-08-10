@@ -198,10 +198,9 @@ export default class BottimusClient extends Client {
     }
 
     public async runUpdaters() {
-        const n = new Date().getMinutes()
+        const d = new Date()
+        const n = d.getMinutes() + (d.getHours() * 60)
         for (const update of this.updaters) {
-            // if (this.testingMode && !update.testingAllowed) continue
-
             if (n % update.frequency === 0) {
                 await update.execute(this)
             }

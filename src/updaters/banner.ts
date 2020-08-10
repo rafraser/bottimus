@@ -5,12 +5,9 @@ const guildId = '309951255575265280'
 
 export default {
     description: "Update the Fluffy Servers banner",
-    frequency: 55,
+    frequency: 720,
 
     async execute(client: Client) {
-        let d = new Date().getHours()
-        if (d % 4 != 0) return
-
         let guild = client.guilds.cache.get(guildId)
         chooseRandomBanner(guild)
     }
