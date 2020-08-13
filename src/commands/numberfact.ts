@@ -23,7 +23,6 @@ export default {
     name: 'numberfact',
     description: 'Get a random number fact\nFor a fact about a specific number: `!numberfact [number]`',
     cooldown: 10,
-    guilds: ['309951255575265280'],
 
     async execute(client: Client, message: Message, args: string[]) {
         let url
