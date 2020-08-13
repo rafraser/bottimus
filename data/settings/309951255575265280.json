@@ -2,6 +2,7 @@
     "roles": {
         "mod": "Moderator",
         "admin": "Administrator",
+        "event": "Community Star",
         "muted": "495945521408770049",
         "ticket": "689083326933631013",
         "choices": [
