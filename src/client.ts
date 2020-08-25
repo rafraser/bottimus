@@ -23,6 +23,8 @@ export default class BottimusClient extends Client {
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
 
+    public messageCounts: Map<string, Map<string, number>> = new Map()
+
     public eventsData: Event[] = []
     public guildsWithEvents: string[] = []
 
@@ -98,6 +100,11 @@ export default class BottimusClient extends Client {
         // Do not handle messages by bots
         if (message.author.bot) return
 
+        // Count messages in Fluffy Servers
+        if (!this.testingMode && message.guild.id == BottimusClient.primaryGuild) {
+            this.countMessage(message.member)
+        }
+
         // Do not handle messages if the bot is about to restart
         if (this.restarting) return
 
@@ -108,9 +115,6 @@ export default class BottimusClient extends Client {
         // Do not handle messages in DM
         if (message instanceof DMChannel) return
         const channel = message.channel as TextChannel
-
-        // Apply scanners to every message
-        // TODO
 
         // Check if the command is valid
         let isBottimusCommand = false
@@ -152,6 +156,18 @@ export default class BottimusClient extends Client {
         } catch (err) {
             message.channel.send(err.message)
         }
+    }
+
+    public countMessage(member: GuildMember) {
+        let guild = member.guild.id
+        let guild_counts = this.messageCounts.get(guild)
+        if (!guild_counts) {
+            guild_counts = new Map()
+            this.messageCounts.set(guild, guild_counts)
+        }
+
+        let amount = guild_counts.get(member.id) || 0
+        guild_counts.set(member.id, amount + 1)
     }
 
     public checkCooldown(command: Command, user: string) {
