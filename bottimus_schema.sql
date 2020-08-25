@@ -124,3 +124,10 @@ CREATE TABLE IF NOT EXISTS `mute_data` (
   `active` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`guild`, `member`, `expiry`)
 );
+
+CREATE TABLE IF NOT EXISTS `bottimus_messages` (
+  `discordid` varchar(64) NOT NULL,
+  `guild` varchar(64) NOT NULL,
+  `amount` int(11) DEFAULT NULL,
+  PRIMARY KEY (`discordid`, `guild`)
+);
