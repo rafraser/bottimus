@@ -155,6 +155,7 @@ export class Event {
 }
 
 export async function loadEvents(client: BottimusClient) {
+    client.eventsData = []
     const queryString = 'SELECT * FROM bottimus_events WHERE time > NOW() - INTERVAL 35 DAY AND cancelled = 0'
     const results = await queryHelper(queryString, [])
 
