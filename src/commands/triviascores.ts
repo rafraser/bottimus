@@ -1,6 +1,6 @@
 import { Client, Message } from "../command"
 import { queryHelper } from "../database"
-import { padOrTrim } from "../utils"
+import { padOrTrim, padOrTrimLeft } from "../utils"
 
 export default {
     name: 'triviascores',
@@ -33,7 +33,7 @@ export default {
             let display = result.username
             const position = padOrTrim(`#${idx + 1}.`, 5)
             const name = padOrTrim(display, 25)
-            const score = padOrTrim(result.score.toString(), 5)
+            const score = padOrTrimLeft(result.score.toString(), 5)
             return acc + `${position}${name}${score}\n`
         }, header) + '```'
 

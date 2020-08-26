@@ -1,6 +1,6 @@
 import { Client, Message } from "../command"
 import { queryHelper } from "../database"
-import { padOrTrim } from "../utils"
+import { padOrTrim, padOrTrimLeft } from "../utils"
 
 export default {
     name: 'messages',
@@ -16,8 +16,8 @@ export default {
             let text = results.reduce((acc, result, idx) => {
                 let display = result.username || '<unknown>'
                 const position = padOrTrim(`#${idx + 1}.`, 5)
-                const name = padOrTrim(display, 23)
-                const messages = padOrTrim(result.amount.toString(), 7)
+                const name = padOrTrim(display, 22)
+                const messages = padOrTrimLeft(result.amount.toString(), 7)
                 return acc + `${position}${name}${messages}\n`
             }, header) + '```'
 
