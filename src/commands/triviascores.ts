@@ -28,19 +28,15 @@ export default {
 
         // Run the query
         const results = await queryHelper(queryString, [args[0]])
-        let codestring = '```yaml\nNum  Username                Score\n----------------------------------\n'
-        let i = 1
-        for (const result of results) {
+        let header = '```yaml\nNum  Username                Score\n----------------------------------\n'
+        let text = results.reduce((acc, result, idx) => {
             let display = result.username
-
-            const position = padOrTrim(`#${i}.`, 5)
+            const position = padOrTrim(`#${idx + 1}.`, 5)
             const name = padOrTrim(display, 25)
             const score = padOrTrim(result.score.toString(), 5)
-            codestring += `${position}${name}${score}\n`
-            i++
-        }
+            return acc + `${position}${name}${score}\n`
+        }, header) + '```'
 
-        codestring += '```'
-        message.channel.send(codestring)
+        message.channel.send(text)
     }
 }

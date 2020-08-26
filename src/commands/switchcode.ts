@@ -7,17 +7,17 @@ async function buildFriendsTable(client: Client, message: Message, gid: string) 
     const queryString = 'SELECT u.username, code FROM arcade_switchcode a LEFT JOIN bottimus_userdata u on a.discordid = u.discordid WHERE guild = ?'
     const results = await queryHelper(queryString, [gid])
 
-    let codeString = '__Switch Codes__\nTo add your code to this list, type `!switchcode SW-1111-2222-3333`\n\n```yaml\n'
+    let result
+    let header = '**Switch Codes**\nTo add your code to this list, type `!switchcode SW-1111-2222-3333`\n```yaml\n'
     if (results.length < 1) {
-        codeString += 'Nobody has listed their friend code yet - be the first!'
+        result = header + 'Nobody has listed their friend code yet - be the first!```'
+    } else {
+        result = results.reduce((acc, result) => {
+            const name = padOrTrim(result.username, 25)
+            return acc + `${name} ${result.code}\n`
+        }, header) + '```'
     }
-    for (const result of results) {
-        const name = padOrTrim(result.username, 25)
-        codeString += `${name} ${result.code}\n`
-    }
-
-    codeString += '```'
-    message.channel.send(codeString)
+    message.channel.send(result)
 }
 
 export default {
