@@ -1,10 +1,11 @@
 import { Client, Message } from "../command"
 import { queryHelper } from "../database"
-import { padOrTrim } from "../utils"
+import { padOrTrim, padOrTrimLeft } from "../utils"
 
 export default {
     name: 'triviascores',
     description: 'Generates a Trivia leaderboard\nYou can either view percentage or total: `!triviascores percentage` `!triviascores total`',
+    cooldown: 15,
 
     async execute(client: Client, message: Message, args: string[]) {
         // Friendly join multiple arguments for the name
@@ -28,19 +29,16 @@ export default {
 
         // Run the query
         const results = await queryHelper(queryString, [args[0]])
-        let codestring = '```yaml\nNum  Username                Score\n----------------------------------\n'
-        let i = 1
-        for (const result of results) {
+        let header = '```yaml\nNum  Username                Score\n----------------------------------\n'
+        let text = results.reduce((acc, result, idx) => {
             let display = result.username
-
-            const position = padOrTrim(`#${i}.`, 5)
+            const position = padOrTrim(`#${idx + 1}.`, 5)
             const name = padOrTrim(display, 25)
-            const score = padOrTrim(result.score.toString(), 5)
-            codestring += `${position}${name}${score}\n`
-            i++
-        }
+            const score = padOrTrimLeft(result.score.toString(), 4)
+            return acc + `${position}${name}${score}\n`
+        }, header) + '```'
 
-        codestring += '```'
-        message.channel.send(codestring)
+        message.channel.send(text)
+        client.updateCooldown(this, message.member.id)
     }
 }

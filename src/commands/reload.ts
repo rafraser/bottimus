@@ -1,4 +1,5 @@
 import { Client, Message } from "../command"
+import { loadEvents } from "../events"
 
 export default {
     name: 'reload',
@@ -12,5 +13,6 @@ export default {
         }
 
         client.loadServerSettings()
+        loadEvents(client)
     }
 }

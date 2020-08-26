@@ -18,9 +18,8 @@ export default {
             return
         }
 
-        let forceMode = false
-
         // If arguments are specified, then search for those
+        let forceMode = false
         if (args.length >= 1) {
             for (let arg of args) {
                 if (arg == 'force') {
@@ -38,9 +37,19 @@ export default {
         // Fetch all the user IDs
         // Depending on if force mode is active, select a different set of IDs
         const partialQuery = 'SELECT userid FROM arcade_currency WHERE userid NOT IN (SELECT discordid FROM bottimus_userdata);'
+        const partialQuery2 = 'SELECT discordid AS userid FROM bottimus_messages WHERE discordid NOT IN (SELECT discordid FROM bottimus_userdata);'
         const forceQuery = 'SELECT userid FROM arcade_currency'
-        const queryString = forceMode ? forceQuery : partialQuery
-        const results = await queryHelper(queryString, [])
+
+        let results
+        if (forceMode) {
+            results = await queryHelper(forceQuery, [])
+        } else {
+            results = await queryHelper(partialQuery, [])
+            results = results.concat(await queryHelper(partialQuery2, []))
+        }
+
+        console.log(results)
+
         for (let result of results) {
             const user = await client.users.fetch(result.userid, false)
             updateUserData(user)

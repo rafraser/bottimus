@@ -87,6 +87,6 @@ export default {
                 incrementArcadeCredits(message.member.id, amount)
                 updateLastSpin(message.member.id, new Date())
             }
-        })
+        }, 7000)
     }
 }
