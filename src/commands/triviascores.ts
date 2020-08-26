@@ -5,6 +5,7 @@ import { padOrTrim, padOrTrimLeft } from "../utils"
 export default {
     name: 'triviascores',
     description: 'Generates a Trivia leaderboard\nYou can either view percentage or total: `!triviascores percentage` `!triviascores total`',
+    cooldown: 15,
 
     async execute(client: Client, message: Message, args: string[]) {
         // Friendly join multiple arguments for the name
@@ -33,10 +34,11 @@ export default {
             let display = result.username
             const position = padOrTrim(`#${idx + 1}.`, 5)
             const name = padOrTrim(display, 25)
-            const score = padOrTrimLeft(result.score.toString(), 5)
+            const score = padOrTrimLeft(result.score.toString(), 4)
             return acc + `${position}${name}${score}\n`
         }, header) + '```'
 
         message.channel.send(text)
+        client.updateCooldown(this, message.member.id)
     }
 }
