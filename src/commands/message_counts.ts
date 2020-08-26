@@ -9,8 +9,10 @@ export default {
     guilds: ['309951255575265280'],
 
     async execute(client: Client, message: Message, args: string[]) {
-        if (args.length < 1 || args[0] != 'me') {
+        let user
+        if (args.length < 1) {
             let results = await queryHelper('SELECT u.username, m.amount FROM bottimus_messages m LEFT JOIN bottimus_userdata u on m.discordid = u.discordid WHERE guild = ?ORDER BY m.amount DESC LIMIT 20;', [message.guild.id])
+            user = message.member
 
             let header = 'Message counts are estimates.\n```yaml\nNum  Username             Messages\n----------------------------------\n'
             let text = results.reduce((acc, result, idx) => {
@@ -22,10 +24,16 @@ export default {
             }, header) + '```'
 
             message.channel.send(text)
+        } else {
+            user = await client.findUser(message, args.slice(), true)
         }
 
-        let my_messages = await queryHelper('SELECT amount FROM bottimus_messages WHERE discordid = ? AND guild = ?', [message.member.id, message.guild.id])
-        message.channel.send(`\`Your messages: ${my_messages[0].amount}\``)
+        let user_messages = await queryHelper('SELECT amount FROM bottimus_messages WHERE discordid = ? AND guild = ?', [user.id, message.guild.id])
+        if (user_messages.length < 1) {
+            message.channel.send(`${user.displayName} has no tracked messages`)
+        } else {
+            message.channel.send(`${user.displayName} has sent **${user_messages[0].amount}** messages`)
+        }
         client.updateCooldown(this, message.member.id)
     }
 }
