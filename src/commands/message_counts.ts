@@ -6,6 +6,7 @@ export default {
     name: 'messages',
     description: 'Show the top users in the server, by number of messages',
     cooldown: 15,
+    guilds: ['309951255575265280'],
 
     async execute(client: Client, message: Message, args: string[]) {
         if (args.length < 1 || args[0] != 'me') {
