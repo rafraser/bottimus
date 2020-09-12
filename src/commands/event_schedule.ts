@@ -73,7 +73,7 @@ export default {
                     let argq = arg.split('/')
                     datetime.day = argq[0]
                     datetime.month = parseInt(argq[1], 10) - 1
-                    datetime.year = arg[2]
+                    datetime.year = argq[2]
                 }
             }
 
