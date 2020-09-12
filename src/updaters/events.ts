@@ -14,7 +14,8 @@ async function updateEventMessage(client: Client, eventChannel: TextChannel, eve
     if (displayMessage.embeds && displayMessage.embeds.length >= 1) {
         const embed = displayMessage.embeds[0]
         const trimmedTitle = event.title.trim()
-        if (embed.title != trimmedTitle) {
+        const trimmedDesc = event.description.trim()
+        if (embed.title != trimmedTitle || embed.description != trimmedDesc) {
             updateDisplayedEvent(client, eventChannel.guild.id, true, false)
             return
         }
