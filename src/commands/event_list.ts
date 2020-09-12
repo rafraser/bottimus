@@ -12,7 +12,7 @@ export function getEventTable(client: Client, guild: Guild) {
 function displayEvent(event: Event): string {
     let name = event.title.replace("'", "")
     let time = formatEventDate(event.time, false)
-    return '\n' + padOrTrim(name, 38) + '   ' + padOrTrim(time, 25)
+    return '\n' + padOrTrim(name, 33) + '   ' + padOrTrim(time, 30)
 }
 
 export default {
