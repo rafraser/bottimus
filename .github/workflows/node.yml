@@ -1,0 +1,21 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Node 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm run build
+    - name: ESLint
+      run: eslint . --ext .js,.jsx,.ts,.tsx
