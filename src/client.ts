@@ -53,6 +53,7 @@ export default class BottimusClient extends Client {
 
         // Log to console on startup
         this.on('ready', () => {
+            this.setupLogging()
             console.log(`Logged in as: ${this.user.tag}`)
             console.log(`Testing mode: ${this.testingMode}`)
             loadEvents(this)
