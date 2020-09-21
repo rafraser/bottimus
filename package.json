@@ -18,7 +18,7 @@
         "build": "tsc",
         "serve": "node dist/bottimus.js",
         "build-serve": "npm run build && npm run serve",
-        "lint": "./node_modules/.bin/eslint src/**/*.ts"
+        "lint": "./node_modules/.bin/eslint --ext .ts"
     },
     "devDependencies": {
         "@types/gamedig": "^2.0.0",
