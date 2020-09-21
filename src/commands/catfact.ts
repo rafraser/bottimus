@@ -1,14 +1,14 @@
-import { Client, Message } from "../command"
-import { MessageEmbed } from "discord.js"
-import fetch from "node-fetch"
+import { Client, Message } from '../command'
+import { MessageEmbed } from 'discord.js'
+import fetch from 'node-fetch'
 
 export default {
-  name: "catfact",
-  description: "Get a random cat fact",
+  name: 'catfact',
+  description: 'Get a random cat fact',
   cooldown: 10,
 
-  async execute(client: Client, message: Message, args: string[]) {
-    const data = await fetch("https://catfact.ninja/fact")
+  async execute (client: Client, message: Message, args: string[]) {
+    const data = await fetch('https://catfact.ninja/fact')
     const json = await data.json()
     const fact = json.fact
 
