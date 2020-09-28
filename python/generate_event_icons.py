@@ -4,12 +4,14 @@ import os
 
 # Background colours for the events
 background_colors = {
+    "amongus": "red",
     "art": "pink",
     "csgo": "yellow",
     "death": "purple",
     "deathrun": "red",
     "dodgeball": "blue",
     "dota": "red",
+    "fallguys": "yellow",
     "generic": "blue",
     "gmod": "blue",
     "golf": "green",

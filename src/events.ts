@@ -23,12 +23,14 @@ export function formatEventDate (date: Date, newline: boolean = true) {
 }
 
 export enum EventCategory {
+    AmongUs = 'amongus',
     Art = 'art',
     CSGO = 'csgo',
     Death = 'death',
     Deathrun = 'deathrun',
     Dodgeball = 'dodgeball',
     Dota = 'dota',
+    FallGuys = 'fallguys',
     Generic = 'generic',
     Gmod = 'gmod',
     Golf = 'golf',

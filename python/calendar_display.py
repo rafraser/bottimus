@@ -44,12 +44,14 @@ COLOR_BLANK = "#bdc3c7"
 
 # Background colours for the events
 background_colors = {
+    "amongus": COLOR_RED,
     "art": COLOR_PINK,
     "csgo": COLOR_YELLOW,
     "death": COLOR_PURPLE,
     "deathrun": COLOR_RED,
     "dodgeball": COLOR_BLUE,
     "dota": COLOR_RED,
+    "fallguys": COLOR_YELLOW,
     "generic": COLOR_BLUE,
     "gmod": COLOR_BLUE,
     "golf": COLOR_GREEN,
