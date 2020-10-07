@@ -131,13 +131,12 @@ export class Event {
         .setDescription(this.description)
         .addField('Scheduled by:', this.scheduler, true)
         .addField('Time:', formattedTime, true)
-      if (this.completed) {
-        embed.setFooter('Click the bell to be pinged when this event starts')
-      } else if (this.cancelled) {
+      if (this.cancelled) {
         embed.addField('CANCELLED', false)
       } else {
         const timeLeft = timeToString(this.time.getTime() - Date.now(), 2)
         embed.addField('Starting in:', timeLeft, false)
+        embed.setFooter('Click the bell to be pinged when this event starts')
       }
 
       return embed
