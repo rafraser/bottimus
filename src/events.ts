@@ -88,9 +88,9 @@ export class Event {
       const words = this.title.split(' ').concat(this.description.split(' '))
       for (let word of words) {
         word = word.toLowerCase()
-        const maybeCategory: EventCategory | undefined = (<any>Event)[word]
-        if (maybeCategory !== undefined) {
-          return maybeCategory
+        const keys = Object.keys(EventCategory).filter(x => (<any>EventCategory)[x] === word)
+        if (keys.length > 0) {
+          return (<any>EventCategory)[keys[0]] as EventCategory
         }
       }
 
