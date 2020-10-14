@@ -43,6 +43,7 @@ export default {
   name: 'dailyspin',
   description: 'Spin the lucky prize wheel every 12 hours!\nThis is a great way to start earning coins',
   aliases: ['daily'],
+  cooldown: 300,
 
   async execute (client: Client, message: Message, args: string[]) {
     const lastspin = (await getLastSpin(message.member.id) as any)[0]
@@ -57,6 +58,7 @@ export default {
     }
 
     message.channel.send('Get ready!')
+    client.updateCooldown(this, message.member.id)
 
     // Generate and send the wheel
     const data = await client.executePython('spinner', ['--prizes'].concat(pickWheel()))

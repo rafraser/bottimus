@@ -38,16 +38,16 @@ export default {
 
     const msg = await message.channel.send('Redeeming a prize costs **1000** coins: react to confirm')
     msg.react('✅')
+    client.updateCooldown(this, message.member.id)
 
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && reaction.emoji.name === '✅'
     }
 
-    const collector = msg.createReactionCollector(filter, { time: 10000 })
+    const collector = msg.createReactionCollector(filter, { time: 15000 })
     collector.on('collect', () => {
       // Confirmation received!
       collector.stop()
-      client.updateCooldown(this, message.member.id)
       incrementArcadeCredits(message.member.id, -1000)
       redeemPrize(msg, message.member, client)
     })
