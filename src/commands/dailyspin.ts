@@ -73,9 +73,9 @@ export default {
         message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} **${amount}**`)
 
         // Update the database info once the spin is *successfully* complete
-        await incrementArcadeCredits(message.member.id, amount)
         updateLastSpin(message.member.id, new Date())
         updateUserData(message.member.user)
+        await incrementArcadeCredits(message.member.id, amount)
       }
     }, 7000)
   }

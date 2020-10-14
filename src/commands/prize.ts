@@ -47,9 +47,9 @@ export default {
     collector.on('collect', () => {
       // Confirmation received!
       collector.stop()
+      client.updateCooldown(this, message.member.id)
       incrementArcadeCredits(message.member.id, -1000)
       redeemPrize(msg, message.member, client)
-      client.updateCooldown(this, message.member.id)
     })
   }
 }
