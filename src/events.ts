@@ -93,9 +93,9 @@ export class Event {
       const words = this.title.split(' ').concat(this.description.split(' '))
       for (let word of words) {
         word = word.toLowerCase()
-        const maybeCategory: EventCategory | undefined = (<any>Event)[word]
-        if (maybeCategory !== undefined) {
-          return maybeCategory
+        const keys = Object.keys(EventCategory).filter(x => (<any>EventCategory)[x] === word)
+        if (keys.length > 0) {
+          return (<any>EventCategory)[keys[0]] as EventCategory
         }
       }
 
@@ -136,13 +136,12 @@ export class Event {
         .setDescription(this.description)
         .addField('Scheduled by:', this.scheduler, true)
         .addField('Time:', formattedTime, true)
-      if (this.completed) {
-        embed.setFooter('Click the bell to be pinged when this event starts')
-      } else if (this.cancelled) {
+      if (this.cancelled) {
         embed.addField('CANCELLED', false)
       } else {
         const timeLeft = timeToString(this.time.getTime() - Date.now(), 2)
         embed.addField('Starting in:', timeLeft, false)
+        embed.setFooter('Click the bell to be pinged when this event starts')
       }
 
       return embed

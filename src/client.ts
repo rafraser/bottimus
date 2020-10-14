@@ -324,6 +324,7 @@ export default class BottimusClient extends Client {
 
     public isEventRole (member: GuildMember): boolean {
       if (this.isAdministrator(member)) return true
+      if (this.isModerator(member)) return true
 
       const eventRole = getEventRole(this.serverSettings, member.guild.id)
       if (!eventRole) return false

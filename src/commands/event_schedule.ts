@@ -32,7 +32,7 @@ export default {
     }
 
     // Help text without arguments
-    if (args.length < 1) {
+    if (args.length < 2) {
       message.channel.send(helpString + getEventTypes())
     }
 
@@ -42,6 +42,7 @@ export default {
       title = args.shift()
       description = args.shift()
 
+      // Default to today
       const now = new Date(Date.now())
       const datetime = {
         year: now.getFullYear(),
@@ -72,6 +73,8 @@ export default {
           datetime.day = argq[0]
           datetime.month = parseInt(argq[1], 10) - 1
           datetime.year = argq[2]
+        } else {
+          description += ' ' + arg
         }
       }
 
