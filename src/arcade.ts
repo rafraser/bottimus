@@ -11,13 +11,13 @@ export const prizeList = [
   ['cards', 'Deck of Cards', 20],
   ['dice', 'Fuzzy Dice', 20],
 
-  ['tape3', 'Digital Casette', 18],
+  ['tape3', 'Digital Cassette', 18],
   ['purplerocket', 'Toy Rocket (Purple)', 18],
   ['bluerocket', 'Toy Rocket (Blue)', 18],
   ['redhat', 'Lvl 100 Boss Hat', 17],
   ['plant1', 'Magic Bloom', 16],
   ['oldbarrel', 'Ancient Barrel', 16],
-  ['tape2', 'Future Casette', 15],
+  ['tape2', 'Future Cassette', 15],
 
   ['coin', 'Fluffy Servers Token', 14],
   ['monitor', 'Broken Monitor', 13],
@@ -25,14 +25,14 @@ export const prizeList = [
   ['gamebro', 'Gamebro', 12],
   ['mysteryorb', 'Mysterious Orb', 12],
   ['goldhat', 'Ringmaster\'s Hat', 11],
-  ['tape1', 'Retro Casette', 10],
+  ['tape1', 'Retro Cassette', 10],
 
   ['mars', 'Mars', 9],
   ['plant2', 'Autumn Diamond', 9],
   ['fox', 'Plush Fox', 8],
   ['pluto', 'Pluto', 8],
   ['goldmonitor', 'Royal (Broken) Monitor', 7],
-  ['tape4', 'Aesthetic Casette', 7],
+  ['tape4', 'Aesthetic Cassette', 7],
   ['icefox', 'Ice Fox', 6],
   ['gamebrocolor', 'Gamebro Color', 6],
   ['infinityfox', 'Infinity Fox', 5]
