@@ -24,7 +24,7 @@ async function updateMurder (message: Message) {
 }
 
 async function updateMinigames (message: Message) {
-  const ip = '149.28.161.120'
+  const ip = '172.105.254.112'
   const gamedata = await gamedig.query({ type: 'garrysmod', host: ip })
   const gamemode = (gamedata.raw as any).game
   const embed = new MessageEmbed()
