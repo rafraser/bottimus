@@ -45,6 +45,11 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
     if (!displayMessage.reactions.cache.get('🔔')) {
       await displayMessage.react('🔔')
     }
+
+    // Add a clock icon if one doesn't exist
+    if (!displayMessage.reactions.cache.get('🕓')) {
+      await displayMessage.react('🕓')
+    }
   }
 }
 
@@ -60,6 +65,7 @@ export async function updateDisplayedEvent (client: Client, guildId: string, sen
   if (sendNew) {
     const msg = await eventChannel.send('[Next Event]')
     msg.react('🔔')
+    msg.react('🕓')
   }
   updateEventMessage(client, eventChannel, upcomingEvent)
 }
