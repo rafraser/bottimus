@@ -11,7 +11,7 @@ export function getEventTable (client: Client, guild: Guild) {
 
 function displayEvent (event: Event): string {
   const name = event.title.replace("'", '')
-  const time = formatEventDate(event.time, false)
+  const time = formatEventDate(event.time2, false)
   return '\n' + padOrTrim(name, 33) + '   ' + padOrTrim(time, 30)
 }
 

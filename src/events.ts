@@ -3,23 +3,16 @@
 import { queryHelper } from './database'
 import { timeToString } from './utils'
 import { Guild, GuildMember, SnowflakeUtil, MessageEmbed } from 'discord.js'
+import { DateTime } from 'luxon'
 import BottimusClient from './client'
 
-export function formatEventDate (date: Date, newline: boolean = true) {
+export function formatEventDate (date: DateTime, newline: boolean = true) {
   // Robert A Fraser elite coding skills right here
   // This is a pretty awful way of handling daylight savings
   // I'm working on some changes to have proper timezones - stay tuned
-  let timezone = 'AEST'
-  if (timezone === 'AEST' && date.getTimezoneOffset() === -660) {
-    timezone = 'AEDT'
-  }
 
-  const timeString = date.toLocaleString('en-GB', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-  if (newline) {
-    return timeString.replace(',', '\n') + ' ' + timezone
-  } else {
-    return timeString + ' ' + timezone
-  }
+  // October 26 08:17 PM AEST
+  return date.toFormat('MMMM dd hh:mma ZZZZ')
 }
 
 export enum EventCategory {
@@ -72,6 +65,7 @@ export class Event {
     approved: boolean = false
 
     time: Date
+    time2: DateTime
     completed: boolean = false
     cancelled: boolean = false
     attendees: number = 0
@@ -87,6 +81,7 @@ export class Event {
       this.scheduler = member.displayName
       this.schedulerID = member.id
       this.time = time
+      this.time2 = DateTime.fromJSDate(this.time, { zone: 'utc' })
     }
 
     public getCategoryFromInfo (): EventCategory {
@@ -127,7 +122,7 @@ export class Event {
     }
 
     public generateEventEmbed () {
-      const formattedTime = formatEventDate(this.time)
+      const formattedTime = formatEventDate(this.time2)
       const image = this.getEventIcon()
       const embed = new MessageEmbed()
         .setColor('#f0932b')
