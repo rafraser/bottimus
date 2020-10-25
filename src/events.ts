@@ -64,8 +64,8 @@ export class Event {
     schedulerID: string
     approved: boolean = false
 
-    time: Date
-    time2: DateTime
+    time: DateTime
+    timeInternal: Date
     completed: boolean = false
     cancelled: boolean = false
     attendees: number = 0
@@ -80,8 +80,8 @@ export class Event {
 
       this.scheduler = member.displayName
       this.schedulerID = member.id
-      this.time = time
-      this.time2 = DateTime.fromJSDate(this.time, { zone: 'utc' })
+      this.timeInternal = time
+      this.time = DateTime.fromJSDate(time, { zone: 'utc' })
     }
 
     public getCategoryFromInfo (): EventCategory {
@@ -122,7 +122,7 @@ export class Event {
     }
 
     public generateEventEmbed () {
-      const formattedTime = formatEventDate(this.time2)
+      const formattedTime = formatEventDate(this.time)
       const image = this.getEventIcon()
       const embed = new MessageEmbed()
         .setColor('#f0932b')
@@ -134,7 +134,7 @@ export class Event {
       if (this.cancelled) {
         embed.addField('CANCELLED', false)
       } else if (!this.completed) {
-        const timeLeft = timeToString(this.time.getTime() - Date.now(), 2)
+        const timeLeft = timeToString(this.timeInternal.getTime() - Date.now(), 2)
         embed.addField('Starting in:', timeLeft, false)
         embed.setFooter('Click the bell to be pinged when this event starts')
       }
@@ -191,7 +191,7 @@ export async function denyEvent (id: string) {
 export function getSortedEvents (events: Event[], guild: string | Guild) {
   const id = (typeof guild === 'string') ? guild : guild.id
   const approvedEvents = events.filter(e => e.guild === id).filter(e => e.approved)
-  return approvedEvents.sort((a, b) => a.time.getTime() - b.time.getTime())
+  return approvedEvents.sort((a, b) => a.timeInternal.getTime() - b.timeInternal.getTime())
 }
 
 export function getUpcomingEvents (events: Event[], guild: string | Guild) {

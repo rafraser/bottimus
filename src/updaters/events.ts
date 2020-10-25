@@ -22,7 +22,7 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
   }
 
   // Complete events when applicable
-  if (Date.now() > event.time.getTime()) {
+  if (Date.now() > event.timeInternal.getTime()) {
     const reaction = displayMessage.reactions.cache.get('🔔')
     if (reaction) {
       const users = await reaction.users.fetch()
@@ -56,7 +56,7 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
 export async function updateDisplayedEvent (client: Client, guildId: string, sendNew: boolean = false, ignoreTime: boolean = false) {
   const upcomingEvent = getNextEvent(client.eventsData, guildId)
   if (!upcomingEvent) return
-  if (!ignoreTime && Date.now() + (24 * 3600 * 1000) < upcomingEvent.time.getTime()) return
+  if (!ignoreTime && Date.now() + (24 * 3600 * 1000) < upcomingEvent.timeInternal.getTime()) return
 
   const eventChannelId = client.serverSettings.get(guildId).channels.event
   const guild = client.guilds.cache.get(guildId)
