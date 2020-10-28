@@ -366,7 +366,6 @@ def process_events_list(today, args):
         # Split up the argument and parse the time
         e = e.split("|")
         date = datetime.datetime.fromisoformat(e[0])
-        date = date.replace(tzinfo=datetime.timezone.utc)
         date = date.astimezone()
 
         # Skip anything that isn't this month
