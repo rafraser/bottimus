@@ -1,6 +1,7 @@
 import { Client, Message } from '../command'
 import { Event, EventCategory } from '../events'
 import { MessageReaction, User, TextChannel } from 'discord.js'
+import { DateTime } from 'luxon'
 
 import { getAdminChannel, getTimezones } from '../settings'
 
@@ -37,7 +38,9 @@ export default {
     }
 
     // Here we go!
+    const timezones = getTimezones(client.serverSettings, message.guild.id)
     let title, description, when, forcetype
+
     try {
       title = args.shift()
       description = args.shift()
@@ -46,7 +49,7 @@ export default {
       const now = new Date(Date.now())
       const datetime = {
         year: now.getFullYear(),
-        month: now.getMonth(),
+        month: now.getMonth() + 1,
         day: now.getDate()
       } as any
 
@@ -65,13 +68,13 @@ export default {
           // Try parsing this argument as YYYY-MM-DD
           const argq = arg.split('-')
           datetime.year = argq[0]
-          datetime.month = parseInt(argq[1], 10) - 1
+          datetime.month = parseInt(argq[1], 10)
           datetime.day = argq[2]
         } else if (arg.includes('/')) {
           // Try parsing this argument as DD/MM/YYYY
           const argq = arg.split('/')
           datetime.day = argq[0]
-          datetime.month = parseInt(argq[1], 10) - 1
+          datetime.month = parseInt(argq[1], 10)
           datetime.year = argq[2]
         } else {
           description += ' ' + arg
@@ -79,18 +82,20 @@ export default {
       }
 
       // Check that the date and time are valid
-      when = new Date(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.minute)
-      if (!(when instanceof Date)) {
-        message.channel.send('Invalid event structure. Check that the time is the right format (HH:MM)')
-        return
-      }
+      when = DateTime.fromObject({
+        year: datetime.year,
+        month: datetime.month,
+        day: datetime.day,
+        hour: datetime.hour,
+        minute: datetime.minute,
+        zone: timezones[0]
+      })
     } catch (e) {
       console.log(e)
       message.channel.send('Invalid event structure')
       return
     }
 
-    const timezones = getTimezones(client.serverSettings, message.guild.id)
     const event = new Event(message.guild, title, description, message.member, when, timezones[0])
     if (forcetype) {
       event.category = forcetype as EventCategory

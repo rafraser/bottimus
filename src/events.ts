@@ -69,12 +69,12 @@ export class Event {
     approved: boolean = false
 
     time: DateTime
-    timeInternal: Date
+    // timeInternal: Date
     completed: boolean = false
     cancelled: boolean = false
     attendees: number = 0
 
-    public constructor (guild: Guild, title: string, description: string, member: GuildMember, time: Date, timezone: string) {
+    public constructor (guild: Guild, title: string, description: string, member: GuildMember, time: DateTime, timezone: string) {
       this.id = SnowflakeUtil.generate()
       this.guild = guild.id
 
@@ -84,8 +84,9 @@ export class Event {
 
       this.scheduler = member.displayName
       this.schedulerID = member.id
-      this.timeInternal = time
-      this.time = DateTime.fromJSDate(time, { zone: timezone })
+      // this.timeInternal = time
+      // this.time = DateTime.fromJSDate(time, { zone: timezone })
+      this.time = time
     }
 
     public getCategoryFromInfo (): EventCategory {
@@ -138,7 +139,7 @@ export class Event {
       if (this.cancelled) {
         embed.addField('CANCELLED', false)
       } else if (!this.completed) {
-        const timeLeft = timeToString(this.timeInternal.getTime() - Date.now(), 2)
+        const timeLeft = timeToString(this.time.toMillis() - Date.now(), 2)
         embed.addField('Starting in:', timeLeft, false)
         embed.setFooter('Click the bell to be pinged when this event starts')
       }
@@ -196,7 +197,7 @@ export async function denyEvent (id: string) {
 export function getSortedEvents (events: Event[], guild: string | Guild) {
   const id = (typeof guild === 'string') ? guild : guild.id
   const approvedEvents = events.filter(e => e.guild === id).filter(e => e.approved)
-  return approvedEvents.sort((a, b) => a.timeInternal.getTime() - b.timeInternal.getTime())
+  return approvedEvents.sort((a, b) => a.time.toMillis() - b.time.toMillis())
 }
 
 export function getUpcomingEvents (events: Event[], guild: string | Guild) {

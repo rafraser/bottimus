@@ -17,7 +17,7 @@ export default {
 
     const events2 = ['--events']
     for (const event of events) {
-      events2.push(`${event.timeInternal.toUTCString()}|${event.category}|${event.title}`)
+      events2.push(`${event.time.toISOTime()}|${event.category}|${event.title}`)
     }
 
     await client.executePython('calendar_display', events2)
