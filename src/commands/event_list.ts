@@ -13,7 +13,7 @@ export function getEventTable (client: Client, guild: Guild) {
 function displayEvent (client: Client, guild: Guild, event: Event): string {
   const timezone = getTimezone(client.serverSettings, guild.id) // only display primary timezone
   const name = event.title.replace("'", '')
-  const time = formatEventDate([timezone], event.time)
+  const time = formatEventDate([timezone], event.time, false)
   return '\n' + padOrTrim(name, 33) + '   ' + padOrTrim(time, 30)
 }
 
