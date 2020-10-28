@@ -365,7 +365,7 @@ def process_events_list(today, args):
     for e in args:
         # Split up the argument and parse the time
         e = e.split("|")
-        date = datetime.datetime.strptime(e[0], "%a, %d %b %Y %H:%M:%S %Z")
+        date = datetime.datetime.fromisoformat(e[0])
         date = date.replace(tzinfo=datetime.timezone.utc)
         date = date.astimezone()
 

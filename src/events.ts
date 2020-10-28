@@ -172,7 +172,7 @@ export async function loadEvents (client: BottimusClient) {
     const guild = client.guilds.cache.get(row.guild)
     const member = await guild.members.fetch(row.schedulerID)
     const timezone = getTimezone(client.serverSettings, row.guild)
-    const event = new Event(guild, row.title, row.description, member, row.time.fromJSDate(), timezone)
+    const event = new Event(guild, row.title, row.description, member, DateTime.fromJSDate(row.time), timezone)
     event.id = row.id
     event.category = row.category as EventCategory
     event.approved = row.approved
