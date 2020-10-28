@@ -164,7 +164,7 @@ export class Event {
         `
       await queryHelper(queryString, [this.id, this.guild, this.title,
         this.description, this.category, this.scheduler, this.schedulerID,
-        this.approved, this.time.toJSDate(), this.completed,
+        this.approved, this.time.setZone('utc').toJSDate(), this.completed,
         this.cancelled, this.forced, this.attendees])
     }
 }
