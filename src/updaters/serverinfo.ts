@@ -2,6 +2,7 @@ import gamedig from 'gamedig'
 import { Message, TextChannel, MessageEmbed } from 'discord.js'
 import { Client } from '../updater'
 import { getEventTable } from '../commands/event_list'
+import { getTimezone } from '../settings'
 
 const serverChannel = '528849382196379650'
 const murderMessage = '644776579809017877'
@@ -40,7 +41,8 @@ async function updateMinigames (message: Message) {
 }
 
 async function updateEvents (client: Client, message: Message) {
-  message.edit(getEventTable(client, message.guild))
+  const timezone = getTimezone(client.serverSettings, message.guild.id)
+  message.edit(getEventTable(client, message.guild, timezone))
 }
 
 export default {
