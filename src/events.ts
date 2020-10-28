@@ -3,16 +3,20 @@
 import { queryHelper } from './database'
 import { timeToString } from './utils'
 import { Guild, GuildMember, SnowflakeUtil, MessageEmbed } from 'discord.js'
-import { DateTime } from 'luxon'
+import { DateTime, Settings } from 'luxon'
 import BottimusClient from './client'
+import { getTimezone } from './settings'
+import { convertTimezoneLongToShort } from './timezonehelper'
 
-export function formatEventDate (date: DateTime, newline: boolean = true) {
-  // Robert A Fraser elite coding skills right here
-  // This is a pretty awful way of handling daylight savings
-  // I'm working on some changes to have proper timezones - stay tuned
-
+export function formatEventDate (timezones: string[], date: DateTime, newline: boolean = true) {
   // October 26 08:17 PM AEST
-  return date.toFormat('MMMM dd hh:mma ZZZZ')
+  // see comment in timezonehelper.ts for why we do some funky stuff here
+  const sep = newline ? '\n' : ''
+  return timezones.reduce((acc, timezone) => {
+    const dateConverted = date.setZone(timezone)
+    const shortCode = convertTimezoneLongToShort(dateConverted.toFormat('ZZZZZ'))
+    return acc + dateConverted.toFormat('MMMM dd hh:mma ') + shortCode + sep
+  }, '')
 }
 
 export enum EventCategory {
@@ -70,7 +74,7 @@ export class Event {
     cancelled: boolean = false
     attendees: number = 0
 
-    public constructor (guild: Guild, title: string, description: string, member: GuildMember, time: Date) {
+    public constructor (guild: Guild, title: string, description: string, member: GuildMember, time: Date, timezone: string) {
       this.id = SnowflakeUtil.generate()
       this.guild = guild.id
 
@@ -81,7 +85,7 @@ export class Event {
       this.scheduler = member.displayName
       this.schedulerID = member.id
       this.timeInternal = time
-      this.time = DateTime.fromJSDate(time, { zone: 'utc' })
+      this.time = DateTime.fromJSDate(time, { zone: timezone })
     }
 
     public getCategoryFromInfo (): EventCategory {
@@ -121,8 +125,8 @@ export class Event {
       await this.updateDatabase()
     }
 
-    public generateEventEmbed () {
-      const formattedTime = formatEventDate(this.time)
+    public generateEventEmbed (timezones: string[]) {
+      const formattedTime = formatEventDate(timezones, this.time)
       const image = this.getEventIcon()
       const embed = new MessageEmbed()
         .setColor('#f0932b')
@@ -165,7 +169,8 @@ export async function loadEvents (client: BottimusClient) {
   const rowToEvent = async (row: any) => {
     const guild = client.guilds.cache.get(row.guild)
     const member = await guild.members.fetch(row.schedulerID)
-    const event = new Event(guild, row.title, row.description, member, row.time)
+    const timezone = getTimezone(client.serverSettings, row.guild)
+    const event = new Event(guild, row.title, row.description, member, row.time, timezone)
     event.id = row.id
     event.category = row.category as EventCategory
     event.approved = row.approved

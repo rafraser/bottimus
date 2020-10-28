@@ -2,6 +2,7 @@ import { Client, Message } from '../command'
 import { updateDisplayedEvent } from '../updaters/events'
 import { getUnapprovedEvent, denyEvent } from '../events'
 import { MessageReaction, User } from 'discord.js'
+import { getTimezones } from '../settings'
 
 export default {
   name: 'confirmevent',
@@ -20,7 +21,8 @@ export default {
       return
     }
 
-    const embed = eventUnapproved.generateEventEmbed()
+    const timezones = getTimezones(client.serverSettings, message.guild.id)
+    const embed = eventUnapproved.generateEventEmbed(timezones)
     const msg = await message.channel.send(embed)
 
     const filter = (reaction: MessageReaction, user: User) => {

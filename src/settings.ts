@@ -26,6 +26,7 @@ export type ServerChannels = {
 export type ServerSettings = {
   roles?: ServerRoles
   channels?: ServerChannels
+  timezone?: string | string[]
 }
 export type ServerSettingsList = Map<string, ServerSettings>
 
@@ -85,6 +86,26 @@ export function getJunkyardChannel (settings: Map<string, ServerSettings>, id: s
   const server = settings.get(id)
   if (!server || !server.channels) return
   return server.channels.junkyard
+}
+
+export function getTimezones (settings: Map<string, ServerSettings>, id: string) : string[] {
+  const server = settings.get(id)
+  if (!server || !server.timezone) return
+  if (Array.isArray(server.timezone)) {
+    return server.timezone
+  } else {
+    return [server.timezone]
+  }
+}
+
+export function getTimezone (settings: Map<string, ServerSettings>, id: string) : string {
+  const server = settings.get(id)
+  if (!server || !server.timezone) return
+  if (Array.isArray(server.timezone)) {
+    return server.timezone[0]
+  } else {
+    return server.timezone
+  }
 }
 
 export async function loadServerSettings (id: string) {

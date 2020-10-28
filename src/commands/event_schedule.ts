@@ -2,7 +2,7 @@ import { Client, Message } from '../command'
 import { Event, EventCategory } from '../events'
 import { MessageReaction, User, TextChannel } from 'discord.js'
 
-import { getAdminChannel } from '../settings'
+import { getAdminChannel, getTimezones } from '../settings'
 
 const helpString = `
 You can schedule events with the following syntax:
@@ -90,11 +90,12 @@ export default {
       return
     }
 
-    const event = new Event(message.guild, title, description, message.member, when)
+    const timezones = getTimezones(client.serverSettings, message.guild.id)
+    const event = new Event(message.guild, title, description, message.member, when, timezones[0])
     if (forcetype) {
       event.category = forcetype as EventCategory
     }
-    const embed = event.generateEventEmbed()
+    const embed = event.generateEventEmbed(timezones)
 
     // Check if the event is correct before officially posting for approval
     const msg = await message.channel.send('Is this correct?', embed)

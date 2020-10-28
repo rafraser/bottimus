@@ -1,6 +1,7 @@
 import { Client } from '../updater'
 import { getNextEvent, Event } from '../events'
 import { TextChannel } from 'discord.js'
+import { getTimezones } from '../settings'
 
 async function updateEventMessage (client: Client, eventChannel: TextChannel, event: Event) {
   const messages = await eventChannel.messages.fetch({ limit: 10 })
@@ -21,6 +22,9 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
     }
   }
 
+  // Get list of timezones for this channel
+  const timezones = getTimezones(client.serverSettings, eventChannel.guild.id)
+
   // Complete events when applicable
   if (Date.now() > event.timeInternal.getTime()) {
     const reaction = displayMessage.reactions.cache.get('🔔')
@@ -37,9 +41,9 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
     }
 
     event.completeEvent(event.attendees)
-    displayMessage.edit('', event.generateEventEmbed())
+    displayMessage.edit('', event.generateEventEmbed(timezones))
   } else {
-    displayMessage.edit('', event.generateEventEmbed())
+    displayMessage.edit('', event.generateEventEmbed(timezones))
 
     // Add a bell icon if one doesn't exist
     if (!displayMessage.reactions.cache.get('🔔')) {
