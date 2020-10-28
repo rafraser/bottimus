@@ -84,8 +84,6 @@ export class Event {
 
       this.scheduler = member.displayName
       this.schedulerID = member.id
-      // this.timeInternal = time
-      // this.time = DateTime.fromJSDate(time, { zone: timezone })
       this.time = time
     }
 
@@ -158,7 +156,10 @@ export class Event {
                 cancelled = VALUES(cancelled),
                 attendees = VALUES(attendees)
         `
-      await queryHelper(queryString, [this.id, this.guild, this.title, this.description, this.category, this.scheduler, this.schedulerID, this.approved, this.time, this.completed, this.cancelled, this.attendees])
+      await queryHelper(queryString, [this.id, this.guild, this.title,
+        this.description, this.category, this.scheduler, this.schedulerID,
+        this.approved, this.time.toJSDate(), this.completed,
+        this.cancelled, this.attendees])
     }
 }
 
@@ -171,7 +172,7 @@ export async function loadEvents (client: BottimusClient) {
     const guild = client.guilds.cache.get(row.guild)
     const member = await guild.members.fetch(row.schedulerID)
     const timezone = getTimezone(client.serverSettings, row.guild)
-    const event = new Event(guild, row.title, row.description, member, row.time, timezone)
+    const event = new Event(guild, row.title, row.description, member, row.time.fromJSDate(), timezone)
     event.id = row.id
     event.category = row.category as EventCategory
     event.approved = row.approved
