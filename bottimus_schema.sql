@@ -98,12 +98,21 @@ CREATE TABLE IF NOT EXISTS `bottimus_userdata` (
   PRIMARY KEY (`discordid`)
 );
 
-CREATE TABLE IF NOT EXISTS `event_history` (
-  `time` datetime NOT NULL,
-  `title` varchar(50) DEFAULT NULL,
-  `type` varchar(30) DEFAULT NULL,
-  `subscribers` int(11) DEFAULT NULL,
-  PRIMARY KEY (`time`)
+CREATE TABLE IF NOT EXISTS `bottimus_events` (
+	`id` varchar(50) NOT NULL,
+	`guild` varchar(50) NULL DEFAULT NULL,
+	`title` varchar(50) NULL DEFAULT NULL,
+	`description` text NULL,
+	`category` varchar(30) NULL DEFAULT NULL,
+	`scheduler` varchar(50) NOT NULL,
+	`schedulerID` varchar(50) NOT NULL,
+	`approved` tinyint(1) NULL DEFAULT 0,
+	`time` datetime NOT NULL,
+	`completed` tinyint(1) NULL DEFAULT 0,
+	`cancelled` tinyint(1) NULL DEFAULT 0,
+  `forced` tinyint(1) NULL DEFAULT 0,
+	`attendees` int(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `ticket_data` (
