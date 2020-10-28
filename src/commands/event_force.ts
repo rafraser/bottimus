@@ -14,20 +14,27 @@ export default {
       return
     }
 
+    // Absolute force mode sends a new message no matter what
+    let absoluteForce = false
+    if (args.length >= 1) {
+      absoluteForce = (args[0] === 'yes' || args[0] === 'true')
+    }
+
     const upcomingEvent = getNextEvent(client.eventsData, message.guild)
     if (!upcomingEvent) {
       message.channel.send('No events are currently scheduled.')
       return
     }
 
-    if (upcomingEvent.forced || Date.now() + (24 * 3600 * 1000) > upcomingEvent.time.toMillis()) {
+    // Don't force events already displayed (unless absolute force mode is enabled)
+    if (!absoluteForce && (upcomingEvent.forced || Date.now() + (24 * 3600 * 1000) > upcomingEvent.time.toMillis())) {
       message.channel.send('The next event is already displayed!')
       return
     }
 
     const timezones = getTimezones(client.serverSettings, message.guild.id)
     const embed = upcomingEvent.generateEventEmbed(timezones)
-    const msg = await message.channel.send(embed)
+    const msg = await message.channel.send('Are you sure you want to force this event?', embed)
 
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && (reaction.emoji.name === '✅')
@@ -37,7 +44,7 @@ export default {
     collector.on('collect', async r => {
       collector.stop()
       upcomingEvent.forceEvent()
-      await updateDisplayedEvent(client, message.guild.id, false)
+      await updateDisplayedEvent(client, message.guild.id, absoluteForce)
     })
 
     await msg.react('✅')
