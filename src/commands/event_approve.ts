@@ -42,7 +42,7 @@ export default {
         message.channel.send('Event denied!')
       } else if (r.emoji.name === '✅') {
         eventUnapproved.approveEvent()
-        await updateDisplayedEvent(client, message.guild.id, false, false)
+        await updateDisplayedEvent(client, message.guild.id, false)
         await message.channel.send('Event approved!')
       }
     })

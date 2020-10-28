@@ -69,9 +69,9 @@ export class Event {
     approved: boolean = false
 
     time: DateTime
-    // timeInternal: Date
     completed: boolean = false
     cancelled: boolean = false
+    forced: boolean = false
     attendees: number = 0
 
     public constructor (guild: Guild, title: string, description: string, member: GuildMember, time: DateTime, timezone: string) {
@@ -118,6 +118,11 @@ export class Event {
       await this.updateDatabase()
     }
 
+    public async forceEvent () {
+      this.forced = true
+      await this.updateDatabase()
+    }
+
     public async completeEvent (attendees: number) {
       this.completed = true
       this.attendees = attendees
@@ -148,18 +153,19 @@ export class Event {
     private async updateDatabase () {
       const queryString = `
             INSERT INTO bottimus_events
-            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 approved = VALUES(approved),
                 time = VALUES(time),
                 completed = VALUES(completed),
                 cancelled = VALUES(cancelled),
+                forced = VALUES(forced),
                 attendees = VALUES(attendees)
         `
       await queryHelper(queryString, [this.id, this.guild, this.title,
         this.description, this.category, this.scheduler, this.schedulerID,
         this.approved, this.time.toJSDate(), this.completed,
-        this.cancelled, this.attendees])
+        this.cancelled, this.forced, this.attendees])
     }
 }
 
@@ -178,6 +184,7 @@ export async function loadEvents (client: BottimusClient) {
     event.approved = row.approved
     event.completed = row.completed
     event.cancelled = row.cancelled
+    event.forced = row.forced
     event.attendees = row.attendees
     return event
   }

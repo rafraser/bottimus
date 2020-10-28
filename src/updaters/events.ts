@@ -7,7 +7,7 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
   const messages = await eventChannel.messages.fetch({ limit: 10 })
   const displayMessage = messages.find(m => m.author.bot)
   if (!displayMessage) {
-    updateDisplayedEvent(client, eventChannel.guild.id, true, false)
+    updateDisplayedEvent(client, eventChannel.guild.id, true)
     return
   }
 
@@ -17,7 +17,7 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
     const trimmedTitle = event.title.trim()
     const trimmedDesc = event.description.trim()
     if (embed.title !== trimmedTitle || embed.description !== trimmedDesc) {
-      updateDisplayedEvent(client, eventChannel.guild.id, true, false)
+      updateDisplayedEvent(client, eventChannel.guild.id, true)
       return
     }
   }
@@ -52,10 +52,10 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
   }
 }
 
-export async function updateDisplayedEvent (client: Client, guildId: string, sendNew: boolean = false, ignoreTime: boolean = false) {
+export async function updateDisplayedEvent (client: Client, guildId: string, sendNew: boolean = false) {
   const upcomingEvent = getNextEvent(client.eventsData, guildId)
   if (!upcomingEvent) return
-  if (!ignoreTime && Date.now() + (24 * 3600 * 1000) < upcomingEvent.time.toMillis()) return
+  if (!upcomingEvent.forced && Date.now() + (24 * 3600 * 1000) < upcomingEvent.time.toMillis()) return
 
   const eventChannelId = client.serverSettings.get(guildId).channels.event
   const guild = client.guilds.cache.get(guildId)
