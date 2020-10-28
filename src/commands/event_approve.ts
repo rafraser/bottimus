@@ -2,6 +2,7 @@ import { Client, Message } from '../command'
 import { updateDisplayedEvent } from '../updaters/events'
 import { getUnapprovedEvent, denyEvent } from '../events'
 import { MessageReaction, User } from 'discord.js'
+import { getTimezones } from '../settings'
 
 export default {
   name: 'confirmevent',
@@ -20,8 +21,9 @@ export default {
       return
     }
 
-    const embed = eventUnapproved.generateEventEmbed()
-    const msg = await message.channel.send(embed)
+    const timezones = getTimezones(client.serverSettings, message.guild.id)
+    const embed = eventUnapproved.generateEventEmbed(timezones)
+    const msg = await message.channel.send('Do you want to approve this event?', embed)
 
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && (reaction.emoji.name === '✅' || reaction.emoji.name === '❎')
@@ -40,7 +42,7 @@ export default {
         message.channel.send('Event denied!')
       } else if (r.emoji.name === '✅') {
         eventUnapproved.approveEvent()
-        await updateDisplayedEvent(client, message.guild.id, false, false)
+        await updateDisplayedEvent(client, message.guild.id, false)
         await message.channel.send('Event approved!')
       }
     })

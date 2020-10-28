@@ -5,7 +5,8 @@ export const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: 'bottimus'
+  database: process.env.DB_DATABASE || 'bottimus',
+  timezone: 'UTC'
 })
 
 export async function queryHelper (queryString: string, args: any[]): Promise<any[]> {

@@ -3,23 +3,20 @@
 import { queryHelper } from './database'
 import { timeToString } from './utils'
 import { Guild, GuildMember, SnowflakeUtil, MessageEmbed } from 'discord.js'
+import { DateTime, Settings } from 'luxon'
 import BottimusClient from './client'
+import { getTimezone } from './settings'
+import { convertTimezoneLongToShort } from './timezonehelper'
 
-export function formatEventDate (date: Date, newline: boolean = true) {
-  // Robert A Fraser elite coding skills right here
-  // This is a pretty awful way of handling daylight savings
-  // I'm working on some changes to have proper timezones - stay tuned
-  let timezone = 'AEST'
-  if (timezone === 'AEST' && date.getTimezoneOffset() === -660) {
-    timezone = 'AEDT'
-  }
-
-  const timeString = date.toLocaleString('en-GB', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-  if (newline) {
-    return timeString.replace(',', '\n') + ' ' + timezone
-  } else {
-    return timeString + ' ' + timezone
-  }
+export function formatEventDate (timezones: string[], date: DateTime, newline: boolean = true) {
+  // October 26 08:17 PM AEST
+  // see comment in timezonehelper.ts for why we do some funky stuff here
+  const sep = newline ? '\n' : ''
+  return timezones.reduce((acc, timezone) => {
+    const dateConverted = date.setZone(timezone)
+    const shortCode = convertTimezoneLongToShort(dateConverted.toFormat('ZZZZZ'))
+    return acc + dateConverted.toFormat('MMMM dd hh:mma ') + shortCode + sep
+  }, '')
 }
 
 export enum EventCategory {
@@ -71,12 +68,13 @@ export class Event {
     schedulerID: string
     approved: boolean = false
 
-    time: Date
+    time: DateTime
     completed: boolean = false
     cancelled: boolean = false
+    forced: boolean = false
     attendees: number = 0
 
-    public constructor (guild: Guild, title: string, description: string, member: GuildMember, time: Date) {
+    public constructor (guild: Guild, title: string, description: string, member: GuildMember, time: DateTime, timezone: string) {
       this.id = SnowflakeUtil.generate()
       this.guild = guild.id
 
@@ -120,14 +118,19 @@ export class Event {
       await this.updateDatabase()
     }
 
+    public async forceEvent () {
+      this.forced = true
+      await this.updateDatabase()
+    }
+
     public async completeEvent (attendees: number) {
       this.completed = true
       this.attendees = attendees
       await this.updateDatabase()
     }
 
-    public generateEventEmbed () {
-      const formattedTime = formatEventDate(this.time)
+    public generateEventEmbed (timezones: string[]) {
+      const formattedTime = formatEventDate(timezones, this.time)
       const image = this.getEventIcon()
       const embed = new MessageEmbed()
         .setColor('#f0932b')
@@ -139,7 +142,7 @@ export class Event {
       if (this.cancelled) {
         embed.addField('CANCELLED', false)
       } else if (!this.completed) {
-        const timeLeft = timeToString(this.time.getTime() - Date.now(), 2)
+        const timeLeft = timeToString(this.time.toMillis() - Date.now(), 2)
         embed.addField('Starting in:', timeLeft, false)
         embed.setFooter('Click the bell to be pinged when this event starts')
       }
@@ -150,15 +153,19 @@ export class Event {
     private async updateDatabase () {
       const queryString = `
             INSERT INTO bottimus_events
-            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 approved = VALUES(approved),
                 time = VALUES(time),
                 completed = VALUES(completed),
                 cancelled = VALUES(cancelled),
+                forced = VALUES(forced),
                 attendees = VALUES(attendees)
         `
-      await queryHelper(queryString, [this.id, this.guild, this.title, this.description, this.category, this.scheduler, this.schedulerID, this.approved, this.time, this.completed, this.cancelled, this.attendees])
+      await queryHelper(queryString, [this.id, this.guild, this.title,
+        this.description, this.category, this.scheduler, this.schedulerID,
+        this.approved, this.time.setZone('utc').toJSDate(), this.completed,
+        this.cancelled, this.forced, this.attendees])
     }
 }
 
@@ -170,12 +177,14 @@ export async function loadEvents (client: BottimusClient) {
   const rowToEvent = async (row: any) => {
     const guild = client.guilds.cache.get(row.guild)
     const member = await guild.members.fetch(row.schedulerID)
-    const event = new Event(guild, row.title, row.description, member, row.time)
+    const timezone = getTimezone(client.serverSettings, row.guild)
+    const event = new Event(guild, row.title, row.description, member, DateTime.fromJSDate(row.time), timezone)
     event.id = row.id
     event.category = row.category as EventCategory
     event.approved = row.approved
     event.completed = row.completed
     event.cancelled = row.cancelled
+    event.forced = row.forced
     event.attendees = row.attendees
     return event
   }
@@ -196,7 +205,7 @@ export async function denyEvent (id: string) {
 export function getSortedEvents (events: Event[], guild: string | Guild) {
   const id = (typeof guild === 'string') ? guild : guild.id
   const approvedEvents = events.filter(e => e.guild === id).filter(e => e.approved)
-  return approvedEvents.sort((a, b) => a.time.getTime() - b.time.getTime())
+  return approvedEvents.sort((a, b) => a.time.toMillis() - b.time.toMillis())
 }
 
 export function getUpcomingEvents (events: Event[], guild: string | Guild) {

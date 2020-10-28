@@ -1,12 +1,13 @@
 import { Client } from '../updater'
 import { getNextEvent, Event } from '../events'
 import { TextChannel } from 'discord.js'
+import { getTimezones } from '../settings'
 
 async function updateEventMessage (client: Client, eventChannel: TextChannel, event: Event) {
   const messages = await eventChannel.messages.fetch({ limit: 10 })
   const displayMessage = messages.find(m => m.author.bot)
   if (!displayMessage) {
-    updateDisplayedEvent(client, eventChannel.guild.id, true, false)
+    updateDisplayedEvent(client, eventChannel.guild.id, true)
     return
   }
 
@@ -16,13 +17,16 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
     const trimmedTitle = event.title.trim()
     const trimmedDesc = event.description.trim()
     if (embed.title !== trimmedTitle || embed.description !== trimmedDesc) {
-      updateDisplayedEvent(client, eventChannel.guild.id, true, false)
+      updateDisplayedEvent(client, eventChannel.guild.id, true)
       return
     }
   }
 
+  // Get list of timezones for this channel
+  const timezones = getTimezones(client.serverSettings, eventChannel.guild.id)
+
   // Complete events when applicable
-  if (Date.now() > event.time.getTime()) {
+  if (Date.now() > event.time.toMillis()) {
     const reaction = displayMessage.reactions.cache.get('🔔')
     if (reaction) {
       const users = await reaction.users.fetch()
@@ -37,9 +41,9 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
     }
 
     event.completeEvent(event.attendees)
-    displayMessage.edit('', event.generateEventEmbed())
+    displayMessage.edit('', event.generateEventEmbed(timezones))
   } else {
-    displayMessage.edit('', event.generateEventEmbed())
+    displayMessage.edit('', event.generateEventEmbed(timezones))
 
     // Add a bell icon if one doesn't exist
     if (!displayMessage.reactions.cache.get('🔔')) {
@@ -48,10 +52,10 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
   }
 }
 
-export async function updateDisplayedEvent (client: Client, guildId: string, sendNew: boolean = false, ignoreTime: boolean = false) {
+export async function updateDisplayedEvent (client: Client, guildId: string, sendNew: boolean = false) {
   const upcomingEvent = getNextEvent(client.eventsData, guildId)
   if (!upcomingEvent) return
-  if (!ignoreTime && Date.now() + (24 * 3600 * 1000) < upcomingEvent.time.getTime()) return
+  if (!upcomingEvent.forced && Date.now() + (24 * 3600 * 1000) < upcomingEvent.time.toMillis()) return
 
   const eventChannelId = client.serverSettings.get(guildId).channels.event
   const guild = client.guilds.cache.get(guildId)
