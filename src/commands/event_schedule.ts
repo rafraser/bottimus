@@ -3,7 +3,7 @@ import { Event, EventCategory } from '../events'
 import { MessageReaction, User, TextChannel } from 'discord.js'
 import { DateTime } from 'luxon'
 
-import { getAdminChannel, getTimezones } from '../settings'
+import { areEventsEnabled, getAdminChannel, getTimezones } from '../settings'
 
 const helpString = `
 You can schedule events with the following syntax:
@@ -26,6 +26,8 @@ export default {
   cooldown: 60,
 
   async execute (client: Client, message: Message, args: string[]) {
+    if (!areEventsEnabled(client.serverSettings, message.guild.id)) return
+
     // Check permissions
     if (!client.isEventRole(message.member)) {
       message.channel.send('You don\'t have permission to plan events!')

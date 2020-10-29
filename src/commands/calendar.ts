@@ -1,14 +1,16 @@
 import { Client, Message } from '../command'
 import { getSortedEvents } from '../events'
 import { MessageAttachment } from 'discord.js'
+import { areEventsEnabled } from '../settings'
 
 export default {
   name: 'calendar',
   description: 'Display the current event calendar',
-  guilds: ['309951255575265280'],
   cooldown: 15,
 
   async execute (client: Client, message: Message, args: string[]) {
+    if (!areEventsEnabled(client.serverSettings, message.guild.id)) return
+
     const events = getSortedEvents(client.eventsData, message.guild)
     if (events.length < 1) {
       message.channel.send('No events are currently on the calendar!')

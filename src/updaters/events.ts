@@ -1,7 +1,7 @@
 import { Client } from '../updater'
 import { getNextEvent, Event } from '../events'
 import { TextChannel } from 'discord.js'
-import { getTimezones } from '../settings'
+import { getEventChannel, getTimezones } from '../settings'
 
 async function updateEventMessage (client: Client, eventChannel: TextChannel, event: Event) {
   const messages = await eventChannel.messages.fetch({ limit: 10 })
@@ -57,7 +57,7 @@ export async function updateDisplayedEvent (client: Client, guildId: string, sen
   if (!upcomingEvent) return
   if (!upcomingEvent.forced && Date.now() + (24 * 3600 * 1000) < upcomingEvent.time.toMillis()) return
 
-  const eventChannelId = client.serverSettings.get(guildId).channels.event
+  const eventChannelId = getEventChannel(client.serverSettings, guildId)
   const guild = client.guilds.cache.get(guildId)
   const eventChannel = guild.channels.cache.get(eventChannelId) as TextChannel
 

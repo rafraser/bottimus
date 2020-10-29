@@ -3,7 +3,7 @@ import { getUpcomingEvents, formatEventDate, Event } from '../events'
 import { padOrTrim } from '../utils'
 
 import { Guild } from 'discord.js'
-import { getTimezone } from '../settings'
+import { areEventsEnabled, getTimezone } from '../settings'
 import { DateTime } from 'luxon'
 
 export function getEventTable (client: Client, guild: Guild, timezone: string) {
@@ -23,6 +23,8 @@ export default {
   aliases: ['events'],
 
   async execute (client: Client, message: Message, args: string[]) {
+    if (!areEventsEnabled(client.serverSettings, message.guild.id)) return
+
     // Default to server primary timezone
     let timezone = getTimezone(client.serverSettings, message.guild.id)
 

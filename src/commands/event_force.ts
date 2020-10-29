@@ -2,13 +2,15 @@ import { Client, Message } from '../command'
 import { updateDisplayedEvent } from '../updaters/events'
 import { getNextEvent } from '../events'
 import { MessageReaction, User } from 'discord.js'
-import { getTimezones } from '../settings'
+import { areEventsEnabled, getTimezones } from '../settings'
 
 export default {
   name: 'forceevent',
   description: '🛡️ Force the next event to display immediately',
 
   async execute (client: Client, message: Message, args: string[]) {
+    if (!areEventsEnabled(client.serverSettings, message.guild.id)) return
+
     if (!client.isAdministrator(message.member)) {
       message.channel.send('You need to be an Administrator to use this!')
       return
