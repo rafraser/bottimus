@@ -2,7 +2,7 @@ import { Client, Message } from '../command'
 import { updateDisplayedEvent } from '../updaters/events'
 import { getUnapprovedEvent, denyEvent } from '../events'
 import { MessageReaction, User } from 'discord.js'
-import { getTimezones } from '../settings'
+import { areEventsEnabled, getTimezones } from '../settings'
 
 export default {
   name: 'confirmevent',
@@ -10,6 +10,8 @@ export default {
   aliases: ['approveevent'],
 
   async execute (client: Client, message: Message, args: string[]) {
+    if (!areEventsEnabled(client.serverSettings, message.guild.id)) return
+
     if (!client.isAdministrator(message.member)) {
       message.channel.send('You need to be an Administrator to use this!')
       return

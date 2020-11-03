@@ -76,6 +76,13 @@ export function getEventChannel (settings: Map<string, ServerSettings>, id: stri
   return server.channels.event
 }
 
+export function areEventsEnabled (settings: Map<string, ServerSettings>, id: string) {
+  const server = settings.get(id)
+  if (!server || !server.channels) return false
+  if (!server.channels.event) return false
+  return true
+}
+
 export function getAdminChannel (settings: Map<string, ServerSettings>, id: string) {
   const server = settings.get(id)
   if (!server || !server.channels) return

@@ -35,13 +35,17 @@ export default class BottimusClient extends Client {
     // eslint-disable-next-line no-undef
     private updateInterval: NodeJS.Timeout
 
+    // Python path (from .env)
+    private pythonPath: string
+
     private static primaryGuild: string = '309951255575265280'
     private static testingChannel: string = '583635933585342466'
     private static testingChannel2: string = '723314836435501187'
 
-    public constructor (testing: boolean, options: ClientOptions) {
+    public constructor (testing: boolean, pythonPath: string, options: ClientOptions) {
       super(options)
       this.testingMode = testing
+      this.pythonPath = pythonPath
 
       // Load up the essentials
       this.loadCommands()
@@ -394,9 +398,10 @@ export default class BottimusClient extends Client {
             args = [args]
           }
           args.unshift('python/' + script + '.py')
-          python = spawn('python3', args)
+          console.log(this.pythonPath)
+          python = spawn(this.pythonPath, args)
         } else {
-          python = spawn('python3', ['python/' + script + '.py'])
+          python = spawn(this.pythonPath, ['python/' + script + '.py'])
         }
 
         let data = ''

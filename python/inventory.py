@@ -35,7 +35,7 @@ prizes = [
     "plant1",
     "plant2",
 ]
-background = Image.open("./img/frame.png").resize((126, 126))
+background = Image.open("./img/frame.png").resize((126, 126), Image.NEAREST)
 
 
 def silhoutte(image):
