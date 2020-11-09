@@ -4,6 +4,7 @@ import calendar
 import math
 import sys
 import argparse
+from event_categories import COLORS, categories
 
 # Load fonts from file
 font_bold = ImageFont.truetype("./img/font/Montserrat-Black.ttf", 48)
@@ -31,54 +32,9 @@ day_names = [
 ]
 
 # Colors
-COLOR_PINK = "#f368e0"
-COLOR_GREEN = "#4cd137"
-COLOR_YELLOW = "#e1b12c"
-COLOR_PURPLE = "#9c88ff"
-COLOR_BLUE = "#00a8ff"
-COLOR_RED = "#e84118"
-
 COLOR_DARK = "#576574"
 COLOR_BACKGROUND = "#dcdde1"
 COLOR_BLANK = "#bdc3c7"
-
-# Background colours for the events
-background_colors = {
-    "amongus": COLOR_RED,
-    "art": COLOR_PINK,
-    "csgo": COLOR_YELLOW,
-    "death": COLOR_PURPLE,
-    "deathrun": COLOR_RED,
-    "dodgeball": COLOR_BLUE,
-    "dota": COLOR_RED,
-    "fallguys": COLOR_YELLOW,
-    "generic": COLOR_BLUE,
-    "ghost": COLOR_PURPLE,
-    "gmod": COLOR_BLUE,
-    "golf": COLOR_GREEN,
-    "hidden": COLOR_RED,
-    "jackbox": COLOR_PURPLE,
-    "league": COLOR_PURPLE,
-    "mapping": COLOR_GREEN,
-    "minecraft": COLOR_GREEN,
-    "minigames": COLOR_YELLOW,
-    "movie": COLOR_PINK,
-    "murder": COLOR_RED,
-    "music": COLOR_PINK,
-    "overwatch": COLOR_YELLOW,
-    "racing": COLOR_GREEN,
-    "rocketleague": COLOR_BLUE,
-    "sandbox": COLOR_GREEN,
-    "starbound": COLOR_BLUE,
-    "stream": COLOR_PINK,
-    "switch": COLOR_RED,
-    "terraria": COLOR_GREEN,
-    "testing": COLOR_GREEN,
-    "tf2": COLOR_RED,
-    "tower": COLOR_BLUE,
-    "voice": COLOR_BLUE,
-    "zombie": COLOR_RED,
-}
 
 
 def centered_text(draw, x, y, text, font, fill=(255, 255, 255, 255)):
@@ -273,7 +229,8 @@ def render_event_day(day, events):
     # Add a row in the box for each scheduled event
     for i in range(n):
         event = events[i]
-        color = background_colors[event["category"]]
+        color_name = categories().get(event["category"])
+        color = COLORS.get(color_name)[0]
         image = "./img/event/" + event["category"] + ".png"
 
         # Fill in the box background for each event

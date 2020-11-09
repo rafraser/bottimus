@@ -2,22 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import argparse
 import math
 import sys
-
-# List of colors
-COLORS = {
-    "yellow": ((251, 197, 49), (225, 177, 44)),
-    "purple": ((156, 136, 255), (140, 122, 230)),
-    "blue": ((0, 168, 255), (0, 151, 230)),
-    "red": ((232, 65, 24), (194, 54, 22)),
-    "green": ((76, 209, 55), (68, 189, 50)),
-    "orange": ((255, 190, 118), (240, 147, 43)),
-    "white": ((245, 246, 250), (220, 221, 225)),
-    "Rare": ((156, 136, 255), (140, 122, 230)),
-    "Uncommon": ((0, 168, 255), (0, 151, 230)),
-    "Common": ((76, 209, 55), (68, 189, 50)),
-    "Legendary": ((255, 190, 118), (240, 147, 43)),
-}
-
+from event_categories import COLORS
 
 def generate_frame(offset: int = 0, color: str = "yellow"):
     """Generate a single frame for a sunburst award

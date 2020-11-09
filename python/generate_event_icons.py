@@ -1,44 +1,7 @@
 from prizeball import generate_frame
 from PIL import Image, ImageFilter, ImageOps, ImageChops
 import os
-
-# Background colours for the events
-background_colors = {
-    "amongus": "red",
-    "art": "pink",
-    "csgo": "yellow",
-    "death": "purple",
-    "deathrun": "red",
-    "dodgeball": "blue",
-    "dota": "red",
-    "fallguys": "yellow",
-    "generic": "blue",
-    "ghost": "purple",
-    "gmod": "blue",
-    "golf": "green",
-    "hidden": "red",
-    "jackbox": "purple",
-    "league": "purple",
-    "mapping": "green",
-    "minecraft": "green",
-    "minigames": "yellow",
-    "movie": "pink",
-    "murder": "red",
-    "music": "pink",
-    "overwatch": "yellow",
-    "racing": "green",
-    "rocketleague": "blue",
-    "sandbox": "green",
-    "starbound": "purple",
-    "stream": "pink",
-    "switch": "red",
-    "terraria": "green",
-    "testing": "green",
-    "tf2": "red",
-    "tower": "blue",
-    "voice": "blue",
-    "zombie": "red",
-}
+from event_categories import categories
 
 
 def invert_with_alpha(img: Image, alpha: int):
@@ -93,19 +56,19 @@ def render_icon(event: str):
     foreground = Image.open(f"./img/event/{event}").resize((512, 512)).convert("RGBA")
     foreground = render_foreground(foreground)
 
-    color = background_colors.get(event.replace(".png", ""))
+    color_name = categories().get(event.replace(".png", ""))
 
-    background = generate_frame(0, color)
+    background = generate_frame(0, color_name)
     background.paste(foreground, (0, 0), foreground)
     background.save(f"./img/event_generated/{event}")
 
 
 def main():
-    """Generate event icons for all event icons found in the image folder
+    """Generate event icons for all events specified in event_categories.json
     """
     os.makedirs("./img/event_generated/", exist_ok=True)
-    for img in os.listdir("./img/event"):
-        render_icon(img)
+    for category in categories():
+        render_icon(category + ".png")
 
 
 if __name__ == "__main__":
