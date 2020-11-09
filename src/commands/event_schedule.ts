@@ -98,6 +98,11 @@ export default {
       return
     }
 
+    if (!title || !description) {
+      message.channel.send('Please specify a title and description')
+      return
+    }
+
     const event = new Event(message.guild, title, description, message.member, when, timezones[0])
     if (forcetype) {
       event.category = forcetype
