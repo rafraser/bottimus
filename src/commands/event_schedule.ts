@@ -1,5 +1,5 @@
 import { Client, Message } from '../command'
-import { Event, EventCategory } from '../events'
+import { Event, eventCategories } from '../events'
 import { MessageReaction, User, TextChannel } from 'discord.js'
 import { DateTime } from 'luxon'
 
@@ -16,7 +16,7 @@ The following events have icons:
 `
 
 function getEventTypes () {
-  return '`' + Object.values(EventCategory).join(' ') + '`'
+  return '`' + Object.keys(eventCategories).join(' ') + '`'
 }
 
 export default {
@@ -100,7 +100,7 @@ export default {
 
     const event = new Event(message.guild, title, description, message.member, when, timezones[0])
     if (forcetype) {
-      event.category = forcetype as EventCategory
+      event.category = forcetype
     }
     const embed = event.generateEventEmbed(timezones)
 

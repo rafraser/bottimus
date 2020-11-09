@@ -1,12 +1,13 @@
-/* error in EventCategory without the below line */
-/* eslint-disable no-unused-vars */
 import { queryHelper } from './database'
 import { timeToString } from './utils'
 import { Guild, GuildMember, SnowflakeUtil, MessageEmbed } from 'discord.js'
-import { DateTime, Settings } from 'luxon'
+import { DateTime } from 'luxon'
 import BottimusClient from './client'
 import { getTimezone } from './settings'
 import { convertTimezoneLongToShort } from './timezonehelper'
+
+import eventCategories from '../event_categories.json'
+export { default as eventCategories } from '../event_categories.json'
 
 export function formatEventDate (timezones: string[], date: DateTime, newline: boolean = true) {
   // October 26 08:17 PM AEST
@@ -19,50 +20,13 @@ export function formatEventDate (timezones: string[], date: DateTime, newline: b
   }, '')
 }
 
-export enum EventCategory {
-    AmongUs = 'amongus',
-    Art = 'art',
-    CSGO = 'csgo',
-    Death = 'death',
-    Deathrun = 'deathrun',
-    Dodgeball = 'dodgeball',
-    Dota = 'dota',
-    FallGuys = 'fallguys',
-    Generic = 'generic',
-    Ghost = 'ghost',
-    Gmod = 'gmod',
-    Golf = 'golf',
-    Hidden = 'hidden',
-    Jackbox = 'jackbox',
-    League = 'league',
-    Mapping = 'mapping',
-    Minecraft = 'minecraft',
-    Minigames = 'minigames',
-    Movie = 'movie',
-    Murder = 'murder',
-    Music = 'music',
-    Overwatch = 'overwatch',
-    Racing = 'racing',
-    RocketLeague = 'rocketleague',
-    Sandbox = 'sandbox',
-    Starbound = 'starbound',
-    Stream = 'stream',
-    Switch = 'switch',
-    Terraria = 'terraria',
-    Testing = 'testing',
-    TF2 = 'tf2',
-    Tower = 'tower',
-    Voice = 'voice',
-    Zombie = 'zombie'
-}
-
 export class Event {
     id: string
     guild: string
 
     title: string
     description: string
-    category: EventCategory = EventCategory.Generic
+    category: string = 'generic'
 
     scheduler: string
     schedulerID: string
@@ -87,17 +51,18 @@ export class Event {
       this.time = time
     }
 
-    public getCategoryFromInfo (): EventCategory {
+    public getCategoryFromInfo (): string {
+      if (!this.title || !this.description) return 'generic'
+
       const words = this.title.split(' ').concat(this.description.split(' '))
       for (let word of words) {
         word = word.toLowerCase()
-        const keys = Object.keys(EventCategory).filter(x => (<any>EventCategory)[x] === word)
-        if (keys.length > 0) {
-          return (<any>EventCategory)[keys[0]] as EventCategory
+        if (word in eventCategories) {
+          return word
         }
       }
 
-      return EventCategory.Generic
+      return 'generic'
     }
 
     public getEventIcon () {
@@ -180,7 +145,7 @@ export async function loadEvents (client: BottimusClient) {
     const timezone = getTimezone(client.serverSettings, row.guild)
     const event = new Event(guild, row.title, row.description, member, DateTime.fromJSDate(row.time), timezone)
     event.id = row.id
-    event.category = row.category as EventCategory
+    event.category = row.category
     event.approved = row.approved
     event.completed = row.completed
     event.cancelled = row.cancelled
