@@ -37,6 +37,7 @@ export default {
     // Help text without arguments
     if (args.length < 2) {
       message.channel.send(helpString + getEventTypes())
+      return
     }
 
     // Here we go!
