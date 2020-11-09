@@ -87,32 +87,33 @@ export default {
       const muteData = await isMuted(message.guild, target)
       if (muteData) {
         revokeMute(client, message.guild, target, muteData as [string, string, Date])
-      } else {
-        // Don't mute administrators
-        if (client.isAdministrator(target)) {
-          message.channel.send('You cannot mute Administrators!')
-          // return
-        }
-
-        // Search the arguments until a duration is found
-        let duration = 30
-        for (let i = 0; i < args.length; i++) {
-          const a = parseInt(args[i], 10)
-          if (!isNaN(a)) {
-            duration = a
-            break
-          }
-        }
-
-        const channel = message.channel as TextChannel
-        await addMute(message.guild, target, mute, channel, duration)
-
-        const embed = new MessageEmbed()
-          .setColor('#c0392b')
-          .setTitle('🦀 ' + target.displayName + ' is gone 🦀')
-          .setDescription('They have been banished to the void for ' + timeToString(duration * 60 * 1000))
-        message.channel.send(embed)
+        return
       }
+
+      // Don't mute administrators
+      if (client.isAdministrator(target)) {
+        message.channel.send('You cannot mute Administrators!')
+        return
+      }
+
+      // Search the arguments until a duration is found
+      let duration = 30
+      for (let i = 0; i < args.length; i++) {
+        const a = parseInt(args[i], 10)
+        if (!isNaN(a)) {
+          duration = a
+          break
+        }
+      }
+
+      const channel = message.channel as TextChannel
+      await addMute(message.guild, target, mute, channel, duration)
+
+      const embed = new MessageEmbed()
+        .setColor('#c0392b')
+        .setTitle('🦀 ' + target.displayName + ' is gone 🦀')
+        .setDescription('They have been banished to the void for ' + timeToString(duration * 60 * 1000))
+      message.channel.send(embed)
     } catch (e) {
       message.channel.send(e.message)
     }
