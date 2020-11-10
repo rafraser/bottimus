@@ -17,10 +17,10 @@
         "node-fetch": "^2.6.1"
     },
     "scripts": {
-        "build": "tsc && npm run events",
+        "build": "tsc",
         "serve": "node dist/bottimus.js",
         "events": "python3 python/generate_event_icons.py",
-        "build-serve": "npm run build && npm run serve",
+        "build-serve": "npm run build && npm run events && npm run serve",
         "lint": "./node_modules/.bin/eslint --ext .ts"
     },
     "devDependencies": {
