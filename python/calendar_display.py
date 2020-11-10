@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 import datetime
+import dateutil.parser
 import calendar
 import math
 import sys
@@ -322,8 +323,7 @@ def process_events_list(today, args):
     for e in args:
         # Split up the argument and parse the time
         e = e.split("|")
-        date = datetime.datetime.fromisoformat(e[0])
-        date = date.astimezone()
+        date = dateutil.parser.parse(e[0])
 
         # Skip anything that isn't this month
         if date.year != today.year or date.month != today.month:
@@ -340,9 +340,23 @@ def process_events_list(today, args):
     return events
 
 
+def convert_timestamp(value: str):
+    return datetime.datetime.strptime("1985-04-12T23:20:50.52", "%Y-%m-%dT%H:%M:%S.%f")
+    pass
+
+
 def main(args):
-    # Get the current date
-    tz = datetime.timezone(datetime.timedelta(hours=10))
+    # Determine the timezone from either the first event
+    if len(args.events) >= 1:
+        first = args.events[0].split("|")[0]
+        firstdate = dateutil.parser.parse(first)
+        tz = firstdate.tzinfo
+
+    # If the first event is not given, we'll default to AEDT
+    # It's all the information we know for sure it'll do
+    if not tz:
+        tz = datetime.timezone(datetime.timedelta(hours=10))
+
     today = datetime.datetime.now(tz)
     events = process_events_list(today, args.events)
 
