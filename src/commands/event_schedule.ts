@@ -65,8 +65,20 @@ export default {
         } else if (arg.includes(':')) {
           // Try parsing this argument as time
           const argq = arg.split(':')
-          datetime.hour = argq[0]
-          datetime.minute = argq[1]
+
+          // Hacky 12-hour time support
+          let hour = argq[0] as string | number
+          let minute = argq[1] as string
+          if (minute.endsWith('PM')) {
+            hour = 12 + (parseInt(argq[0]) % 12)
+            minute = minute.replace('PM', '')
+          } else if (minute.endsWith('AM')) {
+            hour = parseInt(argq[0]) % 12
+            minute = minute.replace('AM', '')
+          }
+
+          datetime.hour = hour
+          datetime.minute = minute
         } else if (arg.includes('-')) {
           // Try parsing this argument as YYYY-MM-DD
           const argq = arg.split('-')
