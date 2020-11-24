@@ -38,6 +38,7 @@ timezoneConversion.set('Pacific Daylight Time', 'PDT')
 timezoneConversion.set('Pacific Standard Time', 'PST')
 timezoneConversion.set('Western European Summer Time', 'WEST')
 timezoneConversion.set('Western European Standard Time', 'WET')
+timezoneConversion.set('Philippine Standard Time', 'PHT')
 
 export function convertTimezoneLongToShort (longCode: string): string {
   return timezoneConversion.get(longCode) || longCode
