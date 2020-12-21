@@ -1,5 +1,5 @@
 # Development stuff
-.env
+*.env
 .testmode
 .vscode/
 node_modules/
@@ -8,10 +8,7 @@ python/__pycache__/
 # Typescript build
 dist/
 
-# Data files
-# These shouldn't apply in testing but good to be careful
-data/events/
-data/mutes/
+# Log files
 logs/
 
 # Wordlists

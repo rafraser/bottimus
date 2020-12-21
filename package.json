@@ -7,9 +7,8 @@
         "url": "git+https://github.com/rafraser/bottimus.git"
     },
     "dependencies": {
-        "@types/luxon": "^1.25.0",
         "discord.js": "^12.2.0",
-        "dotenv": "^6.2.0",
+        "dotenv": "^8.2.0",
         "gamedig": "^2.0.21",
         "html-entities": "^1.2.1",
         "luxon": "^1.25.0",
@@ -26,6 +25,7 @@
     "devDependencies": {
         "@types/gamedig": "^2.0.0",
         "@types/html-entities": "^1.2.16",
+        "@types/luxon": "^1.25.0",
         "@types/mysql": "^2.15.15",
         "@types/node-fetch": "^2.5.7",
         "@types/ws": "^7.2.6",
