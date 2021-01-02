@@ -103,7 +103,7 @@ module.exports = {
       return
     }
 
-    const confirmMsg = await message.channel.send(`Are you sure you want to bet **${betAmount}** coins on ${betType}?`)
+    const confirmMsg = await message.channel.send(`Are you sure you want to bet **${betAmount}** coins on **${betType}**?`)
     confirmMsg.react('✅')
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && reaction.emoji.name === '✅'
