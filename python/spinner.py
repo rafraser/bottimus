@@ -280,7 +280,7 @@ def main(prizes, filename="./img/wheel.gif"):
         filename {str} -- Output filename for the spinner gif (default: {"./img/wheel.gif"})
     """
     # Load resources
-    logo = Image.open("./img/cat.png").resize((160, 160))
+    logo = Image.open("./img/dailyspin.png").resize((160, 160))
     n = len(prizes)
 
     # Run the animation
