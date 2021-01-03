@@ -1,6 +1,5 @@
 import { Client, Message, Command } from '../command'
 import { MessageEmbed, TextChannel } from 'discord.js'
-import fs from 'fs'
 
 function defaultHelpEmbed (client: Client, message: Message) {
   const coin = client.emojis.cache.get('631834832300670976')
@@ -53,11 +52,5 @@ export default {
     // Send the basic help embed
     const basicHelp = defaultHelpEmbed(client, message)
     privateMessageWithFallback(message, basicHelp, true)
-
-    // Check if there is any server-specific help
-    const server = channel.guild.id
-    fs.readFile(`data/help/${server}.txt`, 'utf8', (err, data) => {
-      if (!err) privateMessageWithFallback(message, data, false)
-    })
   }
 }
