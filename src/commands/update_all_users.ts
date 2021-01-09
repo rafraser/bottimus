@@ -10,7 +10,7 @@ function updateUserData (user: User) {
 export default {
   name: 'updateallusers',
   description: '🛡️ Update all user data',
-  guilds: ['309951255575265280'],
+  guilds: ['786168512795901962'],
 
   async execute (client: Client, message: Message, args: string[]) {
     if (!client.isAdministrator(message.member)) {

@@ -5,7 +5,7 @@ export default {
   name: 'restart',
   description: '🛡️ Restarts Bottimus',
   aliases: ['die', 'suicide'],
-  guilds: ['309951255575265280'],
+  guilds: ['786168512795901962'],
 
   async execute (client: Client, message: Message, args: string[]) {
     if (!client.isAdministrator(message.member)) {

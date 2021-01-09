@@ -38,7 +38,7 @@ export default class BottimusClient extends Client {
     // Python path (from .env)
     private pythonPath: string
 
-    private static primaryGuild: string = '309951255575265280'
+    private static primaryGuild: string = '786168512795901962'
     private static testingChannel: string = '583635933585342466'
     private static testingChannel2: string = '723314836435501187'
 
