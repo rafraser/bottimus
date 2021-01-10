@@ -3,6 +3,9 @@
     "admin": "797373354608295987",
     "event": "797429806253867018"
   },
+  "roles": {
+    "event": "everyone"
+  },
   "timezone": [
     "Australia/Sydney"
   ]

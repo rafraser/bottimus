@@ -332,6 +332,7 @@ export default class BottimusClient extends Client {
 
       const eventRole = getEventRole(this.serverSettings, member.guild.id)
       if (!eventRole) return false
+      if (eventRole === 'everyone' || eventRole === 'none') return true
 
       if (eventRole instanceof Array) {
         return member.roles.cache.some(role => {
