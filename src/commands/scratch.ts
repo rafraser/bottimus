@@ -88,7 +88,7 @@ function generateScratchCard (client: Client, msg: Message, user: GuildMember) {
   // Announce winnings after 10 seconds
   setTimeout(() => {
     if (amount > 0) {
-      const coin = client.emojis.cache.get('631834832300670976')
+      const coin = client.getCoinEmoji()
       msg.channel.send(`Congrats, ${user.displayName}! You won ${coin} **${amount}**`)
     } else {
       msg.channel.send(`Better luck next time, ${user.displayName} :(`)

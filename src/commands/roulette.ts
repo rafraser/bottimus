@@ -28,7 +28,7 @@ betFunctions.red = function (result) {
 }
 
 async function spinRoulette (client: Client, message: Message, betType: string | number, betAmount: number) {
-  const coin = client.emojis.cache.get('631834832300670976')
+  const coin = client.getCoinEmoji()
   const result = parseInt(await client.executePython('roulette', []))
 
   message.channel.send(new MessageAttachment('./img/roulette.gif'))

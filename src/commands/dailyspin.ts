@@ -71,7 +71,7 @@ export default {
         message.channel.send('Oh no :( Better luck next time!')
       } else {
         const amount = parseInt(data.replace('#coin ', ''), 10)
-        const coin = client.emojis.cache.get('631834832300670976')
+        const coin = client.getCoinEmoji()
         message.channel.send(`Congrats, ${message.member.displayName}! You won ${coin} **${amount}**`)
 
         // Update the database info once the spin is *successfully* complete

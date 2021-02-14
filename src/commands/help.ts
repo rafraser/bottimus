@@ -2,7 +2,7 @@ import { Client, Message, Command } from '../command'
 import { MessageEmbed, TextChannel } from 'discord.js'
 
 function defaultHelpEmbed (client: Client, message: Message) {
-  const coin = client.emojis.cache.get('631834832300670976')
+  const coin = client.getCoinEmoji()
   const embed = new MessageEmbed()
     .setColor('#9c88ff')
     .setTitle('Commands Overview')

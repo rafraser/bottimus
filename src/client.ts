@@ -420,6 +420,10 @@ export default class BottimusClient extends Client {
       })
     }
 
+    public getCoinEmoji () {
+      return this.emojis.cache.get('810478075729018890')
+    }
+
     private registerEventHandlers () {
       this.on('message', this.commandParser)
       this.on('guildMemberAdd', this.welcomeGreeter)
