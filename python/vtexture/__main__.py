@@ -1,4 +1,4 @@
-# pyright: reportMissingImports=false
+# pyright: reportMissingImports=false, reportMissingModuleSource=false
 import argparse
 import math
 import os
