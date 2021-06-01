@@ -1,0 +1,12 @@
+white=#f5f6fa
+red=#ee5253
+orange=#ff9f43
+yellow=#f9ca24
+green=#1dd1a1
+jade=#00d2d3
+blue=#54a0ff
+cyan=#48dbfb
+pink=#ff9ff3
+purple=#5f27cd
+grey=#576574
+black=#2d3436
