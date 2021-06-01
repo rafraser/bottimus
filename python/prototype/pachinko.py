@@ -1,5 +1,4 @@
 from PIL import Image, ImageDraw, ImageFont
-import math
 import random
 import itertools
 import physics
@@ -9,14 +8,10 @@ DEFAULT_FONT32 = ImageFont.truetype("../../img/font/disco.ttf", 32)
 
 
 def generate_pegs(objects, width, height):
-    for (x, y) in itertools.product(
-        list(range(64, width, 64)), range(128, height, 128)
-    ):
+    for (x, y) in itertools.product(list(range(64, width, 64)), range(128, height, 128)):
         objects.append(physics.Peg(x, y, 8))
 
-    for (x, y) in itertools.product(
-        list(range(32, width + 64, 64)), range(192, height - 64, 128)
-    ):
+    for (x, y) in itertools.product(list(range(32, width + 64, 64)), range(192, height - 64, 128)):
         objects.append(physics.Peg(x, y, 8))
 
 
@@ -79,7 +74,6 @@ def all_balls_gone(balls, height):
 
 
 def build_gif():
-    BG_COLOR = "#2f3640"
     HEIGHT = 512
     WIDTH = 384
     frames = []
@@ -116,7 +110,7 @@ def build_gif():
 
     # Save the gif to a file
     frames[0].save(
-        f"./output.gif",
+        "./output.gif",
         format="GIF",
         append_images=frames[1:],
         save_all=True,
