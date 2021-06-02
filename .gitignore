@@ -34,3 +34,6 @@ img/vtexture_output/
 palettes/*
 !palettes/flatui.txt
 !palettes/horizon.txt
+
+# VTFLib installations
+vtflib
