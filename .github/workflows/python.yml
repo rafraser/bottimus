@@ -18,4 +18,4 @@ jobs:
       - name: Install Flake8
         run: pip install flake8
       - name: Flake8 Check
-        run: flake8 python --exit-zero --statistics --max-line-length=120 --ignore=E203
+        run: flake8 python --statistics --max-line-length=120 --ignore=E203
