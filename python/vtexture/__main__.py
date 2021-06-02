@@ -6,7 +6,11 @@ import time
 
 import vmt_helper
 from PIL import Image
+from theia.color import Color
 from theia.palettes import load_or_download_palette
+from theia.channels import multiply
+
+IMAGE_SETS = {"default": ["grid"]}
 
 
 def timestamp() -> str:
@@ -40,6 +44,15 @@ def load_image_components(name: str):
 
 
 def validate_components(components: dict):
+    """Check that all image components have the same dimensions
+    For the colorizing process to work properly, it's crucial that everything matches up
+
+    Args:
+        components (dict): Dictionary of images
+
+    Raises:
+        ValueError: if any image has incorrect dimensions
+    """
     # Check that all image components have the same dimensions
     size = None
     for img in components.values():
@@ -49,6 +62,23 @@ def validate_components(components: dict):
             size = img.size
 
 
+def colorize_components(components: dict, color: Color) -> Image:
+    """Colorize a dictionary of image components
+
+    - Multiplies the base texture by the given color
+
+    Args:
+        components (dict): Dictionary of images
+        color (Color): Color to apply to this set of components
+
+    Returns:
+        Image: recolored and combined images
+    """
+    canvas = components.get("base").copy()
+    canvas = multiply(canvas, color)
+    return canvas
+
+
 def process(palette: str):
     # Load the color palette
     colors = load_or_download_palette(palette, save=True)
@@ -56,17 +86,33 @@ def process(palette: str):
 
     # Create output directory
     out_dir = os.path.join("./img/vtexture_output/", timestamp())
-    os.makedirs(out_dir, exist_ok=True)
+    png_dir = os.path.join(out_dir, "png/")
+    os.makedirs(png_dir, exist_ok=True)
 
-    images_to_process = ["grid"]
+    images_to_process = IMAGE_SETS.get("default")
+
     for image in images_to_process:
+        # Load any component files that make up this image
+        # This includes base maps, overlays, etc.
+        print("Recolorizing:", image)
         components = load_image_components(image)
         validate_components(components)
 
+        # Generate a new image for each color in the palette
         for name, color in colors.items():
-            pass
+            colorized_image = colorize_components(components, color)
+            output_name = f"{image}_{name}.png"
+            colorized_image.save(os.path.join(png_dir, output_name))
 
-    vmt_helper.convert_folder_to_vtf(out_dir)
+    # Colorized versions have all been generated - convert the folder to VTF
+    vtf_dir = os.path.join(out_dir, "vtf/")
+    vmt_helper.convert_folder_to_vtf(png_dir, vtf_dir)
+
+    # Zip up the results and return the path
+
+    # yes I know this isn't a zip path but I wanted at least something to be returned
+    # sue me
+    return vtf_dir
 
 
 if __name__ == "__main__":
@@ -74,4 +120,6 @@ if __name__ == "__main__":
     parser.add_argument("palette", help="Color palette to use")
     args = parser.parse_args()
 
-    process(palette=args.palette)
+    # Print output location to stdout
+    zip_path = process(palette=args.palette)
+    print(zip_path)
