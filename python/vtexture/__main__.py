@@ -27,6 +27,7 @@ def load_image_components(name: str):
 
     This will look for the following files:
         name.png            -- Base Image
+        name_overlay.png    -- Overlay
 
     Args:
         name (str): Base image name
@@ -65,8 +66,6 @@ def validate_components(components: dict):
 def colorize_components(components: dict, color: Color) -> Image:
     """Colorize a dictionary of image components
 
-    - Multiplies the base texture by the given color
-
     Args:
         components (dict): Dictionary of images
         color (Color): Color to apply to this set of components
@@ -74,8 +73,14 @@ def colorize_components(components: dict, color: Color) -> Image:
     Returns:
         Image: recolored and combined images
     """
+    # Recolorize the base layer
     canvas = components.get("base").copy()
     canvas = multiply(canvas, color)
+
+    # Stick overlays on top of the final results
+    if overlay := components.get("overlay"):
+        canvas.alpha_composite(overlay)
+
     return canvas
 
 
