@@ -2,6 +2,7 @@
 import os
 import requests
 import zipfile
+import subprocess
 
 
 def check_vtfcmd_exists():
@@ -34,6 +35,12 @@ def check_vtfcmd_exists():
 
 
 def convert_folder_to_vtf(png_directory, vtf_directory):
+
     vtfcmd_path = check_vtfcmd_exists()
 
+    png_directory = os.path.join(png_directory, "*.png")
+
+    subprocess.run([vtfcmd_path, "-folder", png_directory, "-output", vtf_directory, "-resize"])
+
     # Run VTFCmd on the paths as specified
+
