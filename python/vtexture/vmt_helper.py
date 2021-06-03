@@ -47,6 +47,8 @@ def process_vmt_template(vmt_template, base_name, color_name, vtf_dir):
             line = line.replace("{{VTF_DIRECTORY}}", vtf_dir)
             line = line.replace("{{COLOR_NAME}}", color_name)
             f.write(line)
+
+
 def check_vtfcmd_exists():
 
     directory = "./python/vtexture/vtflib/bin/x86"

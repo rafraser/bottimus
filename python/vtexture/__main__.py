@@ -2,6 +2,7 @@
 import argparse
 import math
 import os
+import shutil
 import time
 
 import vmt_helper
@@ -88,7 +89,7 @@ def colorize_components(components: dict, color: Color) -> Image:
 def process(palette: str):
     # Load the color palette
     colors = load_or_download_palette(palette, save=True)
-    print(colors)
+    print("Loaded palette", palette, "with", len(colors), "colors")
 
     # Create output directory
     out_dir = os.path.join("img", "vtexture_output", timestamp())
@@ -123,10 +124,8 @@ def process(palette: str):
     vmt_helper.convert_folder_to_vtf(png_dir, vtf_dir)
 
     # Zip up the results and return the path
-
-    # yes I know this isn't a zip path but I wanted at least something to be returned
-    # sue me
-    return vtf_dir
+    shutil.make_archive(out_dir, "zip", out_dir)
+    return out_dir + ".zip"
 
 
 if __name__ == "__main__":
