@@ -10,6 +10,7 @@ from theia.color import Color
 from theia.palettes import load_or_download_palette
 from theia.channels import multiply
 
+INPUT_DIRECTORY = os.path.join("img", "vtexture_input")
 IMAGE_SETS = {"default": ["grid"]}
 
 
@@ -32,12 +33,12 @@ def load_image_components(name: str):
     Args:
         name (str): Base image name
     """
-    directory = "./img/vtexture_input/"
-    options = []
+    base_image = Image.open(os.path.join(INPUT_DIRECTORY, f"{name}.png"))
+    result = {"base": base_image.convert("RGBA")}
 
-    result = {"base": Image.open(os.path.join(directory, f"{name}.png")).convert("RGBA")}
+    options = ["overlay"]
     for ext in options:
-        image_path = os.path.join(directory, f"{name}.png")
+        image_path = os.path.join(INPUT_DIRECTORY, f"{name}_{ext}.png")
         if os.path.isfile(image_path):
             result[ext] = Image.open(image_path).convert("RGBA")
 
@@ -94,6 +95,9 @@ def process(palette: str):
     png_dir = os.path.join(out_dir, "png")
     os.makedirs(png_dir, exist_ok=True)
 
+    vtf_dir = os.path.join(out_dir, "materials\\vtf")
+    os.makedirs(vtf_dir, exist_ok=True)
+
     images_to_process = IMAGE_SETS.get("default")
 
     for image in images_to_process:
@@ -103,15 +107,19 @@ def process(palette: str):
         components = load_image_components(image)
         validate_components(components)
 
-        # Generate a new image for each color in the palette
+        # Load the template VMT
+        with open(os.path.join(INPUT_DIRECTORY, f"{image}.vmt")) as f:
+            vmt = f.readlines()
+
         for name, color in colors.items():
+            # Generate a colorized image for each color in the palette
             colorized_image = colorize_components(components, color)
-            output_name = f"{image}_{name}.png"
-            colorized_image.save(os.path.join(png_dir, output_name))
+            colorized_image.save(os.path.join(png_dir, f"{image}_{name}.png"))
+
+            # Additionally, generate a .vmt for each image
+            vmt_helper.process_vmt_template(vmt, image, name, vtf_dir)
 
     # Colorized versions have all been generated - convert the folder to VTF
-    vtf_dir = os.path.join(out_dir, "vtf")
-    os.makedirs(vtf_dir, exist_ok=True)
     vmt_helper.convert_folder_to_vtf(png_dir, vtf_dir)
 
     # Zip up the results and return the path
