@@ -90,8 +90,8 @@ def process(palette: str):
     print(colors)
 
     # Create output directory
-    out_dir = os.path.join("./img/vtexture_output/", timestamp())
-    png_dir = os.path.join(out_dir, "png/")
+    out_dir = os.path.join("img", "vtexture_output", timestamp())
+    png_dir = os.path.join(out_dir, "png")
     os.makedirs(png_dir, exist_ok=True)
 
     images_to_process = IMAGE_SETS.get("default")
@@ -110,7 +110,8 @@ def process(palette: str):
             colorized_image.save(os.path.join(png_dir, output_name))
 
     # Colorized versions have all been generated - convert the folder to VTF
-    vtf_dir = os.path.join(out_dir, "vtf/")
+    vtf_dir = os.path.join(out_dir, "vtf")
+    os.makedirs(vtf_dir, exist_ok=True)
     vmt_helper.convert_folder_to_vtf(png_dir, vtf_dir)
 
     # Zip up the results and return the path
