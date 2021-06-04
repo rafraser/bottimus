@@ -38,7 +38,7 @@ export default class BottimusClient extends Client {
     // Python path (from .env)
     private pythonPath: string
 
-    private static primaryGuild: string = '309951255575265280'
+    private static primaryGuild: string = '786168512795901962'
 
     public constructor (testing: boolean, pythonPath: string, options: ClientOptions) {
       super(options)
@@ -330,6 +330,7 @@ export default class BottimusClient extends Client {
 
       const eventRole = getEventRole(this.serverSettings, member.guild.id)
       if (!eventRole) return false
+      if (eventRole === 'everyone' || eventRole === 'none') return true
 
       if (eventRole instanceof Array) {
         return member.roles.cache.some(role => {
@@ -415,6 +416,10 @@ export default class BottimusClient extends Client {
           }
         })
       })
+    }
+
+    public getCoinEmoji () {
+      return this.emojis.cache.get('810478075729018890')
     }
 
     private registerEventHandlers () {

@@ -1,6 +1,0 @@
-__Events__
-Community Stars and up can schedule events!
-`!schedule "Title" "Description" HH:MM YYYY-MM-DD`
-If no date is specified, it will default to today. Events are in AEDT (Sydney) time.
-
-You can view a list of upcoming events with `!calendar`

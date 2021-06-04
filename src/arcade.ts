@@ -19,7 +19,7 @@ export const prizeList = [
   ['oldbarrel', 'Ancient Barrel', 16],
   ['tape2', 'Future Cassette', 15],
 
-  ['coin', 'Fluffy Servers Token', 14],
+  ['coin', 'Frank the Cat Token', 14],
   ['monitor', 'Broken Monitor', 13],
   ['toxicdrum', 'Corrosive Waste Drum', 13],
   ['gamebro', 'Gamebro', 12],

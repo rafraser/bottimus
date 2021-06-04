@@ -1,8 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
 import spinner
 import math
-import random
-import sys
 import argparse
 
 NUMBERS = [
@@ -49,7 +47,7 @@ COLOR_RED = (194, 54, 22)
 COLOR_BLACK = (47, 54, 64)
 COLOR_GREEN = (33, 140, 116)
 
-# Render the emblem
+
 def render_emblem(logo, insize=288):
     """Generate a special emblem for roulette
     This is a simple version with no image
@@ -136,8 +134,6 @@ def main(filename="./img/roulette.gif", emblem="./img/cat.png", fontname="disco"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a roulette wheel animation")
-    parser.add_argument(
-        "--output", default="./img/roulette.gif", help="Output file path"
-    )
+    parser.add_argument("--output", default="./img/roulette.gif", help="Output file path")
     args = parser.parse_args()
     main(filename=args.output)

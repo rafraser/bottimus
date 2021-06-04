@@ -1,2 +1,0 @@
-__Roles__
-Type `!role` to view a list of toggleable roles.

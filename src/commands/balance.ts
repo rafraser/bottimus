@@ -11,7 +11,7 @@ export default {
     try {
       const user = await client.findUser(message, args, true)
       const amount = await getArcadeCredits(user.id)
-      const coin = client.emojis.cache.get('631834832300670976')
+      const coin = client.getCoinEmoji()
       client.updateCooldown(this, message.member.id)
 
       if (amount > 0) {

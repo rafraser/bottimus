@@ -1,12 +1,9 @@
 from PIL import Image, ImageDraw, ImageFont
 import math
-import sys
 import random
 import argparse
 
-ball = Image.open("./img/gacha/" + str(random.randint(1, 6)) + ".png").resize(
-    (192, 192), Image.NEAREST
-)
+ball = Image.open("./img/gacha/" + str(random.randint(1, 6)) + ".png").resize((192, 192), Image.NEAREST)
 
 # List of colors
 colors = {}
@@ -81,7 +78,7 @@ def render_prize(frame, background, prize, color, toptext, bottomtext):
     if color == "white":
         textcolor = (0, 0, 0)
 
-    if toptext != None:
+    if toptext is not None:
         draw = ImageDraw.Draw(img)
         tw, th = draw.textsize(toptext, font=font)
         draw.text(((512 - tw) / 2, 48 - (th / 2)), toptext, font=font, fill=textcolor)
@@ -142,18 +139,10 @@ if __name__ == "__main__":
         description="Generate a prize reveal gif animation\nThis is an improved version of sunburst.py"
     )
     parser.add_argument("image", help="Image source for the prize")
-    parser.add_argument(
-        "--color", default="yellow", help="Background color for the sunburst"
-    )
-    parser.add_argument(
-        "--toptext", default=None, help="Text to display above the prize"
-    )
-    parser.add_argument(
-        "--bottomtext", default=None, help="Text to display below the prize"
-    )
-    parser.add_argument(
-        "--font", default="disco", help="Font to use for the displayed text"
-    )
+    parser.add_argument("--color", default="yellow", help="Background color for the sunburst")
+    parser.add_argument("--toptext", default=None, help="Text to display above the prize")
+    parser.add_argument("--bottomtext", default=None, help="Text to display below the prize")
+    parser.add_argument("--font", default="disco", help="Font to use for the displayed text")
     parser.add_argument(
         "--output",
         default="sunbeam.gif",

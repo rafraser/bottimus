@@ -18,7 +18,7 @@ async function getServerData (client: Client, guild: Guild): Promise<[string, st
 export default {
   name: 'serverlist',
   description: 'List all servers that the bot is in',
-  guilds: ['309951255575265280'],
+  guilds: ['786168512795901962'],
 
   async execute (client: Client, message: Message, args: string[]) {
     // Restrict to administrators

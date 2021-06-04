@@ -2,11 +2,10 @@ from PIL import Image, ImageDraw, ImageFont
 import argparse
 import math
 import random
-import sys
 
 DEFAULT_FONT = ImageFont.truetype("./img/font/disco.ttf", 56)
 
-# Draw the slice text / icon
+
 def render_prize(prizes, ang, i, font):
     """Render an individual prize segment
 
@@ -31,20 +30,14 @@ def render_prize(prizes, ang, i, font):
             # Draw text & small image
             text = " ".join(p)
 
-            image = (
-                Image.open("img/" + filename + ".png").convert("RGBA").resize((96, 96))
-            )
+            image = Image.open("img/" + filename + ".png").convert("RGBA").resize((96, 96))
             canvas.paste(image, (96, math.floor((1024 - 96) / 2)), image)
 
             tw, th = draw.textsize(prizes[i], font=font)
             draw.text((208, (1024 - th) / 2), text, font=font)
         else:
             # Draw large image
-            image = (
-                Image.open("img/" + filename + ".png")
-                .convert("RGBA")
-                .resize((128, 128))
-            )
+            image = Image.open("img/" + filename + ".png").convert("RGBA").resize((128, 128))
             canvas.paste(image, (160, math.floor((1024 - 96) / 2) - 4), image)
     else:
         tw, th = draw.textsize(prizes[i], font=font)
@@ -280,7 +273,7 @@ def main(prizes, filename="./img/wheel.gif"):
         filename {str} -- Output filename for the spinner gif (default: {"./img/wheel.gif"})
     """
     # Load resources
-    logo = Image.open("./img/cat.png").resize((160, 160))
+    logo = Image.open("./img/dailyspin.png").resize((192, 192))
     n = len(prizes)
 
     # Run the animation
@@ -305,9 +298,7 @@ def main(prizes, filename="./img/wheel.gif"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a cool spinner")
-    parser.add_argument(
-        "--prizes", nargs="+", help="List of prizes to be put on the spinner"
-    )
+    parser.add_argument("--prizes", nargs="+", help="List of prizes to be put on the spinner")
     args = parser.parse_args()
 
     # prizes = [x for x in args.prizes if not x.startswith("python/")]

@@ -11,7 +11,7 @@ const reloadModes = {
 export default {
   name: 'reload',
   description: '🛡️ Reloads essential data',
-  guilds: ['309951255575265280'],
+  guilds: ['786168512795901962'],
 
   async execute (client: Client, message: Message, args: string[]) {
     if (!client.isAdministrator(message.member)) {

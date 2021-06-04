@@ -57,7 +57,7 @@ export default {
       gameover = true
       collecting = false
 
-      const coin = client.emojis.cache.get('631834832300670976')
+      const coin = client.getCoinEmoji()
       generateMiningEmbed(msg, member.displayName, amount, true)
       msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${amount * 2} coins earned`)
 

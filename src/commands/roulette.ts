@@ -28,7 +28,7 @@ betFunctions.red = function (result) {
 }
 
 async function spinRoulette (client: Client, message: Message, betType: string | number, betAmount: number) {
-  const coin = client.emojis.cache.get('631834832300670976')
+  const coin = client.getCoinEmoji()
   const result = parseInt(await client.executePython('roulette', []))
 
   message.channel.send(new MessageAttachment('./img/roulette.gif'))
@@ -103,7 +103,7 @@ module.exports = {
       return
     }
 
-    const confirmMsg = await message.channel.send(`Are you sure you want to bet **${betAmount}** coins on ${betType}?`)
+    const confirmMsg = await message.channel.send(`Are you sure you want to bet **${betAmount}** coins on **${betType}**?`)
     confirmMsg.react('✅')
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && reaction.emoji.name === '✅'
