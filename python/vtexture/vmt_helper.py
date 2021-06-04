@@ -50,7 +50,7 @@ def process_vmt_template(vmt_template, base_name, color_name, vtf_dir):
 
 
 def check_vtfcmd_exists():
-    directory = "./python/vtexture/vtflib/bin/x86"
+    directory = "./python/vtexture/vtflib/bin/x64"
     script_location = os.path.join(directory, "VTFCmd.exe")
     if os.path.isfile(script_location):
         return script_location
@@ -74,4 +74,10 @@ def check_vtfcmd_exists():
 def convert_folder_to_vtf(png_dir, vtf_dir):
     vtfcmd_path = check_vtfcmd_exists()
     png_dir = os.path.join(png_dir, "*.png")
-    subprocess.run([vtfcmd_path, "-folder", png_dir, "-output", vtf_dir, "-silent"])
+    if os.name == "posix":
+        # Run using wine
+        subprocess.run(["wine", vtfcmd_path, "-folder",
+                       png_dir, "-output", vtf_dir, "-silent"])
+    else:
+        subprocess.run([vtfcmd_path, "-folder", png_dir,
+                       "-output", vtf_dir, "-silent"])
