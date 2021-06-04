@@ -3,6 +3,7 @@ import os
 import requests
 import zipfile
 import subprocess
+import ntpath
 
 
 def path_relative_to_materials(path):
@@ -76,6 +77,7 @@ def convert_folder_to_vtf(png_dir, vtf_dir):
     png_dir = os.path.join(png_dir, "*.png")
     if os.name == "posix":
         # Run using wine
+        png_dir = png_dir.replace(os.sep, ntpath.sep)
         subprocess.run(["wine", vtfcmd_path, "-folder",
                        png_dir, "-output", vtf_dir, "-silent"])
     else:
