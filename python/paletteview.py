@@ -7,6 +7,7 @@ from theia.palettes import load_or_download_palette
 
 COLOR_HEIGHT = 32
 CANVAS_WIDTH = 384
+SHADOW = (50, 50, 50)
 
 
 def generate_palette_preview(palette: str, output: str):
@@ -21,15 +22,13 @@ def generate_palette_preview(palette: str, output: str):
     i = 0
     for name, color in colors.items():
         y1 = i * COLOR_HEIGHT
-        y2 = (i+1) * COLOR_HEIGHT
+        y2 = (i + 1) * COLOR_HEIGHT
         y_mid = (y1 + y2) // 2
-        draw.rectangle((0, y1, CANVAS_WIDTH, y2), fill=color)
 
-        draw.text((16, y_mid), name, fill=(50, 50, 50),
-                  anchor="lm", font=font)
+        draw.rectangle((0, y1, CANVAS_WIDTH, y2), fill=color)
+        draw.text((16, y_mid), name, fill=SHADOW, anchor="lm", font=font)
         draw.text((14, y_mid - 2), name, fill="white", anchor="lm", font=font)
         i += 1
-
     canvas.save(output)
 
 
