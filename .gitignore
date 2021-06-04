@@ -3,9 +3,9 @@
 .testmode
 .vscode/
 node_modules/
-python/__pycache__/
+__pycache__/
 
-# Typescript build
+# Typescript build files
 dist/
 
 # Log files
@@ -24,3 +24,13 @@ img/prizeball.gif
 img/spinner.gif
 img/roulette.gif
 img/event_generated/
+img/vtexture_output/
+img/palette_preview/
+
+# Theia palettes
+palettes/*
+!palettes/flatui.txt
+!palettes/horizon.txt
+
+# VTFLib installations
+vtflib
