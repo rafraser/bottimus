@@ -23,7 +23,7 @@ function textureEmbed () {
     .setColor('#f0932b')
     .setTitle('Texture Packs')
     .setDescription('You can choose from any of these listed texture packs!')
-    .addField('dev', 'Two simple dev textures')
+    .addField('dev', 'Two simple dev textures (currently only one lol)')
     .addField('cross', 'Animal Crossing inspired patterns. Not yet implemented!')
 }
 
@@ -38,7 +38,7 @@ Additionally, the following palettes have named colors:
 - flatui
 - horizon
 
-To preview a palette (NOT YET IMPLEMENTED):
+To preview a palette:
 \`!paletteview flatui\`
     `)
 }
