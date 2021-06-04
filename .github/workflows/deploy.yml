@@ -14,8 +14,8 @@ jobs:
           host: ${{ secrets.BOTTIMUS_HOST }}
           username: ${{ secrets.BOTTIMUS_USERNAME }}
           key: ${{ secrets.HORIZON_SSHKEY }}
-        script: |
-          cd bottimus
-          git pull
-          npm install
-          npm run build
+          script: |
+            cd bottimus
+            git pull
+            npm install
+            npm run build
