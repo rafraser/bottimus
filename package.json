@@ -23,6 +23,7 @@
         "lint": "./node_modules/.bin/eslint --ext .ts"
     },
     "devDependencies": {
+        "@types/dotenv": "^8.2.0",
         "@types/gamedig": "^2.0.0",
         "@types/html-entities": "^1.2.16",
         "@types/luxon": "^1.25.0",

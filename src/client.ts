@@ -39,8 +39,6 @@ export default class BottimusClient extends Client {
     private pythonPath: string
 
     private static primaryGuild: string = '309951255575265280'
-    private static testingChannel: string = '583635933585342466'
-    private static testingChannel2: string = '723314836435501187'
 
     public constructor (testing: boolean, pythonPath: string, options: ClientOptions) {
       super(options)
@@ -117,8 +115,8 @@ export default class BottimusClient extends Client {
       if (this.restarting) return
 
       // Restrict commands to testing channel if in testing mode
-      if (this.testingMode && message.channel.id !== BottimusClient.testingChannel) return
-      if (!this.testingMode && message.channel.id === BottimusClient.testingChannel) return
+      if (this.testingMode && message.channel.id !== process.env.TESTING_CHANNEL) return
+      if (!this.testingMode && message.channel.id === process.env.TESTING_CHANNEL) return
 
       // Do not handle messages in DM
       if (message instanceof DMChannel) return
