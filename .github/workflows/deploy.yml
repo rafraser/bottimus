@@ -18,4 +18,5 @@ jobs:
             cd bottimus
             git pull
             npm install
+            python3 -m pip install -r requirements.txt
             npm run build
