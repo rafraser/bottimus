@@ -389,18 +389,22 @@ export default class BottimusClient extends Client {
       }
     }
 
-    public executePython (script: string, args: string[]): Promise<string> {
+    public executePython (script: string, args: string[], isfolder = false): Promise<string> {
       return new Promise((resolve, reject) => {
         let python
         if (args) {
           if (!Array.isArray(args)) {
             args = [args]
           }
-          args.unshift('python/' + script + '.py')
-          console.log(this.pythonPath)
+
+          if (!isfolder) {
+            script = script + '.py'
+          }
+
+          args.unshift('python/' + script)
           python = spawn(this.pythonPath, args)
         } else {
-          python = spawn(this.pythonPath, ['python/' + script + '.py'])
+          python = spawn(this.pythonPath, ['python/' + script])
         }
 
         let data = ''
@@ -409,10 +413,13 @@ export default class BottimusClient extends Client {
 
         python.on('close', code => {
           data = data.trim()
+
+          // Return only the last line of the data
+          const lastline = data.split(/\r?\n/).pop()
           if (code === 0) {
-            resolve(data)
+            resolve(lastline)
           } else {
-            reject(data)
+            reject(lastline)
           }
         })
       })
