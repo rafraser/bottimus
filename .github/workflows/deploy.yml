@@ -13,7 +13,7 @@ jobs:
         with:
           host: ${{ secrets.BOTTIMUS_HOST }}
           username: ${{ secrets.BOTTIMUS_USERNAME }}
-          key: ${{ secrets.HORIZON_SSHKEY }}
+          key: ${{ secrets.BOTTIMUS_SSHKEY }}
           script: |
             cd bottimus
             git pull
