@@ -50,15 +50,11 @@ def process_vmt_template(vmt_template, base_name, color_name, vtf_dir):
 
 
 def check_vtfcmd_exists():
-
     directory = "./python/vtexture/vtflib/bin/x86"
     script_location = os.path.join(directory, "VTFCmd.exe")
     if os.path.isfile(script_location):
-        print("VTFCmd is installed!")
         return script_location
     else:
-        print("VTFCmd is not installed!\n" + "Proceeding to Installing VTFCmd")
-
         try:
             # Downloading VTFCmd in zip format.
             url = 'http://nemstools.github.io/files/vtflib132-bin.zip'
@@ -66,25 +62,16 @@ def check_vtfcmd_exists():
             open('./python/vtexture/vtflib.zip', 'wb').write(r.content)
 
             # Unzipping File
-            with zipfile.ZipFile("./python/vtexture/vtflib.zip","r") as zip_ref: 
+            with zipfile.ZipFile("./python/vtexture/vtflib.zip", "r") as zip_ref:
                 zip_ref.extractall("./python/vtexture/vtflib")
 
             # Deleting the ZIP file
             os.remove("./python/vtexture/vtflib.zip")
-
-            print("Successfully Installed VTFCmd")
-
-        except:
-            print("Failed to Install VTFCmd")
+        except Exception:
+            raise RuntimeError("Failed to install")
 
 
-def convert_folder_to_vtf(png_directory, vtf_directory):
-
+def convert_folder_to_vtf(png_dir, vtf_dir):
     vtfcmd_path = check_vtfcmd_exists()
-
-    png_directory = os.path.join(png_directory, "*.png")
-
-    subprocess.run([vtfcmd_path, "-folder", png_directory, "-output", vtf_directory, "-resize"])
-
-    # Run VTFCmd on the paths as specified
-
+    png_dir = os.path.join(png_dir, "*.png")
+    subprocess.run([vtfcmd_path, "-folder", png_dir, "-output", vtf_dir, "-silent"])

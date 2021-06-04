@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from 'discord.js'
+import { Message, MessageEmbed, MessageAttachment } from 'discord.js'
 import { Client } from '../command'
 import { sendTabbedEmbed } from '../pagination'
 
@@ -56,6 +56,17 @@ export default {
       '🎨': paletteEmbed()
     }
 
-    await sendTabbedEmbed(message, embedPages)
+    if (args.length === 2) {
+      await message.channel.send('Processing textures...')
+
+      try {
+        const result = await client.executePython('vtexture', args, true)
+        message.channel.send(new MessageAttachment(result))
+      } catch (error) {
+        await message.channel.send(`Something went wrong: ${error}`)
+      }
+    } else {
+      await sendTabbedEmbed(message, embedPages)
+    }
   }
 }

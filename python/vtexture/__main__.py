@@ -12,7 +12,9 @@ from theia.palettes import load_or_download_palette
 from theia.channels import multiply
 
 INPUT_DIRECTORY = os.path.join("img", "vtexture_input")
-IMAGE_SETS = {"default": ["grid"]}
+IMAGE_SETS = {
+    "dev": ["grid"]
+}
 
 
 def timestamp() -> str:
@@ -86,9 +88,16 @@ def colorize_components(components: dict, color: Color) -> Image:
     return canvas
 
 
-def process(palette: str):
+def process(texturepack: str, palette: str):
+    # Load the texture pack
+    images_to_process = IMAGE_SETS.get(texturepack)
+    if images_to_process is None:
+        raise ValueError("Texture pack does not exist!")
+
     # Load the color palette
     colors = load_or_download_palette(palette, save=True)
+    if colors is None or len(colors) < 1:
+        raise ValueError("Color palette does not exist!")
     print("Loaded palette", palette, "with", len(colors), "colors")
 
     # Create output directory
@@ -96,10 +105,8 @@ def process(palette: str):
     png_dir = os.path.join(out_dir, "png")
     os.makedirs(png_dir, exist_ok=True)
 
-    vtf_dir = os.path.join(out_dir, "materials\\vtf")
+    vtf_dir = os.path.join(out_dir, "materials", palette)
     os.makedirs(vtf_dir, exist_ok=True)
-
-    images_to_process = IMAGE_SETS.get("default")
 
     for image in images_to_process:
         # Load any component files that make up this image
@@ -130,9 +137,10 @@ def process(palette: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
+    parser.add_argument("pack", help="Texture pack to render")
     parser.add_argument("palette", help="Color palette to use")
     args = parser.parse_args()
 
     # Print output location to stdout
-    zip_path = process(palette=args.palette)
+    zip_path = process(texturepack=args.pack, palette=args.palette)
     print(zip_path)
