@@ -1,6 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
 import argparse
-import sys
 import textwrap
 
 

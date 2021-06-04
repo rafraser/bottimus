@@ -1,6 +1,7 @@
 import { Client, Message } from '../command'
 import { GuildMember, MessageEmbed } from 'discord.js'
 import { queryHelper } from '../database'
+import { sendLazyTabbedEmbed } from '../pagination'
 
 // Calculate the totals across all trivia categories
 function calculateTriviaTotals (results: any[]) {
@@ -59,29 +60,44 @@ embedFunctions.hangman = async function (user: GuildMember) {
   const username = user.displayName
   const r = results[0]
 
-  return new MessageEmbed()
-    .setColor('#4cd137')
-    .setTitle(`🚷 Hangman -  ${username}`)
-    .addField('Letters Guessed', `${r.guesses}`, true)
-    .addField('Letters Correct', `${r.correct}`, true)
-    .addField('Percentage', `${Math.floor(r.percent * 100) || 0}%`, true)
-    .addField('Revealed', `${r.revealed}`, true)
-    .addField('Words Contributed', `${r.words}`, true)
-    .addField('Contribution', `${r.contribution}%`, true)
+  if (!r) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🚷 Hangman -  ${username}`)
+      .setDescription('No data found.')
+  } else {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🚷 Hangman -  ${username}`)
+      .addField('Letters Guessed', `${r.guesses}`, true)
+      .addField('Letters Correct', `${r.correct}`, true)
+      .addField('Percentage', `${Math.floor(r.percent * 100) || 0}%`, true)
+      .addField('Revealed', `${r.revealed}`, true)
+      .addField('Words Contributed', `${r.words}`, true)
+      .addField('Contribution', `${r.contribution}%`, true)
+  }
 }
 
 // Generate a nice embed for Trivia information
 embedFunctions.trivia = async function (user: GuildMember): Promise<MessageEmbed> {
   const results = await fetchTriviaStatistics(user.id)
   const username = user.displayName
-  const [totalGuesses, totalCorrect] = calculateTriviaTotals(results)
 
-  return new MessageEmbed()
-    .setColor('#4cd137')
-    .setTitle(`❓ Trivia - ${username}`)
-    .addField('Questions Answered', `${totalGuesses}`, true)
-    .addField('Questions Correct', `${totalCorrect}`, true)
-    .addField('Percentage', `${Math.floor((totalCorrect / totalGuesses) * 100) || 0}%`, true)
+  if (!results || results.length < 1) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`❓ Trivia - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    const [totalGuesses, totalCorrect] = calculateTriviaTotals(results)
+
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`❓ Trivia - ${username}`)
+      .addField('Questions Answered', `${totalGuesses}`, true)
+      .addField('Questions Correct', `${totalCorrect}`, true)
+      .addField('Percentage', `${Math.floor((totalCorrect / totalGuesses) * 100) || 0}%`, true)
+  }
 }
 
 // Generate a nice embed for Typeracer information
@@ -90,21 +106,28 @@ embedFunctions.typeracer = async function (user: GuildMember): Promise<MessageEm
   const r = results[0]
   const username = user.displayName
 
-  // Format the date nicely
-  // Who knew this would be the worst part of all this
-  const d = r.date_best
-  const day = (d.getDate()).toString().padStart(2, '0')
-  const month = (d.getMonth() + 1).toString().padStart(2, '0')
-  const year = d.getFullYear().toString()
-  const best = day + '-' + month + '-' + year
+  if (!r) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🏎 Type Racer - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    // Format the date nicely
+    // Who knew this would be the worst part of all this
+    const d = r.date_best
+    const day = (d.getDate()).toString().padStart(2, '0')
+    const month = (d.getMonth() + 1).toString().padStart(2, '0')
+    const year = d.getFullYear().toString()
+    const best = day + '-' + month + '-' + year
 
-  return new MessageEmbed()
-    .setColor('#4cd137')
-    .setTitle(`🏎 Type Racer - ${username}`)
-    .addField('Races Completed', `${r.completed}`, true)
-    .addField('Average Speed', `${r.speed_average}WPM`, true)
-    .addField('Best Speed', `${r.speed_best}WPM`, true)
-    .addField('Record Date', `${best}`, true)
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🏎 Type Racer - ${username}`)
+      .addField('Races Completed', `${r.completed}`, true)
+      .addField('Average Speed', `${r.speed_average}WPM`, true)
+      .addField('Best Speed', `${r.speed_best}WPM`, true)
+      .addField('Record Date', `${best}`, true)
+  }
 }
 
 // Generate a nice embed for Scratchcard information
@@ -113,13 +136,20 @@ embedFunctions.scratchcard = async function (user: GuildMember): Promise<Message
   const r = results[0]
   const username = user.displayName
 
-  return new MessageEmbed()
-    .setColor('#4cd137')
-    .setTitle(`💸 Scratch Cards - ${username}`)
-    .addField('Number', `${r.number}`, true)
-    .addField('Total Winnings', `${r.winnings}`, true)
-    .addField('Profit', `${r.winnings - r.number * 250}`, true)
-    .addField('Average Income', `${r.average}`, true)
+  if (!r) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`💸 Scratch Cards - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`💸 Scratch Cards - ${username}`)
+      .addField('Number', `${r.number}`, true)
+      .addField('Total Winnings', `${r.winnings}`, true)
+      .addField('Profit', `${r.winnings - r.number * 250}`, true)
+      .addField('Average Income', `${r.average}`, true)
+  }
 }
 embedFunctions.scratch = embedFunctions.scratchcard
 
@@ -129,14 +159,21 @@ embedFunctions.mining = async function (user: GuildMember): Promise<MessageEmbed
   const r = results[0]
   const username = user.displayName
 
-  return new MessageEmbed()
-    .setColor('#4cd137')
-    .setTitle(`💎 Mining - ${username}`)
-    .addField('Expeditions', `${r.number}`, true)
-    .addField('Diamonds', `${r.diamonds}`, true)
-    .addField('Average', `${r.average}`, true)
-    .addField('Earnings', `${r.diamonds * 5}`, true)
-    .addField('Profit', `${r.diamonds * 5 - r.number * 25}`, true)
+  if (!r) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`⛏️ Mining - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`⛏️ Mining - ${username}`)
+      .addField('Expeditions', `${r.number}`, true)
+      .addField('Diamonds', `${r.diamonds}`, true)
+      .addField('Average', `${r.average}`, true)
+      .addField('Earnings', `${r.diamonds * 5}`, true)
+      .addField('Profit', `${r.diamonds * 5 - r.number * 25}`, true)
+  }
 }
 
 // Generate a nice embed for Prizes information
@@ -145,11 +182,18 @@ embedFunctions.prizes = async function (user: GuildMember): Promise<MessageEmbed
   const r = results[0]
   const username = user.displayName
 
-  return new MessageEmbed()
-    .setColor('#4cd137')
-    .setTitle(`🔮 Prizes - ${username}`)
-    .addField('Total', `${r.total}`, true)
-    .addField('Unique', `${r.collected}`, true)
+  if (!r) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🔮 Prizes - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🔮 Prizes - ${username}`)
+      .addField('Total', `${r.total}`, true)
+      .addField('Unique', `${r.collected}`, true)
+  }
 }
 
 // Generate a nice embed for Roulette information
@@ -158,57 +202,58 @@ embedFunctions.roulette = async function (user: GuildMember): Promise<MessageEmb
   const r = results[0]
   const username = user.displayName
 
+  if (!r) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`💰 Roulette - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`💰 Roulette - ${username}`)
+      .addField('Number', `${r.number}`, true)
+      .addField('Total Winnings', `${r.winnings}`, true)
+      .addField('Total Bet', `${r.bet_total}`, true)
+      .addField('Profit', `${r.winnings - r.bet_total}`, true)
+      .addField('Average Income', `${r.payout_average}`, true)
+      .addField('Average Bet', `${r.bet_average}`, true)
+  }
+}
+
+// Generate a nice embed for a help page
+embedFunctions.help = async function (user: GuildMember): Promise<MessageEmbed> {
   return new MessageEmbed()
     .setColor('#4cd137')
-    .setTitle(`💸 Roulette - ${username}`)
-    .addField('Number', `${r.number}`, true)
-    .addField('Total Winnings', `${r.winnings}`, true)
-    .addField('Total Bet', `${r.bet_total}`, true)
-    .addField('Profit', `${r.winnings - r.bet_total}`, true)
-    .addField('Average Income', `${r.payout_average}`, true)
-    .addField('Average Bet', `${r.bet_average}`, true)
+    .setTitle('ℹ️ Help')
+    .setDescription('Select a tab to view statistics:')
+    .addField('🚷', 'Hangman', true)
+    .addField('⛏️', 'Mining', true)
+    .addField('🔮', 'Prizes', true)
+    .addField('💰', 'Roulette', true)
+    .addField('💸', 'Scratchcards', true)
+    .addField('❓', 'Trivia', true)
+    .addField('🏎', 'Typeracer', true)
 }
 
 export default {
   name: 'arcadestats',
   description: 'Fetchs statistics for arcade games.\nFor a list of stat types:`!arcadestats`\nFor your statistics:`!arcadestats [type]`\nFor someone else\'s statistics:`!arcadestats [user] [type]`',
   aliases: ['gamestats', 'casinostats'],
-  cooldown: 10,
+  cooldown: 65,
 
   async execute (client: Client, message: Message, args: string[]) {
-    if (!args || args.length < 1) {
-      const games = Object.keys(embedFunctions).join(' ')
-      message.channel.send('Pick stats to see:```' + games + '```')
-      return
+    const user = await client.findUser(message, args, true)
+
+    const pages = {
+      ℹ️: embedFunctions.help(user),
+      '🚷': embedFunctions.hangman(user),
+      '⛏️': embedFunctions.mining(user),
+      '🔮': embedFunctions.prizes(user),
+      '💰': embedFunctions.roulette(user),
+      '💸': embedFunctions.scratchcard(user),
+      '❓': embedFunctions.trivia(user),
+      '🏎': embedFunctions.typeracer(user)
     }
-
-    try {
-      const user = await client.findUser(message, args, true)
-
-      const promises = []
-      for (let arg of args) {
-        arg = arg.toLowerCase()
-        if (embedFunctions[arg]) {
-          promises.push(embedFunctions[arg](user))
-        }
-      }
-
-      // Fancy promise stuff
-      // This runs all of the given promises, ignoring any errors
-      const results = await Promise.all(promises.map(p => p.catch(e => e)))
-      const valid = results.filter(result => !(result instanceof Error))
-
-      if (valid.length < 1) {
-        message.channel.send('No data available')
-      } else {
-        for (let i = 0; i < valid.length; i++) {
-          if (valid[i] == null) { continue }
-          message.channel.send(valid[i])
-        }
-      }
-      client.updateCooldown(this, message.member.id)
-    } catch (e) {
-      message.channel.send(e.message)
-    }
+    await sendLazyTabbedEmbed(message, pages)
   }
 }

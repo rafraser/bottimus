@@ -1,6 +1,5 @@
 import argparse
 import math
-import sys
 from PIL import Image, ImageDraw, ImageFont
 
 prizes = [
@@ -121,16 +120,12 @@ def renderInventory(items):
                     fill=(189, 195, 199),
                 )
 
-    inventory = inventory.resize(
-        (inventory.width * 3, inventory.height * 3), Image.NEAREST
-    )
+    inventory = inventory.resize((inventory.width * 3, inventory.height * 3), Image.NEAREST)
     inventory.save("./img/inventory.png")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generate an inventory for a list of prize:amount pairs"
-    )
+    parser = argparse.ArgumentParser(description="Generate an inventory for a list of prize:amount pairs")
     parser.add_argument(
         "--prizes",
         nargs="+",

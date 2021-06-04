@@ -66,9 +66,7 @@ class Circle(PhysicsObject):
     def draw(self, draw):
         x, y = self.position.x, self.position.y
         r = self.radius
-        draw.ellipse(
-            (x - r, y - r, x + r, y + r), fill=self.color, outline=self.outline
-        )
+        draw.ellipse((x - r, y - r, x + r, y + r), fill=self.color, outline=self.outline)
 
 
 class Block(PhysicsObject):
@@ -107,9 +105,7 @@ class Ball(Circle):
 
                 if other.static:
                     # Simple collisions
-                    self.velocity = (
-                        self.velocity - 1.8 * normal.dot(self.velocity) * normal
-                    )
+                    self.velocity = self.velocity - 1.8 * normal.dot(self.velocity) * normal
                     self.position += normal
                 else:
                     # Elastic collisions (assuming same mass)
@@ -188,4 +184,3 @@ class Scene(object):
 
         for obj in self.static_objects:
             obj.draw(draw)
-

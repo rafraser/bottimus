@@ -1,8 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
 import argparse
 import math
-import sys
 from event_categories import COLORS
+
 
 def generate_frame(offset: int = 0, color: str = "yellow"):
     """Generate a single frame for a sunburst award
@@ -67,13 +67,11 @@ def render_award(
         textcolor = (0, 0, 0) if (color == "white") else (255, 255, 255)
 
         draw = ImageDraw.Draw(img)
-        if toptext != None:
+        if toptext is not None:
             tw, th = draw.textsize(toptext, font=font)
-            draw.text(
-                ((512 - tw) / 2, 48 - (th / 2)), toptext, font=font, fill=textcolor
-            )
+            draw.text(((512 - tw) / 2, 48 - (th / 2)), toptext, font=font, fill=textcolor)
 
-        if bottomtext != None:
+        if bottomtext is not None:
             tw, th = draw.textsize(bottomtext, font=font)
             draw.text(
                 ((512 - tw) / 2, 512 - 48 - (th / 2)),
@@ -96,31 +94,19 @@ def render_award(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generate a prize reveal gif animation"
-    )
+    parser = argparse.ArgumentParser(description="Generate a prize reveal gif animation")
     parser.add_argument("image", help="Image source for the prize")
-    parser.add_argument(
-        "--color", default="yellow", help="Background color for the sunburst"
-    )
-    parser.add_argument(
-        "--toptext", default=None, help="Text to display above the prize"
-    )
-    parser.add_argument(
-        "--bottomtext", default=None, help="Text to display below the prize"
-    )
-    parser.add_argument(
-        "--font", default="disco", help="Font to use for the displayed text"
-    )
-    parser.add_argument(
-        "--output", default="sunbeam.gif", help="Output filename (include .gif extension)"
-    )
+    parser.add_argument("--color", default="yellow", help="Background color for the sunburst")
+    parser.add_argument("--toptext", default=None, help="Text to display above the prize")
+    parser.add_argument("--bottomtext", default=None, help="Text to display below the prize")
+    parser.add_argument("--font", default="disco", help="Font to use for the displayed text")
+    parser.add_argument("--output", default="sunbeam.gif", help="Output filename (include .gif extension)")
     args = parser.parse_args()
 
     render_award(
         args.image,
         args.color,
-        args.output
+        args.output,
         toptext=args.toptext,
         bottomtext=args.bottomtext,
         fontname=args.font,

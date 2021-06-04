@@ -1,0 +1,1 @@
+BOTTIMUS_ENV=production forever start -c "nodemon --exitcrash" dist/src/bottimus.js

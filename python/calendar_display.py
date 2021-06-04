@@ -3,7 +3,6 @@ import datetime
 import dateutil.parser
 import calendar
 import math
-import sys
 import argparse
 from event_categories import COLORS, categories
 
@@ -87,7 +86,6 @@ def wrapped_text(draw, x, y, text, font, maxwidth=box_width):
     """
     # Split the text into multiple lines
     text = text.split(" ")
-    i = 0
     lines = []
     line = ""
     for word in text:
@@ -122,7 +120,6 @@ def single_line_text(draw, x, y, text, font, maxwidth=box_width, maxheight=box_h
     """
     # Split the text into multiple lines
     text = text.split(" ")
-    i = 0
     lines = []
     line = ""
     for word in text:
@@ -161,9 +158,7 @@ def create_canvas(year, month):
     draw = ImageDraw.Draw(canvas)
 
     month_name = calendar.month_name[month] + " " + str(year)
-    right_aligned_text(
-        draw, total_width - margin, 6, month_name, font_header, COLOR_DARK
-    )
+    right_aligned_text(draw, total_width - margin, 6, month_name, font_header, COLOR_DARK)
 
     for idx, day in enumerate(day_names):
         xx = margin + (box_width * (idx)) + (padding * (idx - 1))
@@ -365,9 +360,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generate a calendar for a list of events"
-    )
+    parser = argparse.ArgumentParser(description="Generate a calendar for a list of events")
     parser.add_argument("--events", nargs="+", help="List of events")
     args = parser.parse_args()
     main(args)
