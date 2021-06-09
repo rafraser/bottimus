@@ -13,7 +13,9 @@ from theia.channels import multiply
 
 INPUT_DIRECTORY = os.path.join("img", "vtexture_input")
 IMAGE_SETS = {
-    "dev": ["grid"]
+    "cross": ["hearts"],
+    "dev": ["dev", "grid"],
+    "test": ["scifi0"]
 }
 
 
