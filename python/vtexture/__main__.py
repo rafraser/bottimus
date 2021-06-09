@@ -32,6 +32,8 @@ def load_image_components(name: str):
     This will look for the following files:
         name.png            -- Base Image
         name_overlay.png    -- Overlay
+        name_mask.png       -- Mask
+        name_normal.png     -- Normal
 
     Args:
         name (str): Base image name
@@ -39,7 +41,7 @@ def load_image_components(name: str):
     base_image = Image.open(os.path.join(INPUT_DIRECTORY, f"{name}.png"))
     result = {"base": base_image.convert("RGBA")}
 
-    options = ["overlay"]
+    options = ["overlay", "mask", "normal"]
     for ext in options:
         image_path = os.path.join(INPUT_DIRECTORY, f"{name}_{ext}.png")
         if os.path.isfile(image_path):
@@ -79,7 +81,13 @@ def colorize_components(components: dict, color: Color) -> Image:
     """
     # Recolorize the base layer
     canvas = components.get("base").copy()
-    canvas = multiply(canvas, color)
+
+    # If we have a mask, only colorize that part
+    if components.get("mask"):
+        colorized_mask = multiply(components["mask"].copy(), color)
+        canvas.alpha_composite(colorized_mask)
+    else:
+        canvas = multiply(canvas, color)
 
     # Stick overlays on top of the final results
     if overlay := components.get("overlay"):
