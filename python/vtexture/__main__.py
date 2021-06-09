@@ -135,6 +135,11 @@ def process(texturepack: str, palette: str):
             # Additionally, generate a .vmt for each image
             vmt_helper.process_vmt_template(vmt, image, name, vtf_dir)
 
+        # Some image components will require some additional conversions to VTF
+        if components.get("normal"):
+            normal_path = os.path.join(INPUT_DIRECTORY, f"{image}_normal.png")
+            vmt_helper.convert_file_to_vtf(normal_path, vtf_dir, format="bgr888", extra_args=["-normal"])
+
     # Colorized versions have all been generated - convert the folder to VTF
     vmt_helper.convert_folder_to_vtf(png_dir, vtf_dir)
 
