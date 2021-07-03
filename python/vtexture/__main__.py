@@ -13,7 +13,9 @@ from theia.channels import multiply
 
 INPUT_DIRECTORY = os.path.join("img", "vtexture_input")
 IMAGE_SETS = {
-    "dev": ["grid"]
+    "cross": ["hearts"],
+    "dev": ["dev", "grid"],
+    "test": ["scifi0"]
 }
 
 
@@ -32,6 +34,8 @@ def load_image_components(name: str):
     This will look for the following files:
         name.png            -- Base Image
         name_overlay.png    -- Overlay
+        name_mask.png       -- Mask
+        name_normal.png     -- Normal
 
     Args:
         name (str): Base image name
@@ -39,7 +43,7 @@ def load_image_components(name: str):
     base_image = Image.open(os.path.join(INPUT_DIRECTORY, f"{name}.png"))
     result = {"base": base_image.convert("RGBA")}
 
-    options = ["overlay"]
+    options = ["overlay", "mask", "normal"]
     for ext in options:
         image_path = os.path.join(INPUT_DIRECTORY, f"{name}_{ext}.png")
         if os.path.isfile(image_path):
@@ -79,7 +83,13 @@ def colorize_components(components: dict, color: Color) -> Image:
     """
     # Recolorize the base layer
     canvas = components.get("base").copy()
-    canvas = multiply(canvas, color)
+
+    # If we have a mask, only colorize that part
+    if components.get("mask"):
+        colorized_mask = multiply(components["mask"].copy(), color)
+        canvas.alpha_composite(colorized_mask)
+    else:
+        canvas = multiply(canvas, color)
 
     # Stick overlays on top of the final results
     if overlay := components.get("overlay"):
@@ -126,6 +136,11 @@ def process(texturepack: str, palette: str):
 
             # Additionally, generate a .vmt for each image
             vmt_helper.process_vmt_template(vmt, image, name, vtf_dir)
+
+        # Some image components will require some additional conversions to VTF
+        if components.get("normal"):
+            normal_path = os.path.join(INPUT_DIRECTORY, f"{image}_normal.png")
+            vmt_helper.convert_file_to_vtf(normal_path, vtf_dir, format="bgr888", extra_args=["-normal"])
 
     # Colorized versions have all been generated - convert the folder to VTF
     vmt_helper.convert_folder_to_vtf(png_dir, vtf_dir)
