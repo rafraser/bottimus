@@ -6,6 +6,8 @@ export type RoleGroup = {
   min?: number,
   max?: number
   options: { [name: string]: string }
+  reactionMessage?: { channel: string, message: string },
+  reactionEmotes?: { [name: string]: string }
 }
 
 export type ServerRoles = {
@@ -115,9 +117,9 @@ export function getTimezone (settings: Map<string, ServerSettings>, id: string) 
   }
 }
 
-export async function loadServerSettings (id: string) {
+export async function loadServerSettings (id: string): Promise<[string, ServerSettings]> {
   const data = await readFileAsync('data/settings/' + id + '.json', 'utf8')
-  return [id, JSON.parse(data)]
+  return [id, JSON.parse(data) as ServerSettings]
 }
 
 export async function loadAllServerSettings () {

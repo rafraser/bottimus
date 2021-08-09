@@ -1,12 +1,13 @@
 
 import { Command, loadCommands } from './command'
-import { Updater } from './updater'
+import { Updater, loadUpdaters } from './updater'
+import { Welcome, loadWelcomes } from './welcome'
+import { loadPostloadScripts } from './postload'
 import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole, getJunkyardChannel } from './settings'
-import { timeToString, readdirAsync, writeFileAsync } from './utils'
+import { timeToString, writeFileAsync } from './utils'
 import { Event, loadEvents } from './events'
 
 import fs from 'fs'
-import path from 'path'
 import { spawn } from 'child_process'
 import { Client, ClientOptions, Message, DMChannel, TextChannel, GuildMember, SnowflakeUtil } from 'discord.js'
 
@@ -18,7 +19,7 @@ export default class BottimusClient extends Client {
 
     public commands: Map<string, Command>
     public updaters: Updater[]
-    public welcomers: Map<string, (member: GuildMember) => any>
+    public welcomers: Map<string, Welcome>
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
@@ -45,22 +46,26 @@ export default class BottimusClient extends Client {
       this.testingMode = testing
       this.pythonPath = pythonPath
 
-      // Load up the essentials
-      loadCommands().then((commands) => { this.commands = commands })
-      this.loadUpdaters()
-      this.loadWelcomes()
-      this.loadServerSettings()
+      this.loadFunctionality().then(() => {
+        // Once all functionality is loaded, keep an eye out for the discord ready event
+        this.on('ready', () => {
+          this.setupLogging()
+          console.log(`Logged in as: ${this.user.tag}`)
+          console.log(`Testing mode: ${this.testingMode}`)
 
-      // Register events
-      this.registerEventHandlers()
-
-      // Log to console on startup
-      this.on('ready', () => {
-        this.setupLogging()
-        console.log(`Logged in as: ${this.user.tag}`)
-        console.log(`Testing mode: ${this.testingMode}`)
-        loadEvents(this)
+          loadEvents(this)
+          loadPostloadScripts(this)
+        })
       })
+    }
+
+    public async loadFunctionality () {
+      this.commands = await loadCommands()
+      this.updaters = await loadUpdaters()
+      this.welcomers = await loadWelcomes()
+
+      await this.loadServerSettings()
+      this.registerEventHandlers()
     }
 
     public async setupLogging () {
@@ -183,22 +188,6 @@ export default class BottimusClient extends Client {
       this.cooldowns.get(command.name).set(user, Date.now())
     }
 
-    public async loadUpdaters () {
-      this.updaters = []
-
-      const files = await readdirAsync(path.resolve(__dirname, 'updaters'))
-      files.forEach(file => {
-        const p = path.parse(file)
-        if (p.ext === '.js') this.loadUpdater(p.name)
-      })
-    }
-
-    public async loadUpdater (path: string) {
-      const module = await import('./updaters/' + path + '.js')
-      const updater = module.default as Updater
-      this.updaters.push(updater)
-    }
-
     public async runUpdaters () {
       const d = new Date()
       const n = d.getMinutes() + (d.getHours() * 60)
@@ -207,21 +196,6 @@ export default class BottimusClient extends Client {
           await update.execute(this)
         }
       }
-    }
-
-    public async loadWelcomes () {
-      this.welcomers = new Map()
-      const files = await readdirAsync(path.resolve(__dirname, 'welcome'))
-      files.forEach(file => {
-        const p = path.parse(file)
-        if (p.ext === '.js') this.loadWelcome(p.name)
-      })
-    }
-
-    public async loadWelcome (path: string) {
-      const module = await import('./welcome/' + path + '.js')
-      const welcome = module.default as (member: GuildMember) => any
-      this.welcomers.set(path, welcome)
     }
 
     public async welcomeGreeter (member: GuildMember) {
