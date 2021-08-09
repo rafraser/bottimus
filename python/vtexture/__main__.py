@@ -8,12 +8,13 @@ import time
 import vmt_helper
 from PIL import Image
 from theia.color import Color
-from theia.palettes import load_or_download_palette
+from theia.palettes import parse_palette
 from theia.channels import multiply
 
 INPUT_DIRECTORY = os.path.join("img", "vtexture_input")
 IMAGE_SETS = {
-    "dev": ["grid"]
+    "cross": ["hearts"],
+    "dev": ["dev", "grid"],
 }
 
 
@@ -32,6 +33,8 @@ def load_image_components(name: str):
     This will look for the following files:
         name.png            -- Base Image
         name_overlay.png    -- Overlay
+        name_mask.png       -- Mask
+        name_normal.png     -- Normal
 
     Args:
         name (str): Base image name
@@ -39,7 +42,7 @@ def load_image_components(name: str):
     base_image = Image.open(os.path.join(INPUT_DIRECTORY, f"{name}.png"))
     result = {"base": base_image.convert("RGBA")}
 
-    options = ["overlay"]
+    options = ["overlay", "mask", "normal"]
     for ext in options:
         image_path = os.path.join(INPUT_DIRECTORY, f"{name}_{ext}.png")
         if os.path.isfile(image_path):
@@ -79,7 +82,13 @@ def colorize_components(components: dict, color: Color) -> Image:
     """
     # Recolorize the base layer
     canvas = components.get("base").copy()
-    canvas = multiply(canvas, color)
+
+    # If we have a mask, only colorize that part
+    if components.get("mask"):
+        colorized_mask = multiply(components["mask"].copy(), color)
+        canvas.alpha_composite(colorized_mask)
+    else:
+        canvas = multiply(canvas, color)
 
     # Stick overlays on top of the final results
     if overlay := components.get("overlay"):
@@ -88,14 +97,14 @@ def colorize_components(components: dict, color: Color) -> Image:
     return canvas
 
 
-def process(texturepack: str, palette: str):
+def process(texturepack: str, palette: str, name_override: str):
     # Load the texture pack
     images_to_process = IMAGE_SETS.get(texturepack)
     if images_to_process is None:
         raise ValueError("Texture pack does not exist!")
 
     # Load the color palette
-    colors = load_or_download_palette(palette, save=True)
+    colors = parse_palette(palette)
     if colors is None or len(colors) < 1:
         raise ValueError("Color palette does not exist!")
     print("Loaded palette", palette, "with", len(colors), "colors")
@@ -105,7 +114,14 @@ def process(texturepack: str, palette: str):
     png_dir = os.path.join(out_dir, "png")
     os.makedirs(png_dir, exist_ok=True)
 
-    vtf_dir = os.path.join(out_dir, "materials", palette)
+    # Determine a nice name for the output
+    palette_name = palette
+    if name_override:
+        palette_name = name_override
+    elif "," in palette_name or ";" in palette_name:
+        palette_name = "vtexture"
+
+    vtf_dir = os.path.join(out_dir, "materials", palette_name)
     os.makedirs(vtf_dir, exist_ok=True)
 
     for image in images_to_process:
@@ -127,6 +143,11 @@ def process(texturepack: str, palette: str):
             # Additionally, generate a .vmt for each image
             vmt_helper.process_vmt_template(vmt, image, name, vtf_dir)
 
+        # Some image components will require some additional conversions to VTF
+        if components.get("normal"):
+            normal_path = os.path.join(INPUT_DIRECTORY, f"{image}_normal.png")
+            vmt_helper.convert_file_to_vtf(normal_path, vtf_dir, format="bgr888", extra_args=["-normal"])
+
     # Colorized versions have all been generated - convert the folder to VTF
     vmt_helper.convert_folder_to_vtf(png_dir, vtf_dir)
 
@@ -139,8 +160,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("pack", help="Texture pack to render")
     parser.add_argument("palette", help="Color palette to use")
+    parser.add_argument("--name", help="Override name for output VTF directory", default=None)
     args = parser.parse_args()
 
     # Print output location to stdout
-    zip_path = process(texturepack=args.pack, palette=args.palette)
+    zip_path = process(args.pack, args.palette, args.name)
     print(zip_path)

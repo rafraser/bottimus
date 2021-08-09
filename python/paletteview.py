@@ -3,7 +3,7 @@ import argparse
 import os
 
 from PIL import Image, ImageDraw, ImageFont
-from theia.palettes import load_or_download_palette
+from theia.palettes import parse_palette
 
 COLOR_HEIGHT = 32
 CANVAS_WIDTH = 384
@@ -11,7 +11,7 @@ SHADOW = (50, 50, 50)
 
 
 def generate_palette_preview(palette: str, output: str):
-    colors = load_or_download_palette(palette, save=True)
+    colors = parse_palette(palette)
     if colors is None or len(colors) < 1:
         raise ValueError("Color palette does not exist!")
 

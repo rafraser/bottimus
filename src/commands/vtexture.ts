@@ -12,6 +12,9 @@ Welcome to the Beta Texture Colorizing Machine! Just tell me a texture pack and 
 For example, to generate a set of dev textures using the *flatui* color palette:
 \`!vtexture dev flatui\`
 
+To generate a set of dev textures with a custom colour palette, with the folder being materials/example/:
+\`!vtexture "#e74c3c,#3498db" example\`
+
 Check the other tabs for more information:
     `)
     .addField('🟪', 'View list of texture packs')
@@ -34,12 +37,15 @@ function paletteEmbed () {
     .setDescription(`
 You can use any palette from the [Lospec Palette List](https://lospec.com/palette-list)
 
-Additionally, the following palettes have named colors:
-- flatui
-- horizon
+You can specify colour palettes in various formats:
+\`#e74c3c,#3498db\`
+\`red=#e74c3c,blue=#3498db\`
+\`{'red': '#e74c3c', 'blue': '#3498db'}\`
+
+You can also choose from the following palettes: \`flatui\` \`horizon\`
 
 To preview a palette:
-\`!paletteview flatui\`
+\`!paletteview "red=#e74c3c,blue=#3498db"\`
     `)
 }
 
@@ -56,11 +62,18 @@ export default {
       '🎨': paletteEmbed()
     }
 
-    if (args.length === 2) {
+    if (args.length >= 2) {
+      const pythonArgs = [args[0], args[1]]
+      if (args.length >= 3) {
+        pythonArgs.push('--name')
+        pythonArgs.push(args[2])
+      }
+      console.log(pythonArgs)
+
       await message.channel.send('Processing textures...')
 
       try {
-        const result = await client.executePython('vtexture', args, true)
+        const result = await client.executePython('vtexture', pythonArgs, true)
         message.channel.send(new MessageAttachment(result))
       } catch (error) {
         await message.channel.send(`Something went wrong: ${error}`)

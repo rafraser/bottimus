@@ -45,12 +45,21 @@ def process_vmt_template(vmt_template, base_name, color_name, vtf_dir):
     with open(vmt_path, "w") as f:
         for line in vmt_template:
             line = line.replace("{{VTF_PATH}}", vtf_path)
-            line = line.replace("{{VTF_DIRECTORY}}", vtf_dir)
+            line = line.replace("{{VTF_DIRECTORY}}", vtf_subdir)
             line = line.replace("{{COLOR_NAME}}", color_name)
             f.write(line)
 
 
 def check_vtfcmd_exists():
+    """Return the path to VTFCmd
+    If VTFCmd is not installed, this script will attempt to install it next to this script
+
+    Raises:
+        RuntimeError: If VTFCmd is not installed & the installation process failed
+
+    Returns:
+        str: Path to VTFCmd.exe
+    """
     directory = "./python/vtexture/vtflib/bin/x64"
     script_location = os.path.join(directory, "VTFCmd.exe")
     if os.path.isfile(script_location):
@@ -72,14 +81,43 @@ def check_vtfcmd_exists():
             raise RuntimeError("Failed to install")
 
 
-def convert_folder_to_vtf(png_dir, vtf_dir):
+def convert_file_to_vtf(input_file, vtf_dir, format="DXT1", extra_args=[]):
+    """Convert a single file into a .VTF
+
+    Args:
+        input_file (str): Path to the input file, including extension.
+        vtf_dir (str): Output directory.
+        format (str): Image format to use. Defaults to DXT1.
+    """
+    vtfcmd_path = check_vtfcmd_exists()
+    if os.name == "posix":
+        # Run using wine
+        input_file = input_file.replace(os.sep, ntpath.sep)
+        subprocess.run(["wine", vtfcmd_path, "-file", input_file,
+                       "-output", vtf_dir, "-format", format, "-silent"])
+    else:
+        subprocess.run([vtfcmd_path, "-file", input_file,
+                       "-output", vtf_dir, "-format", format, "-silent"] + extra_args)
+
+
+def convert_folder_to_vtf(png_dir, vtf_dir, format="DXT1", extra_args=[]):
+    """Convert a directory of .PNGs into .VTFs
+
+    Note that VTFCmd is a windows specific executable.
+    If running on a non-windows system, this script will attempt to use Wine
+
+    Args:
+        png_dir (str): Path to folder containing input PNGs.
+        vtf_dir (str): Output directory.
+        format  (str): Image format to use. Defaults to DXT1.
+    """
     vtfcmd_path = check_vtfcmd_exists()
     png_dir = os.path.join(png_dir, "*.png")
     if os.name == "posix":
         # Run using wine
         png_dir = png_dir.replace(os.sep, ntpath.sep)
         subprocess.run(["wine", vtfcmd_path, "-folder",
-                       png_dir, "-output", vtf_dir, "-silent"])
+                       png_dir, "-output", vtf_dir, "-format", "DXT1", "-silent"])
     else:
         subprocess.run([vtfcmd_path, "-folder", png_dir,
-                       "-output", vtf_dir, "-silent"])
+                       "-output", vtf_dir, "-format", format, "-silent"])
