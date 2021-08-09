@@ -33,3 +33,26 @@ Users can request events with !schedule, which are then sent to server staff for
 ### VTexture
 
 Generate colourful source engine texture packs! This functionality is currently in beta testing, and is only available in selected servers.
+
+## Development
+
+Bottimus is powered by [discord.js](https://discord.js.org/#/) - you will [NodeJS](https://nodejs.org/en/) 12.x or higher to run this project.
+
+Install dependencies with npm:
+
+```bash
+npm install
+```
+
+You also need to provide a Discord API key in `development.env`:
+
+```bash
+DISCORD=<api_key_here>
+```
+
+Build the Typescript project & then boot Bottimus:
+
+```bash
+npm run build
+npm run serve
+```

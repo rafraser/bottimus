@@ -8,14 +8,13 @@ import time
 import vmt_helper
 from PIL import Image
 from theia.color import Color
-from theia.palettes import load_or_download_palette
+from theia.palettes import parse_palette
 from theia.channels import multiply
 
 INPUT_DIRECTORY = os.path.join("img", "vtexture_input")
 IMAGE_SETS = {
     "cross": ["hearts"],
     "dev": ["dev", "grid"],
-    "test": ["scifi0"]
 }
 
 
@@ -98,14 +97,14 @@ def colorize_components(components: dict, color: Color) -> Image:
     return canvas
 
 
-def process(texturepack: str, palette: str):
+def process(texturepack: str, palette: str, name_override: str):
     # Load the texture pack
     images_to_process = IMAGE_SETS.get(texturepack)
     if images_to_process is None:
         raise ValueError("Texture pack does not exist!")
 
     # Load the color palette
-    colors = load_or_download_palette(palette, save=True)
+    colors = parse_palette(palette)
     if colors is None or len(colors) < 1:
         raise ValueError("Color palette does not exist!")
     print("Loaded palette", palette, "with", len(colors), "colors")
@@ -115,7 +114,14 @@ def process(texturepack: str, palette: str):
     png_dir = os.path.join(out_dir, "png")
     os.makedirs(png_dir, exist_ok=True)
 
-    vtf_dir = os.path.join(out_dir, "materials", palette)
+    # Determine a nice name for the output
+    palette_name = palette
+    if name_override:
+        palette_name = name_override
+    elif "," in palette_name or ";" in palette_name:
+        palette_name = "vtexture"
+
+    vtf_dir = os.path.join(out_dir, "materials", palette_name)
     os.makedirs(vtf_dir, exist_ok=True)
 
     for image in images_to_process:
@@ -154,8 +160,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("pack", help="Texture pack to render")
     parser.add_argument("palette", help="Color palette to use")
+    parser.add_argument("--name", help="Override name for output VTF directory", default=None)
     args = parser.parse_args()
 
     # Print output location to stdout
-    zip_path = process(texturepack=args.pack, palette=args.palette)
+    zip_path = process(args.pack, args.palette, args.name)
     print(zip_path)
