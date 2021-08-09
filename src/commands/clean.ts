@@ -19,6 +19,8 @@ export default {
     }
 
     // Bulk delete has a limit of 100
-    message.channel.bulkDelete(num)
+    if (message.channel.type === 'text') {
+      message.channel.bulkDelete(num)
+    }
   }
 }
