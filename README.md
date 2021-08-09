@@ -1,33 +1,35 @@
 # Bottimus
-Bottimus is a Discord bot designed primarily to help moderate the Fluffy Servers community. Bottimus comes equipped with a wide range of moderation functions, but more importantly, has an innovative and fun gameplay and currency system.
 
-While Event Scheduling and some advanced moderation commands are restricted to Fluffy Servers, all of the games and economy features are open to any server that Bottimus is in.
+Bottimus is a fun Discord bot with a wide variety of entertaining & helpful commands. All of the games and economy features are available out of the box, but event scheduling and advanced moderation commands will require some manual setup.
 
 To add Bottimus to a server, click [here](https://discordapp.com/oauth2/authorize?client_id=309977253222023169&scope=bot&permissions=388160). This will require server management permissions.
 
-## Economy
-Users can collect coins in various ways and then spend them on exciting collectable prizes.
-By playing various games, such as Hangman, Trivia, and Typeracer, users collect coins.
+## Features
 
-Users also get a daily spin each day for a sizeable amount of coins
-![Daily Spin](https://raw.githubusercontent.com/rafraser/bottimus/master/img/example/dailyspin.gif)
+### Economy & Games
 
-Once users collect 1000 coins, they can exchange it for a chance at a rare prize!
-![Prize Ball](https://raw.githubusercontent.com/rafraser/bottimus/master/img/example/prizeball.gif)
+- !dailyspin to earn free coins every day!
+- Earn currency by playing games such as !trivia, !typeracer, and !hangman
+- Gamble your coins away with !scratchcard and !roulette
+- Save up 1000 coins to redeem a !prize
+  - 30 unique prizes, designed by the fantastic [Dan Oak](https://danoakart.com/)
+    ![Inventory](https://raw.githubusercontent.com/rafraser/bottimus/master/img/example/inventory.png)
 
-Alternatively, users can gamble on Scratch Cards or Roulette!
-![Roulette](https://raw.githubusercontent.com/rafraser/bottimus/master/img/example/roulette.gif)
+### Miscellaneous
 
-There are currently 30 different prizes to collect! Prize artwork was done by the fantastic [Dan Oak](https://danoakart.com/)
-![Inventory](https://raw.githubusercontent.com/rafraser/bottimus/master/img/example/inventory.png)
+- !catfact
+- !numberfact
+- !8ball
+- !dice
 
-## Event Scheduling
-In Fluffy Servers, Bottimus is used to manage community events. Trusted users are able to request events, which are then confirmed by staff members. Other users can then subscribe to event notifications for an alert when the event starts.
+### Event Scheduling
 
-Events can also be viewed in a monthly calendar format.
+Event scheduling is only available in selected servers.
+
+Users can request events with !schedule, which are then sent to server staff for approval. Once approved, users can subscribe to the next upcoming event in an events channel, and will be notified when the event starts.
+
 ![Calendar](https://raw.githubusercontent.com/rafraser/bottimus/master/img/example/calendar.png)
 
-## Moderation
-Bottimus also has support for role management. This system is designed to be powerful and modular, allowing for all sorts of combinations of roles to be chosen by users.
+### VTexture
 
-Bottimus has muting functionality which can be used to temporarily remove all roles from a user and banish them to a restricted channel. In a similar vein, there is also a ticketing functionality which temporarily grants access to a role.
+Generate colourful source engine texture packs! This functionality is currently in beta testing, and is only available in selected servers.
