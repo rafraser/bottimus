@@ -1,10 +1,10 @@
-import { Client, Message } from '../command'
+import { Client, Message, loadCommands } from '../command'
 import { loadEvents } from '../events'
 
 const reloadModes = {
   settings: async (client) => client.loadServerSettings(),
   events: async (client) => loadEvents(client),
-  commands: async (client) => client.loadCommands(),
+  commands: async (client) => { client.commands = await loadCommands() },
   updaters: async (client) => client.loadUpdaters()
 } as { [key: string]: (client: Client) => Promise<any> }
 

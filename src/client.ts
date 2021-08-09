@@ -1,5 +1,5 @@
 
-import { Command } from './command'
+import { Command, loadCommands } from './command'
 import { Updater } from './updater'
 import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole, getJunkyardChannel } from './settings'
 import { timeToString, readdirAsync, writeFileAsync } from './utils'
@@ -46,7 +46,7 @@ export default class BottimusClient extends Client {
       this.pythonPath = pythonPath
 
       // Load up the essentials
-      this.loadCommands()
+      loadCommands().then((commands) => { this.commands = commands })
       this.loadUpdaters()
       this.loadWelcomes()
       this.loadServerSettings()
@@ -79,26 +79,6 @@ export default class BottimusClient extends Client {
         fs.mkdirSync('data/' + directory)
       } finally {
         await writeFileAsync('data/' + directory + '/' + name + '.json', JSON.stringify(data))
-      }
-    }
-
-    public async loadCommands () {
-      this.commands = new Map<string, Command>()
-
-      const files = await readdirAsync(path.resolve(__dirname, 'commands'))
-      files.forEach(file => {
-        const p = path.parse(file)
-        if (p.ext === '.js') this.loadCommand(p.name)
-      })
-    }
-
-    public async loadCommand (path: string) {
-      const module = await import('./commands/' + path + '.js')
-      const command = module.default as Command
-
-      this.commands.set(command.name, command)
-      if (command.aliases) {
-        command.aliases.forEach(alias => this.commands.set(alias, command))
       }
     }
 

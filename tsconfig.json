@@ -4,7 +4,7 @@
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "target": "es6",
+        "target": "es2019",
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
