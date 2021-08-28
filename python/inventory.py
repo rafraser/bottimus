@@ -36,12 +36,12 @@ prizes = [
     "soda",
     "glasses3d",
     # Row 5
+    "vinyl",
+    "vinylgold",
     "tape1",
     "tape2",
     "tape3",
     "tape4",
-    "vinyl",
-    "vinylgold",
     "whiskey",
     # Row 6
     "pluto",
