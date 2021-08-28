@@ -28,13 +28,13 @@ prizes = [
     "goldhat",
     "glasses",
     # Row 4
-    "popcorn",
-    "soda",
-    "glasses3d",
     "plant1",
     "plant2",
     "bonsaigreen",
     "bonsaipink",
+    "popcorn",
+    "soda",
+    "glasses3d",
     # Row 5
     "tape1",
     "tape2",
