@@ -5,37 +5,51 @@ type Prize = [string, string, number]
 export const prizeList = [
   ['redrocket', 'Toy Rocket (Red)', 25],
   ['greenrocket', 'Toy Rocket (Green)', 25],
+  ['popcorn', 'Mostly Popped Popcorn', 25],
   ['bowlingpin', 'Bowling Pin', 24],
   ['drum', 'Industrial Drum', 24],
   ['chocolate', 'Suspicious Chocolate', 22],
+  ['soda', 'Carbonated Beverage', 21],
+  ['dumbbell', 'Very Heavy Dumbbell', 21],
   ['cards', 'Deck of Cards', 20],
   ['dice', 'Fuzzy Dice', 20],
+  ['glasses', 'Lost Glasses', 20],
 
   ['tape3', 'Digital Cassette', 18],
   ['purplerocket', 'Toy Rocket (Purple)', 18],
   ['bluerocket', 'Toy Rocket (Blue)', 18],
   ['redhat', 'Lvl 100 Boss Hat', 17],
+  ['glasses3d', 'Budget VR Headset', 17],
   ['plant1', 'Magic Bloom', 16],
   ['oldbarrel', 'Ancient Barrel', 16],
   ['tape2', 'Future Cassette', 15],
+  ['bonsaigreen', 'Beautiful Bonsai', 15],
 
   ['coin', 'Frank the Cat Token', 14],
+  ['pickaxe', 'Titanium Pickaxe', 14],
   ['monitor', 'Broken Monitor', 13],
   ['toxicdrum', 'Corrosive Waste Drum', 13],
+  ['vinyl', 'Retro Record', 13],
   ['gamebro', 'Gamebro', 12],
   ['mysteryorb', 'Mysterious Orb', 12],
   ['goldhat', 'Ringmaster\'s Hat', 11],
+  ['whiskey', 'Top Shelf Whiskey', 11],
   ['tape1', 'Retro Cassette', 10],
 
   ['mars', 'Mars', 9],
   ['plant2', 'Autumn Diamond', 9],
+  ['crystalpr', 'Amazing Amethyst', 9],
+  ['bonsaipink', 'Sakura Blossom', 8],
   ['fox', 'Plush Fox', 8],
   ['pluto', 'Pluto', 8],
   ['goldmonitor', 'Royal (Broken) Monitor', 7],
   ['tape4', 'Aesthetic Cassette', 7],
+  ['vinylgold', 'Golden Record', 7],
+  ['rubberduck', 'Dr. Quackers', 6],
   ['icefox', 'Ice Fox', 6],
   ['gamebrocolor', 'Gamebro Color', 6],
-  ['infinityfox', 'Infinity Fox', 5]
+  ['infinityfox', 'Infinity Fox', 5],
+  ['crystalob', 'Gem of Horus', 5]
 ] as Prize[]
 
 export function weightToRarity (weight: number): string {
@@ -45,10 +59,8 @@ export function weightToRarity (weight: number): string {
     return 'Uncommon'
   } else if (weight >= 10) {
     return 'Rare'
-  } else if (weight >= 5) {
-    return 'Legendary'
   } else {
-    return 'Epic Legend'
+    return 'Legendary'
   }
 }
 

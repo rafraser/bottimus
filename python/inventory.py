@@ -3,36 +3,62 @@ import math
 from PIL import Image, ImageDraw, ImageFont
 
 prizes = [
+    # Row 1
     "cards",
     "chocolate",
     "dice",
     "coin",
     "mysteryorb",
     "bowlingpin",
+    "dumbbell",
+    # Row 2
     "oldbarrel",
     "drum",
     "toxicdrum",
     "fox",
     "icefox",
     "infinityfox",
+    "rubberduck",
+    # Row 3
     "gamebro",
     "gamebrocolor",
     "monitor",
     "goldmonitor",
     "redhat",
     "goldhat",
+    "glasses",
+    # Row 4
+    "popcorn",
+    "soda",
+    "glasses3d",
+    "plant1",
+    "plant2",
+    "bonsaigreen",
+    "bonsaipink",
+    # Row 5
+    "tape1",
+    "tape2",
+    "tape3",
+    "tape4",
+    "vinyl",
+    "vinylgold",
+    "whiskey",
+    # Row 6
     "pluto",
     "mars",
     "redrocket",
     "greenrocket",
     "bluerocket",
     "purplerocket",
-    "tape1",
-    "tape2",
-    "tape3",
-    "tape4",
-    "plant1",
-    "plant2",
+    "pickaxe",
+    # Row 7
+    "oresilver",
+    "oregold",
+    "oregreen",
+    "crystalbg",
+    "crystalgp",
+    "crystalob",
+    "crystalpr"
 ]
 background = Image.open("./img/frame.png").resize((126, 126), Image.NEAREST)
 
@@ -93,7 +119,7 @@ def renderInventory(items):
     Arguments:
         items {[type]} -- List of items to have in the inventory
     """
-    row_size = 6
+    row_size = 7
     num_rows = math.ceil(len(prizes) / row_size)
 
     # Create the canvas
@@ -120,12 +146,13 @@ def renderInventory(items):
                     fill=(189, 195, 199),
                 )
 
-    inventory = inventory.resize((inventory.width * 3, inventory.height * 3), Image.NEAREST)
+    inventory = inventory.resize((inventory.width * 2, inventory.height * 2), Image.NEAREST)
     inventory.save("./img/inventory.png")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate an inventory for a list of prize:amount pairs")
+    parser.add_argument("--forceall", help="Force at least one of each prize to be displayed. Testing purposes only.")
     parser.add_argument(
         "--prizes",
         nargs="+",
@@ -134,5 +161,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Dictionary comprehension to split the prize list up
-    items = {k: int(v) for k, v in (x.split(":") for x in args.prizes)}
+    if args.forceall:
+        items = {k: 1 for k in prizes}
+    else:
+        items = {k: int(v) for k, v in (x.split(":") for x in args.prizes)}
     renderInventory(items)
