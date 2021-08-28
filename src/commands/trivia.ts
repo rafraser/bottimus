@@ -127,7 +127,7 @@ export default {
 
       // Increment stat points
       incrementStatScore(client, id, data.category, c)
-      incrementArcadeCredits(id, 1 + (c * 4))
+      incrementArcadeCredits(id, 5 + (c * 10))
     })
 
     // Message if there is any winners

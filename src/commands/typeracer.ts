@@ -99,11 +99,11 @@ async function startTypeRacer (client: Client, message: Message, display: Messag
       const wpm = Math.floor((letters / 5) * (60 / duration))
 
       // Award credits based on WPM
-      let credits = 20 + Math.ceil(wpm / 2)
+      let credits = 20 + Math.ceil(wpm / 2.5)
       if (credits <= 25) {
         credits = 25
-      } else if (credits >= 75) {
-        credits = 75
+      } else if (credits >= 50) {
+        credits = 50
       }
       incrementArcadeCredits(result[0], credits)
 

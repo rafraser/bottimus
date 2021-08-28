@@ -162,7 +162,6 @@ export default {
       }
 
       // Increment stats data for all players
-      // TODO
       playerGuesses.forEach((guesses, key) => {
         const correct = playerCorrect.get(key) || 0
         const revealed = playerRevealed.get(key) || 0
@@ -170,7 +169,7 @@ export default {
         const won = (reason === 'win') ? 1 : 0
 
         incrementStatScore(client, key, guesses, correct, revealed, won, contribution)
-        incrementArcadeCredits(key, 3 + revealed + (won * 5))
+        incrementArcadeCredits(key, ((revealed + 1) * 5) + (won * 5))
       })
     })
   }
