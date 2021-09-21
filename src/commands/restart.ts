@@ -1,5 +1,4 @@
 import { Client, Message } from '../command'
-import { saveMessageCounts } from '../updaters/message_counts'
 
 export default {
   name: 'restart',
@@ -15,9 +14,6 @@ export default {
 
     // Restart the bot after a brief delay
     message.channel.send('Goodbye!')
-
-    // Save message counts to database
-    saveMessageCounts(client)
 
     // Give the bot about 30 seconds, but put the bot into a 'shutdown' mode first
     client.restarting = true
