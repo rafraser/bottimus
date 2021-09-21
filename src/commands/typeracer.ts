@@ -53,12 +53,12 @@ async function startTypeRacer (client: Client, message: Message, display: Messag
 
   await client.executePython('typeracer', [list.join(' ')])
   const attachment = new MessageAttachment('./img/typeracer.png')
-  await message.channel.send(attachment)
+  await message.channel.send({ files: [attachment] })
 
   const startTime = Date.now()
   const winners = new Map()
 
-  const collector = message.channel.createMessageCollector(m => !m.member.user.bot, { time: 60000 })
+  const collector = message.channel.createMessageCollector({ filter: m => !m.member.user.bot, time: 60000 })
   collector.on('collect', m => {
     // Check the message and see if it's a valid race response
     // Skip message if already won

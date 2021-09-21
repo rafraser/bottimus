@@ -6,7 +6,7 @@ function openPrizeBall (msg: Message, client: Client, key: string, prize: string
   const args = ['prizes/' + key, '--color', rarity, '--toptext', rarity + ' Prize!', '--bottomtext', prize]
   client.executePython('prizeball', args).then(() => {
     const attachment = new MessageAttachment('./img/prizeball.gif')
-    msg.channel.send(attachment)
+    msg.channel.send({ files: [attachment] })
   })
 }
 
@@ -44,7 +44,7 @@ export default {
       return user.id === message.member.id && reaction.emoji.name === '✅'
     }
 
-    const collector = msg.createReactionCollector(filter, { time: 15000 })
+    const collector = msg.createReactionCollector({ filter, time: 15000 })
     collector.on('collect', () => {
       // Confirmation received!
       collector.stop()

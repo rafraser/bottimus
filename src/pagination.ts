@@ -9,7 +9,7 @@ export async function sendPaginatedEmbed (
 ) {
   let currentPage = 0
   const creatorId = message.member.id
-  const embedMessage = await message.channel.send(pages[currentPage])
+  const embedMessage = await message.channel.send({ embeds: [pages[currentPage]] })
   if (pages.length <= 1) {
     // No need for fancy pagination with only one page
     return
@@ -18,12 +18,13 @@ export async function sendPaginatedEmbed (
   // Add page buttons & setup reaction listeners
   await embedMessage.react(pageEmojis[0])
   await embedMessage.react(pageEmojis[1])
-  const reactionCollector = embedMessage.createReactionCollector(
-    (reaction, user) => {
-      console.log(user.id, creatorId)
+
+  const reactionCollector = embedMessage.createReactionCollector({
+    filter: (reaction, user) => {
       return pageEmojis.includes(reaction.emoji.name) && !user.bot && (allowOthers || user.id === creatorId)
-    }, { time: time }
-  )
+    },
+    time
+  })
 
   // Handle reaction clicks
   reactionCollector.on('collect', async (reaction: MessageReaction, user: User) => {
@@ -42,7 +43,7 @@ export async function sendPaginatedEmbed (
         break
     }
 
-    await embedMessage.edit(pages[currentPage])
+    await embedMessage.edit({ embeds: [pages[currentPage]] })
   })
 
   // Remove page buttons when the time is up
@@ -63,24 +64,25 @@ export async function sendTabbedEmbed (
 ) {
   const pageEmojis = Object.keys(pages)
   const creatorId = message.member.id
-  const embedMessage = await message.channel.send(pages[pageEmojis[0]])
+  const embedMessage = await message.channel.send({ embeds: [pages[pageEmojis[0]]] })
 
   // Add page buttons & setup reaction listeners
   for (const emoji of pageEmojis) {
     await embedMessage.react(emoji)
   }
-  const reactionCollector = embedMessage.createReactionCollector(
-    (reaction, user) => {
+  const reactionCollector = embedMessage.createReactionCollector({
+    filter: (reaction, user) => {
       return pageEmojis.includes(reaction.emoji.name) && !user.bot && (allowOthers || user.id === creatorId)
-    }, { time: time }
-  )
+    },
+    time
+  })
 
   // Handle reaction clicks
   reactionCollector.on('collect', async (reaction: MessageReaction, user: User) => {
     await reaction.users.remove(user)
 
     if (pages[reaction.emoji.name]) {
-      await embedMessage.edit(pages[reaction.emoji.name])
+      await embedMessage.edit({ embeds: [pages[reaction.emoji.name]] })
     }
   })
 
@@ -103,17 +105,18 @@ export async function sendLazyTabbedEmbed (
   const pageEmojis = Object.keys(pages)
   const creatorId = message.member.id
   const initialContent = await pages[pageEmojis[0]]
-  const embedMessage = await message.channel.send(initialContent)
+  const embedMessage = await message.channel.send({ embeds: [initialContent] })
 
   // Add page buttons & setup reaction listeners
   for (const emoji of pageEmojis) {
     await embedMessage.react(emoji)
   }
-  const reactionCollector = embedMessage.createReactionCollector(
-    (reaction, user) => {
+  const reactionCollector = embedMessage.createReactionCollector({
+    filter: (reaction, user) => {
       return pageEmojis.includes(reaction.emoji.name) && !user.bot && (allowOthers || user.id === creatorId)
-    }, { time: time }
-  )
+    },
+    time
+  })
 
   // Handle reaction clicks
   reactionCollector.on('collect', async (reaction: MessageReaction, user: User) => {
@@ -121,7 +124,7 @@ export async function sendLazyTabbedEmbed (
 
     if (pages[reaction.emoji.name]) {
       const messageContent = await pages[reaction.emoji.name]
-      await embedMessage.edit(messageContent)
+      await embedMessage.edit({ embeds: [messageContent] })
     }
   })
 

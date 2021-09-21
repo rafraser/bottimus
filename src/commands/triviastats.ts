@@ -41,21 +41,20 @@ export default {
         .addField('Percentage', `${Math.floor((totalCorrect / totalGuesses) * 100) || 0}%`, true)
 
       // Wait until the first message is sent
-      message.channel.send(embed).then(() => {
-        // Generate a fancy breakdown of the trivia categories
-        // This uses code formatting for extra coolness
-        if (!results || results.length < 1) return
+      await message.channel.send({ embeds: [embed] })
 
-        let codestring = '```python\n\n'
-        for (const result of results) {
-          const qstring = (result.correct + '/' + result.attempted).padStart(8, ' ')
-          const pcstring = ' (' + Math.floor(result.percent * 100) + '%)'
-          const category = padOrTrim(result.category, 35)
-          codestring += category + qstring + pcstring + '\n'
-        }
-        codestring += '```'
-        message.channel.send(codestring)
-      })
+      // Generate a fancy breakdown of the trivia categories
+      // This uses code formatting for extra coolness
+      if (!results || results.length < 1) return
+      let codestring = '```python\n\n'
+      for (const result of results) {
+        const qstring = (result.correct + '/' + result.attempted).padStart(8, ' ')
+        const pcstring = ' (' + Math.floor(result.percent * 100) + '%)'
+        const category = padOrTrim(result.category, 35)
+        codestring += category + qstring + pcstring + '\n'
+      }
+      codestring += '```'
+      message.channel.send(codestring)
     } catch (e) {
       message.channel.send(e.message)
     }

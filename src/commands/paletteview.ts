@@ -10,7 +10,8 @@ export default {
     if (args.length === 1) {
       try {
         const result = await client.executePython('paletteview', [args[0]])
-        message.channel.send(new MessageAttachment(result))
+        const attachment = new MessageAttachment(result)
+        message.channel.send({ files: [attachment] })
       } catch (error) {
         await message.channel.send(`Something went wrong: ${error}`)
       }

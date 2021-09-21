@@ -105,7 +105,7 @@ export class Event {
         .addField('Scheduled by:', this.scheduler, true)
         .addField('Time:', formattedTime, true)
       if (this.cancelled) {
-        embed.addField('CANCELLED', false)
+        embed.addField('CANCELLED', '', false)
       } else if (!this.completed) {
         const timeLeft = timeToString(this.time.toMillis() - Date.now(), 2)
         embed.addField('Starting in:', timeLeft, false)

@@ -80,7 +80,7 @@ export default {
           .setColor('#ff9f43')
           .setTitle('🎟️ ' + target.displayName + ' has a ticket 🎟️')
           .setDescription('It is valid for the next ' + timeToString(duration * 60 * 1000))
-        message.channel.send(embed)
+        message.channel.send({ embeds: [embed] })
       }
     } catch (e) {
       message.channel.send(e.message)

@@ -79,7 +79,7 @@ function generateScratchCard (client: Client, msg: Message, user: GuildMember) {
     .setTitle('Scratch Card')
     .setColor('#ff9f43')
     .setDescription(message)
-  msg.edit(embed)
+  msg.edit({ embeds: [embed] })
 
   // Payout
   incrementArcadeCredits(user.id, amount)
@@ -115,7 +115,7 @@ export default {
       return user.id === message.member.id && reaction.emoji.name === '✅'
     }
 
-    const collector = confirmMsg.createReactionCollector(filter, { time: 25000 })
+    const collector = confirmMsg.createReactionCollector({ filter, time: 25000 })
     collector.on('collect', () => {
       // Confirmation received!
       collector.stop()

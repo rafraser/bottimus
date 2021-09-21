@@ -17,7 +17,7 @@ function generateMiningEmbed (msg: Message, name: string, amount: number, over: 
   } else {
     embed.setDescription('Click the pickaxe to mine!\n' + '💎'.repeat(amount))
   }
-  msg.edit(embed)
+  msg.edit({ embeds: [embed] })
 }
 
 export default {
@@ -41,7 +41,7 @@ export default {
 
     // Start watching for pickaxe clicking
     msg.react('⛏')
-    const collector = msg.createReactionCollector(filter, { time: 30000 })
+    const collector = msg.createReactionCollector({ filter, time: 30000 })
     collector.on('collect', async reaction => {
       collecting = false
       await reaction.users.remove(member)

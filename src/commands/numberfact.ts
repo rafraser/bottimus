@@ -33,7 +33,7 @@ export default {
     const embed = new MessageEmbed()
       .setColor('#9c88ff')
       .setDescription(fact)
-    message.channel.send(embed)
+    message.channel.send({ embeds: [embed] })
 
     client.updateCooldown(this, message.member.id)
   }

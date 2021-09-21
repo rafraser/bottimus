@@ -25,13 +25,13 @@ export default {
 
     const timezones = getTimezones(client.serverSettings, message.guild.id)
     const embed = eventUnapproved.generateEventEmbed(timezones)
-    const msg = await message.channel.send('Do you want to approve this event?', embed)
+    const msg = await message.channel.send({ content: 'Do you want to approve this event?', embeds: [embed] })
 
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && (reaction.emoji.name === '✅' || reaction.emoji.name === '❎')
     }
 
-    const collector = msg.createReactionCollector(filter, { time: 25000 })
+    const collector = msg.createReactionCollector({ filter, time: 25000 })
     collector.on('collect', async r => {
       collector.stop()
       if (r.emoji.name === '❎') {

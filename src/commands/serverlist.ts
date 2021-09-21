@@ -4,7 +4,7 @@ import { queryHelper } from '../database'
 import { padOrTrim } from '../utils'
 
 async function getServerData (client: Client, guild: Guild): Promise<[string, string]> {
-  const id = guild.ownerID
+  const id = guild.ownerId
   let owner = (await queryHelper('SELECT tag FROM bottimus_userdata WHERE discordid = ?', [id]))[0]
   if (owner) {
     owner = owner.tag

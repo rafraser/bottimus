@@ -19,7 +19,7 @@ export default {
     }
 
     // Bulk delete has a limit of 100
-    if (message.channel.type === 'text') {
+    if (message.channel.type === 'GUILD_TEXT') {
       message.channel.bulkDelete(num)
     }
   }

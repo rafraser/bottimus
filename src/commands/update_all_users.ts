@@ -27,7 +27,7 @@ export default {
           break
         }
 
-        const user = await client.users.fetch(arg, false)
+        const user = await client.users.fetch(arg)
         updateUserData(user)
       }
 
@@ -49,7 +49,7 @@ export default {
     }
 
     for (const result of results) {
-      const user = await client.users.fetch(result.userid, false)
+      const user = await client.users.fetch(result.userid)
       updateUserData(user)
     }
     message.channel.send(`Updated ${results.length} users.`)

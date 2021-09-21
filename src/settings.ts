@@ -91,12 +91,6 @@ export function getAdminChannel (settings: Map<string, ServerSettings>, id: stri
   return server.channels.admin
 }
 
-export function getJunkyardChannel (settings: Map<string, ServerSettings>, id: string) {
-  const server = settings.get(id)
-  if (!server || !server.channels) return
-  return server.channels.junkyard
-}
-
 export function getTimezones (settings: Map<string, ServerSettings>, id: string) : string[] {
   const server = settings.get(id)
   if (!server || !server.timezone) return

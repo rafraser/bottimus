@@ -36,13 +36,13 @@ export default {
 
     const timezones = getTimezones(client.serverSettings, message.guild.id)
     const embed = upcomingEvent.generateEventEmbed(timezones)
-    const msg = await message.channel.send('Are you sure you want to force this event?', embed)
+    const msg = await message.channel.send({ content: 'Are you sure you want to force this event?', embeds: [embed] })
 
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && (reaction.emoji.name === '✅')
     }
 
-    const collector = msg.createReactionCollector(filter, { time: 25000 })
+    const collector = msg.createReactionCollector({ filter, time: 25000 })
     collector.on('collect', async r => {
       collector.stop()
       upcomingEvent.forceEvent()
