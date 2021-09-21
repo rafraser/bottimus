@@ -11,18 +11,18 @@ test('test random generator stays within range', () => {
   expect(result).toBeLessThanOrEqual(100)
 })
 
-test('8ball sends an image back', () => {
+test('8ball sends an image back', async () => {
   const msg = new MockMessage()
   const client = new MockClient()
-  command.execute(client as any, msg as any, [])
+  await command.execute(client as any, msg as any, [])
   expect(msg.channel.messages).toHaveLength(1)
   expect(msg.channel.messages[0]).toHaveProperty('content.attachment')
 })
 
-test('8ball updates cooldown', () => {
+test('8ball updates cooldown', async () => {
   const msg = new MockMessage()
   const client = new MockClient()
-  command.execute(client as any, msg as any, [])
+  await command.execute(client as any, msg as any, [])
   expect(client.cooldowns.keys()).toContain(command.name)
   expect(client.cooldowns.get(command.name).keys()).toContain(msg.member.id)
 })
