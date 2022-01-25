@@ -33,7 +33,7 @@ async function incrementStatScore (client: Client, userid: string, category: str
 
 async function getQuestionData (category: number) {
   const resp = await fetch(`https://opentdb.com/api.php?amount=1&category=${category}&type=multiple`)
-  const json = await resp.json()
+  const json = await resp.json() as any
   const info = json.results[0]
 
   const data = {} as any

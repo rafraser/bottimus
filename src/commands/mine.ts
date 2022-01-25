@@ -1,6 +1,6 @@
 import { Client, Message } from '../command'
 import { MessageEmbed, User, MessageReaction } from 'discord.js'
-import { incrementArcadeCredits } from '../arcade'
+import { incrementArcadeCredits, unlockArcadePrize } from '../arcade'
 import { queryHelper } from '../database'
 
 function incrementStatScore (userid: string, amount: number) {
@@ -18,6 +18,24 @@ function generateMiningEmbed (msg: Message, name: string, amount: number, over: 
     embed.setDescription('Click the pickaxe to mine!\n' + '💎'.repeat(amount))
   }
   msg.edit({ embeds: [embed] })
+}
+
+export function miningPrizeCheck (pickaxeUnlocked: boolean) {
+  // If the pickaxe is unlocked, ores will drop more frequently
+  let r = Math.random()
+  if (pickaxeUnlocked) {
+    r += 0.15
+  };
+
+  if (r > 0.95) {
+    return ['oregreen', 'Uranium Ore']
+  } else if (r > 0.90) {
+    return ['oregold', 'Gold Ore']
+  } else if (r > 0.825) {
+    return ['oresilver', 'Silver Ore']
+  } else {
+    return null
+  }
 }
 
 export default {
@@ -60,6 +78,14 @@ export default {
       const coin = client.getCoinEmoji()
       generateMiningEmbed(msg, member.displayName, amount, true)
       msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${amount * 2} coins earned`)
+
+      // Rare chance of additional prizes
+      const prize = miningPrizeCheck(false)
+      if (prize && amount >= 5) {
+        const [prizeUnlock, prizeName] = prize
+        unlockArcadePrize(member.id, prizeUnlock)
+        msg.channel.send(`You found a rare **${prizeName}** during this expedition! It has been added to your inventory.`)
+      }
 
       // Send results to the database
       incrementArcadeCredits(member.id, amount * 2)
