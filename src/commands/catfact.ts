@@ -9,7 +9,7 @@ export default {
 
   async execute (client: Client, message: Message, args: string[]) {
     const data = await fetch('https://catfact.ninja/fact')
-    const json = await data.json()
+    const json = await data.json() as any
     const fact = json.fact
 
     const embed = new MessageEmbed()
