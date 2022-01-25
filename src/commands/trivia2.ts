@@ -83,8 +83,8 @@ function buildTriviaEmbed (question: Question, guesses: Map<GuessMember, number>
     .setColor('#4cd137')
     .setTitle(question.category)
     .setDescription(question.question)
-    .setFooter('Difficulty: ' + question.difficulty)
-  const row = new MessageActionRow().addComponents(buildButtons(question, active))
+    .setFooter({ text: 'Difficulty: ' + question.difficulty })
+  const row = new MessageActionRow().addComponents(buildButtons(question, active, question.correct))
 
   if (active) {
     const participants = [...guesses.keys()].map(memberName)
@@ -105,12 +105,12 @@ function buildTriviaEmbed (question: Question, guesses: Map<GuessMember, number>
  * @param question
  * @returns
  */
-function buildButtons (question: Question, active: boolean) {
+function buildButtons (question: Question, active: boolean, correct: number) {
   return question.answers.map((value, idx) => {
     return new MessageButton()
       .setCustomId(idx.toString())
       .setLabel(value)
-      .setStyle('PRIMARY')
+      .setStyle(idx === correct && !active ? 'SUCCESS' : 'PRIMARY')
       .setDisabled(!active)
   })
 }
