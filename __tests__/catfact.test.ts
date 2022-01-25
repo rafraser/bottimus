@@ -1,10 +1,9 @@
 import command from '../src/commands/catfact'
 import { MockClient, MockMessage } from '../__mocks__'
 import fetch from 'node-fetch'
-import { mocked } from 'ts-jest/utils'
 
 jest.mock('node-fetch')
-mocked(fetch).mockImplementation((): Promise<any> => {
+jest.mocked(fetch).mockImplementation((): Promise<any> => {
   return Promise.resolve({
     json () {
       return Promise.resolve({ fact: 'Cats have four legs.' })
