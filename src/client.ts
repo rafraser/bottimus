@@ -33,8 +33,7 @@ export default class BottimusClient extends Client {
     public typeracerSessions: Map<string, boolean> = new Map()
     public hangmanSessions: Map<string, boolean> = new Map()
 
-    // eslint-disable-next-line no-undef
-    private updateInterval: NodeJS.Timeout
+    private updateInterval: number
 
     // Python path (from .env)
     private pythonPath: string

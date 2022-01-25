@@ -6,6 +6,9 @@
         "type": "git",
         "url": "git+https://github.com/rafraser/bottimus.git"
     },
+    "engines": {
+        "node": ">=16.9.0"
+    },
     "dependencies": {
         "discord.js": "^13.6.0",
         "dotenv": "^8.2.0",
