@@ -20,7 +20,7 @@ function generateMiningEmbed (msg: Message, name: string, amount: number, over: 
   msg.edit(embed)
 }
 
-function miningPrizeCheck (pickaxeUnlocked: false) {
+export function miningPrizeCheck (pickaxeUnlocked: boolean) {
   // If the pickaxe is unlocked, ores will drop more frequently
   let r = Math.random()
   if (pickaxeUnlocked) {
