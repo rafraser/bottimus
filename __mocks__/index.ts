@@ -1,4 +1,4 @@
-import { APIMessageContentResolvable, Message, MessageOptions, MessageAdditions, SnowflakeUtil } from 'discord.js'
+import { MessagePayload, Message, MessageOptions, SnowflakeUtil } from 'discord.js'
 import { Command } from '../src/command'
 import BottimusClient from '../src/client'
 
@@ -28,10 +28,10 @@ export class MockMember {
 }
 
 export class MockChannel {
-  public messages : {content: APIMessageContentResolvable, options: MessageOptions|MessageAdditions}[] = []
+  public messages : (string | MessagePayload | MessageOptions)[] = []
 
-  public send (content: APIMessageContentResolvable, options: MessageOptions|MessageAdditions) {
-    this.messages.push({ content: content, options: options })
+  public send (options: string | MessagePayload | MessageOptions) {
+    this.messages.push(options)
   }
 
   public getMessages () {
