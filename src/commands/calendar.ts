@@ -25,7 +25,7 @@ export default {
     await client.executePython('calendar_display', events2)
 
     const attachment = new MessageAttachment('./img/calendar.png')
-    message.channel.send(attachment)
+    message.channel.send({ files: [attachment] })
     client.updateCooldown(this, message.member.id)
   }
 }

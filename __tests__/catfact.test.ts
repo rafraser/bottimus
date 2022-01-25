@@ -16,8 +16,7 @@ test('catfact sends an embed back', async () => {
   const client = new MockClient()
   await command.execute(client as any, msg as any, [])
   expect(msg.channel.messages).toHaveLength(1)
-  expect(msg.channel.messages[0]).toHaveProperty('content.type', 'rich')
-  expect(msg.channel.messages[0]).toHaveProperty('content.description', 'Cats have four legs.')
+  expect(msg.channel.messages[0]).toHaveProperty('embeds[0].description', 'Cats have four legs.')
 })
 
 test('catfact updates cooldown', async () => {

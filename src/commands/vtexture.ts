@@ -68,13 +68,12 @@ export default {
         pythonArgs.push('--name')
         pythonArgs.push(args[2])
       }
-      console.log(pythonArgs)
-
       await message.channel.send('Processing textures...')
 
       try {
         const result = await client.executePython('vtexture', pythonArgs, true)
-        message.channel.send(new MessageAttachment(result))
+        const attachment = new MessageAttachment(result)
+        await message.channel.send({ files: [attachment] })
       } catch (error) {
         await message.channel.send(`Something went wrong: ${error}`)
       }

@@ -41,9 +41,9 @@ async function updateEventMessage (client: Client, eventChannel: TextChannel, ev
     }
 
     event.completeEvent(event.attendees)
-    displayMessage.edit('', event.generateEventEmbed(timezones))
+    displayMessage.edit({ embeds: [event.generateEventEmbed(timezones)] })
   } else {
-    displayMessage.edit('', event.generateEventEmbed(timezones))
+    displayMessage.edit({ embeds: [event.generateEventEmbed(timezones)] })
 
     // Add a bell icon if one doesn't exist
     if (!displayMessage.reactions.cache.get('🔔')) {

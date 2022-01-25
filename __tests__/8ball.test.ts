@@ -16,7 +16,7 @@ test('8ball sends an image back', async () => {
   const client = new MockClient()
   await command.execute(client as any, msg as any, [])
   expect(msg.channel.messages).toHaveLength(1)
-  expect(msg.channel.messages[0]).toHaveProperty('content.attachment')
+  expect(msg.channel.messages[0]).toHaveProperty('files[0].attachment')
 })
 
 test('8ball updates cooldown', async () => {

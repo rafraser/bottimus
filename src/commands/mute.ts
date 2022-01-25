@@ -113,7 +113,7 @@ export default {
         .setColor('#c0392b')
         .setTitle('🦀 ' + target.displayName + ' is gone 🦀')
         .setDescription('They have been banished to the void for ' + timeToString(duration * 60 * 1000))
-      message.channel.send(embed)
+      message.channel.send({ embeds: [embed] })
     } catch (e) {
       message.channel.send(e.message)
     }

@@ -67,7 +67,7 @@ export async function requestRoles (choices: RoleGroup[], member: GuildMember, r
     // This is slightly messy I know
     // This basically turns both arrays we have into two arrays exclusively made of role IDs
     // This allows us to perform set operations on them later
-    const currentRoles = userRoles.array().filter(role => groupRoles.includes(role.id)).map(role => role.id)
+    const currentRoles = [...userRoles.values()].filter(role => groupRoles.includes(role.id)).map(role => role.id)
     const requestedRoles = roleArgs.filter(role => groupRoleNames.includes(role)).map(role => group.options[role])
     if (!requestedRoles || requestedRoles.length < 1) continue
 

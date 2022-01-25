@@ -21,9 +21,9 @@ function commandHelpEmbed (command: Command, message: Message) {
     .setDescription(command.description)
 }
 
-function privateMessageWithFallback (message: Message, content: string | MessageEmbed, display: boolean) {
-  message.author.send(content)
-    .catch(_ => message.channel.send(content))
+function privateMessageWithFallback (message: Message, content: MessageEmbed, display: boolean) {
+  message.author.send({ embeds: [content] })
+    .catch(_ => message.channel.send({ embeds: [content] }))
     .then(_ => { if (display) message.channel.send('Help has been sent to your DMs!') })
 }
 
@@ -45,7 +45,7 @@ export default {
       // Build and send a description embed
       const command = client.commands.get(cmd)
       const embed = commandHelpEmbed(command, message)
-      channel.send(embed)
+      channel.send({ embeds: [embed] })
       return
     }
 

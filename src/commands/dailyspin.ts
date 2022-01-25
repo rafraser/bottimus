@@ -63,7 +63,7 @@ export default {
     // Generate and send the wheel
     const data = await client.executePython('spinner', ['--prizes'].concat(pickWheel()))
     const attachment = new MessageAttachment('./img/spinner.gif')
-    await message.channel.send(attachment)
+    await message.channel.send({ files: [attachment] })
 
     // Announce the result after a short delay
     setTimeout(async () => {

@@ -13,7 +13,8 @@ export default {
   async execute (client: Client, message: Message, args: string[]) {
     // Pick one of the 20 8ball images at random and send it as a reply
     const result = getRandomInt(1, 20)
-    message.channel.send(new MessageAttachment('./img/8ball/' + result + '.png'))
+    const attachment = new MessageAttachment('./img/8ball/' + result + '.png')
+    message.channel.send({ files: [attachment] })
 
     client.updateCooldown(this, message.member.id)
   }

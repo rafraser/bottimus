@@ -76,8 +76,9 @@ export default {
     const playerCorrect = new Map()
     const playerRevealed = new Map()
 
-    const gameMsg = await message.channel.send('Type capital letters to guess!', generateEmbed(attempts, guesses, fails))
-    const collector = gameMsg.channel.createMessageCollector(hangmanFilter, { time: 60000 })
+    const embed = generateEmbed(attempts, guesses, fails)
+    const gameMsg = await message.channel.send({ content: 'Type capital letters to guess!', embeds: [embed] })
+    const collector = gameMsg.channel.createMessageCollector({ filter: hangmanFilter, time: 60000 })
     collector.on('collect', m => {
       // Check words for valid guesses
       const letter = m.content
@@ -85,7 +86,7 @@ export default {
 
       // Don't count guesses twice
       if (attempts.includes(letter)) {
-        gameMsg.channel.send(letter + ' has already been guessed!').then(msg => { msg.delete({ timeout: 1000, reason: 'Hangman cleanup' }) })
+        gameMsg.channel.send(letter + ' has already been guessed!').then(msg => setTimeout(() => msg.delete(), 1000))
         m.delete()
         return
       }
@@ -93,7 +94,7 @@ export default {
       attempts.push(letter)
       if (word.indexOf(letter) === -1) {
         // Incorrect guess, oh no :(
-        gameMsg.channel.send('Uh oh! ' + letter + ' is not in the word!').then(msg => { msg.delete({ timeout: 1000, reason: 'Hangman cleanup' }) })
+        gameMsg.channel.send('Uh oh! ' + letter + ' is not in the word!').then(msg => setTimeout(() => msg.delete(), 1000))
         fails++
 
         // Track guesses per user
@@ -104,7 +105,7 @@ export default {
         }
       } else {
         // Correct guess!
-        gameMsg.channel.send('Good guess! ' + letter + ' is in the word!').then(msg => { msg.delete({ timeout: 1000, reason: 'Hangman cleanup' }) })
+        gameMsg.channel.send('Good guess! ' + letter + ' is in the word!').then(msg => setTimeout(() => msg.delete(), 1000))
 
         // Reveal letters in the word
         let revealed = 0
@@ -135,7 +136,8 @@ export default {
       m.delete()
 
       // Update the embed
-      gameMsg.edit(generateEmbed(attempts, guesses, fails))
+      const embed = generateEmbed(attempts, guesses, fails)
+      gameMsg.edit({ embeds: [embed] })
 
       // End the game if the word is complete
       if (correct === word.length) {

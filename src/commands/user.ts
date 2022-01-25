@@ -54,9 +54,9 @@ export default {
       .setTitle(user.displayName)
       .setDescription(user.user.tag)
       .setThumbnail(user.user.avatarURL())
-      .setColor('4CD137')
+      .setColor('#4CD137')
       .addField('Ranking', '#' + (ranking + 1) + ' / ' + rankings.length, true)
       .addField('Join Date', date, true)
-    message.channel.send(embed)
+    message.channel.send({ embeds: [embed] })
   }
 }

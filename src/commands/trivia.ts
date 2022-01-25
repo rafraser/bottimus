@@ -88,19 +88,19 @@ export default {
       .addField('D', data.answers[3])
 
     // Send message and add the reactions
-    const msg = await message.channel.send(embed)
-    await msg.react('🇦')
-    await msg.react('🇧')
-    await msg.react('🇨')
-    await msg.react('🇩')
+    const msg = await message.channel.send({ embeds: [embed] })
+    msg.react('🇦')
+    msg.react('🇧')
+    msg.react('🇨')
+    msg.react('🇩')
 
     const filter = function (r: MessageReaction) {
       const n = r.emoji.name
       return (n === '🇦' || n === '🇧' || n === '🇨' || n === '🇩')
     }
+    const collected = await msg.awaitReactions({ filter, time: 15000 })
 
-    const collected = await msg.awaitReactions(filter, { time: 15000 })
-    message.channel.send('The correct answer is: ' + arrayOfLetters[data.correct])
+    await message.channel.send('The correct answer is: ' + arrayOfLetters[data.correct])
 
     // Sort out all the guesses, disqualifying anyone that guessed multiple times
     const guesses = new Map()
@@ -132,7 +132,7 @@ export default {
 
     // Message if there is any winners
     if (winners.length > 0) {
-      message.channel.send('Congratulations to: ' + winners.join(', '))
+      await message.channel.send('Congratulations to: ' + winners.join(', '))
     }
   }
 }

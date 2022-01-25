@@ -3,7 +3,7 @@ import { Command, loadCommands } from './command'
 import { Updater, loadUpdaters } from './updater'
 import { Welcome, loadWelcomes } from './welcome'
 import { loadPostloadScripts } from './postload'
-import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole, getJunkyardChannel } from './settings'
+import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole } from './settings'
 import { timeToString, writeFileAsync } from './utils'
 import { Event, loadEvents } from './events'
 
@@ -33,8 +33,7 @@ export default class BottimusClient extends Client {
     public typeracerSessions: Map<string, boolean> = new Map()
     public hangmanSessions: Map<string, boolean> = new Map()
 
-    // eslint-disable-next-line no-undef
-    private updateInterval: NodeJS.Timeout
+    private updateInterval: number
 
     // Python path (from .env)
     private pythonPath: string
@@ -206,30 +205,6 @@ export default class BottimusClient extends Client {
       }
     }
 
-    public async messageDeletion (message: Message) {
-      if (this.testingMode) return
-      if (message.member.user.bot) return
-
-      const mchannel = message.channel as TextChannel
-      if (mchannel.name === 'bottimus') return
-      if (mchannel.name === 'administration') return
-      if (mchannel.name === 'bottimus-test-track') return
-      if (message.content.startsWith('!say')) return
-
-      // Get the junkyard channel for this server
-      const channelId = getJunkyardChannel(this.serverSettings, message.guild.id)
-      if (!channelId) return
-      const channel = message.guild.channels.cache.get(channelId) as TextChannel
-
-      // Send with attachment if applicable
-      const attachment = message.attachments.first()
-      if (attachment) {
-        channel.send(`Deleted message by **${message.member.displayName}** in **#${mchannel.name}**:\n${message.cleanContent}`, { files: [attachment.proxyURL] })
-      } else {
-        channel.send(`Deleted message by **${message.member.displayName}** in **#${mchannel.name}**:\n${message.cleanContent}`)
-      }
-    }
-
     public async loadServerSettings () {
       const servers = await loadAllServerSettings()
       this.serverSettings = servers.reduce((curr, value) => {
@@ -241,7 +216,7 @@ export default class BottimusClient extends Client {
     }
 
     public isAdministrator (member: GuildMember): boolean {
-      if (member.hasPermission('ADMINISTRATOR')) return true
+      if (member.permissions.has('ADMINISTRATOR')) return true
 
       const adminRole = getAdminRole(this.serverSettings, member.guild.id)
       if (!adminRole) return false
@@ -384,9 +359,8 @@ export default class BottimusClient extends Client {
     }
 
     private registerEventHandlers () {
-      this.on('message', this.commandParser)
+      this.on('messageCreate', this.commandParser)
       this.on('guildMemberAdd', this.welcomeGreeter)
-      this.on('messageDelete', this.messageDeletion)
 
       this.updateInterval = setInterval(_ => { this.runUpdaters() }, 60 * 1000)
     }

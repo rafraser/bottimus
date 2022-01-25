@@ -123,13 +123,13 @@ export default {
     const embed = event.generateEventEmbed(timezones)
 
     // Check if the event is correct before officially posting for approval
-    const msg = await message.channel.send('Is this correct?', embed)
+    const msg = await message.channel.send({ content: 'Is this correct?', embeds: [embed] })
     await msg.react('✅')
     const filter = (reaction: MessageReaction, user: User) => {
       return user.id === message.member.id && reaction.emoji.name === '✅'
     }
 
-    const collector = msg.createReactionCollector(filter, { time: 25000 })
+    const collector = msg.createReactionCollector({ filter, time: 25000 })
     collector.on('collect', async () => {
       collector.stop()
 

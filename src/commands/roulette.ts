@@ -30,8 +30,9 @@ betFunctions.red = function (result) {
 async function spinRoulette (client: Client, message: Message, betType: string | number, betAmount: number) {
   const coin = client.getCoinEmoji()
   const result = parseInt(await client.executePython('roulette', []))
+  const attachment = new MessageAttachment('./img/roulette.gif')
 
-  message.channel.send(new MessageAttachment('./img/roulette.gif'))
+  message.channel.send({ files: [attachment] })
   setTimeout(() => {
     message.channel.send(`The wheel came up: **${result}**`)
     if (typeof betType === 'string') {
@@ -109,7 +110,7 @@ module.exports = {
       return user.id === message.member.id && reaction.emoji.name === '✅'
     }
 
-    const collector = confirmMsg.createReactionCollector(filter, { time: 35000 })
+    const collector = confirmMsg.createReactionCollector({ filter, time: 35000 })
     collector.on('collect', () => {
       // Confirmation received!
       collector.stop()

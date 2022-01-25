@@ -20,7 +20,7 @@ export default {
 
       await client.executePython('inventory', pythonArgs)
       const attachment = new MessageAttachment('./img/inventory.png')
-      message.channel.send(attachment)
+      message.channel.send({ files: [attachment] })
 
       client.updateCooldown(this, message.member.id)
     } catch (e) {
