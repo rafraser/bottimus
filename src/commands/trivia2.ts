@@ -172,7 +172,6 @@ export default {
     const collector = gameMsg.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 })
     collector.on('collect', async (i) => {
       const guess = parseInt(i.customId)
-      console.log(i.customId, guess)
       if (isNaN(guess)) return
 
       guesses.set(i.member, guess)
