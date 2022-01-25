@@ -111,15 +111,14 @@ export async function unlockArcadePrize (userid: string, prize: string) {
   return queryHelper(queryString, [userid, prize])
 }
 
-export async function getArcadePrizes (userid: string): Promise<Prize[]> {
+export async function getArcadePrizes (userid: string): Promise<Record<string, number>> {
   const queryString = 'SELECT * FROM arcade_prizes WHERE discordid = ?;'
   const results = await queryHelper(queryString, [userid])
-  const prizes = {} as any
+  const prizes : Record<string, number> = {}
   for (let i = 0; i < results.length; i++) {
     const name = results[i].prize
     const amount = results[i].amount
     prizes[name] = amount
   }
-
   return prizes
 }

@@ -13,7 +13,7 @@ export default {
     const prizes = await getArcadePrizes(user.id)
 
     // Guard for empty inventories
-    if (prizes.length < 1) {
+    if (Object.keys(prizes).length < 1) {
       message.channel.send(`${user.displayName} has collected no prizes!`)
       return
     }
