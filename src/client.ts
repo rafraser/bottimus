@@ -6,6 +6,7 @@ import { loadPostloadScripts } from './postload'
 import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole } from './settings'
 import { timeToString, writeFileAsync } from './utils'
 import { Event, loadEvents } from './events'
+import { incrementMessagesSeen, incrementCommandsProcessed } from './metrics'
 
 import fs from 'fs'
 import { spawn } from 'child_process'
@@ -101,6 +102,9 @@ export default class BottimusClient extends Client {
       if (message instanceof DMChannel) return
       const channel = message.channel as TextChannel
 
+      // Metrics: message counter
+      incrementMessagesSeen()
+
       // Check if the command is valid
       let isBottimusCommand = false
       let args
@@ -138,6 +142,7 @@ export default class BottimusClient extends Client {
       // This has some rudimentary error handling that probably never works
       // UnhandledPromiseRejections (most Discord API errors) are handled in a listener in bottimus.ts
       try {
+        incrementCommandsProcessed(command.name)
         command.execute(this, message, args)
       } catch (err) {
         message.channel.send(err.message)

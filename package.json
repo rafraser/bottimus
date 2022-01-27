@@ -15,7 +15,8 @@
         "html-entities": "^1.2.1",
         "luxon": "^1.25.0",
         "mysql": "^2.16.0",
-        "node-fetch": "^2.6.7"
+        "node-fetch": "^2.6.7",
+        "prom-client": "^14.0.1"
     },
     "scripts": {
         "build": "tsc",
