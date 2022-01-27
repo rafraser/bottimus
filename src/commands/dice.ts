@@ -73,7 +73,7 @@ export default {
         message.channel.send(`**${roll[0]}**`)
       } else {
         // Report makeup + total
-        message.channel.send(`${roll.map(x => `**${x}**`).join(', ')} \n =***${total}`)
+        message.channel.send(`${roll.map(x => `**${x}**`).join(', ')} \n =**${total}**`)
       }
     } else {
       // Report totals only
