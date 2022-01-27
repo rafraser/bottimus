@@ -15,3 +15,7 @@ const client = new BottimusClient((env === 'development'), (process.env.PYTHON_P
 })
 
 client.login(process.env.DISCORD)
+
+process.on('unhandledRejection', error => {
+  console.error('Unhandled promise rejection:', error)
+})

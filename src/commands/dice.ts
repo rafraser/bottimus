@@ -65,20 +65,20 @@ export default {
     const rolls = args.map(parseAndRoll).filter(x => !!x)
     if (rolls.length === 0) {
       // No valid dice
-      message.channel.send('Enter valid dice!')
+      await message.channel.send('Enter valid dice!')
     } else if (rolls.length === 1) {
       const [roll, total] = rolls[0]
       if (roll.length === 1) {
         // Only a single dice was rolled
-        message.channel.send(`**${roll[0]}**`)
+        await message.channel.send(`**${roll[0]}**`)
       } else {
         // Report makeup + total
-        message.channel.send(`${roll.map(x => `**${x}**`).join(', ')} \n =**${total}**`)
+        await message.channel.send(`${roll.map(x => `${x}`).join(', ')} \n= **${total}**`)
       }
     } else {
       // Report totals only
       const totals = rolls.map(x => x[1])
-      message.channel.send(`${totals.map(x => `**${x}**`).join('  |  ')}`)
+      await message.channel.send(`${totals.map(x => `**${x}**`).join('  |  ')}`)
     }
   }
 }

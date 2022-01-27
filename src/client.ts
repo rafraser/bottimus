@@ -90,11 +90,6 @@ export default class BottimusClient extends Client {
       // Do not handle messages by bots
       if (message.author.bot) return
 
-      // Count messages in Fluffy Servers
-      if (!this.testingMode && message.guild.id === BottimusClient.primaryGuild) {
-        this.countMessage(message.member)
-      }
-
       // Do not handle messages if the bot is about to restart
       if (this.restarting) return
 
@@ -139,25 +134,14 @@ export default class BottimusClient extends Client {
         return
       }
 
-      // Execute the command!
-      // This includes some terrible error handling!
+      // Everything else looks good - execute the command
+      // This has some rudimentary error handling that probably never works
+      // UnhandledPromiseRejections (most Discord API errors) are handled in a listener in bottimus.ts
       try {
         command.execute(this, message, args)
       } catch (err) {
         message.channel.send(err.message)
       }
-    }
-
-    public countMessage (member: GuildMember) {
-      const guild = member.guild.id
-      let guildCounts = this.messageCounts.get(guild)
-      if (!guildCounts) {
-        guildCounts = new Map()
-        this.messageCounts.set(guild, guildCounts)
-      }
-
-      const amount = guildCounts.get(member.id) || 0
-      guildCounts.set(member.id, amount + 1)
     }
 
     public checkCooldown (command: Command, user: string) {
