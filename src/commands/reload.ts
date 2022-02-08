@@ -1,11 +1,9 @@
 import { Client, Message, loadCommands } from '../command'
 import { loadUpdaters } from '../updater'
 import { loadWelcomes } from '../welcome'
-import { loadEvents } from '../events'
 
 const reloadModes = {
   settings: async (client) => client.loadServerSettings(),
-  events: async (client) => loadEvents(client),
   commands: async (client) => { client.commands = await loadCommands() },
   updaters: async (client) => { client.updaters = await loadUpdaters() },
   welcomers: async (client) => { client.welcomers = await loadWelcomes() }

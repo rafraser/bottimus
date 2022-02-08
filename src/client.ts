@@ -3,9 +3,8 @@ import { Command, loadCommands } from './command'
 import { Updater, loadUpdaters } from './updater'
 import { Welcome, loadWelcomes } from './welcome'
 import { loadPostloadScripts } from './postload'
-import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole, getEventRole } from './settings'
+import { ServerSettings, loadAllServerSettings, getAdminRole, getModeratorRole } from './settings'
 import { timeToString, writeFileAsync } from './utils'
-import { Event, loadEvents } from './events'
 import { incrementMessagesSeen, incrementCommandsProcessed } from './metrics'
 
 import fs from 'fs'
@@ -24,11 +23,7 @@ export default class BottimusClient extends Client {
 
     public cooldowns: Map<string, Map<string, number>> = new Map()
     public serverSettings: Map<string, ServerSettings> = new Map()
-
     public messageCounts: Map<string, Map<string, number>> = new Map()
-
-    public eventsData: Event[] = []
-    public guildsWithEvents: string[] = []
 
     // Command-specific data
     public typeracerSessions: Map<string, boolean> = new Map()
@@ -52,8 +47,6 @@ export default class BottimusClient extends Client {
           this.setupLogging()
           console.log(`Logged in as: ${this.user.tag}`)
           console.log(`Testing mode: ${this.testingMode}`)
-
-          loadEvents(this)
           loadPostloadScripts(this)
         })
       })
@@ -197,9 +190,6 @@ export default class BottimusClient extends Client {
     public async loadServerSettings () {
       const servers = await loadAllServerSettings()
       this.serverSettings = servers.reduce((curr, value) => {
-        if (value[1].channels && value[1].channels.event) {
-          this.guildsWithEvents.push(value[0])
-        }
         return curr.set(value[0], value[1])
       }, new Map())
     }
@@ -238,26 +228,6 @@ export default class BottimusClient extends Client {
         // Treat strings as a role suffix
         return member.roles.cache.some(role => {
           return role.name.endsWith(modRole)
-        })
-      }
-    }
-
-    public isEventRole (member: GuildMember): boolean {
-      if (this.isAdministrator(member)) return true
-      if (this.isModerator(member)) return true
-
-      const eventRole = getEventRole(this.serverSettings, member.guild.id)
-      if (!eventRole) return false
-      if (eventRole === 'everyone' || eventRole === 'none') return true
-
-      if (eventRole instanceof Array) {
-        return member.roles.cache.some(role => {
-          return eventRole.includes(role.id)
-        })
-      } else {
-        // Treat strings as a role suffix
-        return member.roles.cache.some(role => {
-          return role.name.endsWith(eventRole)
         })
       }
     }

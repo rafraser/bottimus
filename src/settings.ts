@@ -13,14 +13,12 @@ export type RoleGroup = {
 export type ServerRoles = {
     mod?: string | string[],
     admin?: string | string[],
-    event?: string | string[],
     muted?: string,
     ticket?: string,
     choices: RoleGroup[]
 }
 
 export type ServerChannels = {
-  event?: string,
   admin?: string,
   junkyard?: string
 }
@@ -48,12 +46,6 @@ export function getAdminRole (settings: Map<string, ServerSettings>, id: string)
   return server.roles.admin
 }
 
-export function getEventRole (settings: Map<string, ServerSettings>, id: string) {
-  const server = settings.get(id)
-  if (!server || !server.roles) return
-  return server.roles.event
-}
-
 export function getMutedRole (settings: Map<string, ServerSettings>, id: string) {
   const server = settings.get(id)
   if (!server || !server.roles) return
@@ -70,19 +62,6 @@ export function getChooseableRoles (settings: Map<string, ServerSettings>, id: s
   const server = settings.get(id)
   if (!server || !server.roles) return
   return server.roles.choices
-}
-
-export function getEventChannel (settings: Map<string, ServerSettings>, id: string) {
-  const server = settings.get(id)
-  if (!server || !server.channels) return
-  return server.channels.event
-}
-
-export function areEventsEnabled (settings: Map<string, ServerSettings>, id: string) {
-  const server = settings.get(id)
-  if (!server || !server.channels) return false
-  if (!server.channels.event) return false
-  return true
 }
 
 export function getAdminChannel (settings: Map<string, ServerSettings>, id: string) {
