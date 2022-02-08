@@ -1,5 +1,5 @@
 import { Client, Message } from '../command'
-import { MessageEmbed, User, MessageReaction } from 'discord.js'
+import { MessageActionRow, MessageEmbed, MessageButton } from 'discord.js'
 import { incrementArcadeCredits, unlockArcadePrize } from '../arcade'
 import { queryHelper } from '../database'
 
@@ -8,7 +8,7 @@ function incrementStatScore (userid: string, amount: number) {
   return queryHelper(queryString, [userid, amount])
 }
 
-function generateMiningEmbed (msg: Message, name: string, amount: number, over: boolean = false) {
+async function generateMiningEmbed (msg: Message, name: string, amount: number, over: boolean = false) {
   const embed = new MessageEmbed()
     .setTitle(name + '\'s Mining Expedition')
     .setColor('#5352ed')
@@ -17,7 +17,15 @@ function generateMiningEmbed (msg: Message, name: string, amount: number, over: 
   } else {
     embed.setDescription('Click the pickaxe to mine!\n' + '💎'.repeat(amount))
   }
-  msg.edit({ embeds: [embed] })
+
+  const row = new MessageActionRow().addComponents([
+    new MessageButton()
+      .setCustomId('mine')
+      .setLabel('⛏ Mine!')
+      .setStyle('PRIMARY')
+      .setDisabled(over)
+  ])
+  await msg.edit({ embeds: [embed], components: [row] })
 }
 
 export function miningPrizeCheck (pickaxeUnlocked: boolean) {
@@ -49,32 +57,19 @@ export default {
 
     const member = message.member
     let amount = 0
-    let collecting = true
-    let gameover = false
-    generateMiningEmbed(msg, member.displayName, amount)
-
-    const filter = (reaction: MessageReaction, u: User) => {
-      return u.id === message.member.id && reaction.emoji.name === '⛏' && collecting
-    }
+    await generateMiningEmbed(msg, member.displayName, amount)
 
     // Start watching for pickaxe clicking
-    msg.react('⛏')
-    const collector = msg.createReactionCollector({ filter, time: 30000 })
-    collector.on('collect', async reaction => {
-      collecting = false
-      await reaction.users.remove(member)
-      if (collecting || gameover) return
-
+    const collector = msg.createMessageComponentCollector({ componentType: 'BUTTON', time: 25000 })
+    collector.on('collect', async interaction => {
+      if (interaction.member !== member) return
       amount++
-      generateMiningEmbed(msg, member.displayName, amount)
-      collecting = true
+
+      await interaction.deferUpdate()
+      await generateMiningEmbed(msg, member.displayName, amount)
     })
 
     collector.on('end', _ => {
-      msg.reactions.removeAll()
-      gameover = true
-      collecting = false
-
       const coin = client.getCoinEmoji()
       generateMiningEmbed(msg, member.displayName, amount, true)
       msg.channel.send(`💎 ${amount} diamonds collected\n${coin} ${amount * 2} coins earned`)
