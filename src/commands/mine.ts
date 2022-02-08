@@ -21,7 +21,7 @@ async function generateMiningEmbed (msg: Message, name: string, amount: number, 
   const row = new MessageActionRow().addComponents([
     new MessageButton()
       .setCustomId('mine')
-      .setLabel('⛏ Mine!')
+      .setLabel('⛏️ Mine!')
       .setStyle('PRIMARY')
       .setDisabled(over)
   ])
