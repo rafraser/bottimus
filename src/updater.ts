@@ -1,5 +1,6 @@
 import Client from './client'
 import path from 'path'
+import fs from 'fs'
 import { readdirAsync } from './utils'
 
 export interface Updater {
@@ -12,8 +13,12 @@ export interface Updater {
 
 export async function loadUpdaters (): Promise<Updater[]> {
   const updaters = [] as Updater[]
+  const updaterDirectory = path.resolve(__dirname, 'updaters')
+  if (!fs.existsSync(updaterDirectory)) {
+    return
+  }
 
-  const files = await readdirAsync(path.resolve(__dirname, 'updaters'))
+  const files = await readdirAsync(updaterDirectory)
   files.forEach(async file => {
     const p = path.parse(file)
     if (p.ext === '.js') {
