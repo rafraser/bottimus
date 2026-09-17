@@ -84,18 +84,29 @@ class Block(PhysicsObject):
 
 class Peg(Circle):
     color = "#718093"
+    shadow_offset = 2
+    shadow_color = (0, 0, 0, 40)
 
     def __init__(self, x, y, size=16):
         super().__init__(x, y, size, True)
+
+    def draw(self, draw):
+        x, y = self.position.x, self.position.y
+        r = self.radius
+        o = self.shadow_offset
+        draw.ellipse((x - r + o, y - r + o, x + r + o, y + r + o), fill=self.shadow_color)
+        super().draw(draw)
 
 
 class Ball(Circle):
     color = "#ff4757"
     outline = "#f1f2f6"
 
-    def __init__(self, x, y, size=16, edge=512):
+    def __init__(self, x, y, size=16, edge=512, color=None):
         self.edge = edge
         super().__init__(x, y, size, False)
+        if color:
+            self.color = color
 
     def collision_check(self, other):
         if isinstance(other, Circle):
@@ -149,10 +160,11 @@ class Ball(Circle):
 
 
 class Scene(object):
-    def __init__(self, objects, gravity=Vector(0, 0)):
+    def __init__(self, objects, gravity=Vector(0, 0), ball_collisions=True):
         # Split into active & static objects
         # This greatly simplifies our calculations later on (static objects don't move etc.)
         self.gravity = gravity
+        self.ball_collisions = ball_collisions
         self.static_objects = []
         self.active_objects = []
         for obj in objects:
@@ -175,8 +187,9 @@ class Scene(object):
 
             # Check with all future active objects
             # If we check object 1->2, don't check 2->1 etc.
-            for active in self.active_objects[i + 1 :]:
-                obj.collision_check(active)
+            if self.ball_collisions:
+                for active in self.active_objects[i + 1 :]:
+                    obj.collision_check(active)
 
     def draw(self, draw):
         for obj in self.active_objects:
