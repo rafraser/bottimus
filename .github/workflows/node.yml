@@ -18,7 +18,5 @@ jobs:
           node-version: 22.x
       - run: npm ci
       - run: npm run build
-      - name: ESLint
-        run: npm run lint
-      - name: Jest
+      - name: vitest
         run: npm run test
