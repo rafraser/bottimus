@@ -7,7 +7,7 @@
         "url": "git+https://github.com/rafraser/bottimus.git"
     },
     "engines": {
-        "node": ">=16.9.0"
+        "node": ">=20.19.0"
     },
     "dependencies": {
         "discord.js": "^13.17.1",
