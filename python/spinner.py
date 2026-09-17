@@ -33,14 +33,16 @@ def render_prize(prizes, ang, i, font):
             image = Image.open("img/" + filename + ".png").convert("RGBA").resize((96, 96))
             canvas.paste(image, (96, math.floor((1024 - 96) / 2)), image)
 
-            tw, th = draw.textsize(prizes[i], font=font)
+            left, top, right, bottom = draw.textbbox((0, 0), prizes[i], font=font)
+            th = bottom - top
             draw.text((208, (1024 - th) / 2), text, font=font)
         else:
             # Draw large image
             image = Image.open("img/" + filename + ".png").convert("RGBA").resize((128, 128))
             canvas.paste(image, (160, math.floor((1024 - 96) / 2) - 4), image)
     else:
-        tw, th = draw.textsize(prizes[i], font=font)
+        left, top, right, bottom = draw.textbbox((0, 0), prizes[i], font=font)
+        th = bottom - top
         draw.text((112, (1024 - th) / 2), prizes[i], font=font)
 
     canvas = canvas.rotate(ang, center=(512, 512))

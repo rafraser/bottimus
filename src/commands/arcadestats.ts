@@ -50,6 +50,11 @@ function fetchRouletteStatistics (id: string): Promise<any[]> {
   return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS payout_average, ROUND(bet_total/number, 2) AS bet_average, bet_total FROM arcade_roulette WHERE discordid = ?;', [id])
 }
 
+// Retrieve Pachinko statistics for a given ID from the database
+function fetchPachinkoStatistics (id: string): Promise<any[]> {
+  return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS average FROM arcade_pachinko WHERE discordid = ?;', [id])
+}
+
 // Keep the embed functions in an object for modular lookup
 type embedFunction = Record<string, (user: GuildMember) => Promise<MessageEmbed>>
 const embedFunctions = {} as embedFunction
@@ -220,6 +225,28 @@ embedFunctions.roulette = async function (user: GuildMember): Promise<MessageEmb
   }
 }
 
+// Generate a nice embed for Pachinko information
+embedFunctions.pachinko = async function (user: GuildMember): Promise<MessageEmbed> {
+  const results = await fetchPachinkoStatistics(user.id)
+  const r = results[0]
+  const username = user.displayName
+
+  if (!r) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🎰 Pachinko - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`🎰 Pachinko - ${username}`)
+      .addField('Balls Played', `${r.number}`, true)
+      .addField('Total Winnings', `${r.winnings}`, true)
+      .addField('Profit', `${r.winnings - r.number * 250}`, true)
+      .addField('Average Income', `${r.average}`, true)
+  }
+}
+
 // Generate a nice embed for a help page
 embedFunctions.help = async function (user: GuildMember): Promise<MessageEmbed> {
   return new MessageEmbed()
@@ -228,6 +255,7 @@ embedFunctions.help = async function (user: GuildMember): Promise<MessageEmbed> 
     .setDescription('Select a tab to view statistics:')
     .addField('🚷', 'Hangman', true)
     .addField('⛏️', 'Mining', true)
+    .addField('🎰', 'Pachinko', true)
     .addField('🔮', 'Prizes', true)
     .addField('💰', 'Roulette', true)
     .addField('💸', 'Scratchcards', true)
@@ -248,6 +276,7 @@ export default {
       ℹ️: embedFunctions.help(user),
       '🚷': embedFunctions.hangman(user),
       '⛏️': embedFunctions.mining(user),
+      '🎰': embedFunctions.pachinko(user),
       '🔮': embedFunctions.prizes(user),
       '💰': embedFunctions.roulette(user),
       '💸': embedFunctions.scratchcard(user),

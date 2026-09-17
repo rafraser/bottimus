@@ -42,7 +42,7 @@ function pickWheel () {
 export default {
   name: 'dailyspin',
   description: 'Spin the lucky prize wheel every 12 hours!\nThis is a great way to start earning coins',
-  aliases: ['daily'],
+  aliases: ['daily', 'centrelink'],
   cooldown: 300,
 
   async execute (client: Client, message: Message, args: string[]) {
