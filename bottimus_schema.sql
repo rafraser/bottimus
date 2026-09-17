@@ -4,6 +4,15 @@ CREATE TABLE IF NOT EXISTS `arcade_currency` (
   PRIMARY KEY (`userid`)
 );
 
+CREATE TABLE IF NOT EXISTS `arcade_bombs` (
+  `discordid` varchar(64) NOT NULL,
+  `difficulty` varchar(16) NOT NULL,
+  `number` int(11) DEFAULT NULL,
+  `winnings` int(11) DEFAULT NULL,
+  `bet_total` int(11) DEFAULT NULL,
+  PRIMARY KEY (`discordid`, `difficulty`)
+);
+
 CREATE TABLE IF NOT EXISTS `arcade_dailyspin` (
   `discordid` varchar(64) NOT NULL,
   `lastspin` datetime DEFAULT NULL,
@@ -30,8 +39,8 @@ CREATE TABLE IF NOT EXISTS `arcade_mining` (
 
 CREATE TABLE IF NOT EXISTS `arcade_pachinko` (
   `discordid` varchar(64) NOT NULL,
-  `attempts` int(11) DEFAULT NULL,
-  `wins` int(11) DEFAULT NULL,
+  `number` int(11) DEFAULT NULL,
+  `winnings` int(11) DEFAULT NULL,
   PRIMARY KEY (`discordid`)
 );
 
