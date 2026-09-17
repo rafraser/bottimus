@@ -56,7 +56,7 @@ export default {
       codestring += '```'
       message.channel.send(codestring)
     } catch (e) {
-      message.channel.send(e.message)
+      message.channel.send((e as Error).message)
     }
   }
 }

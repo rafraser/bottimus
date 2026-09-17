@@ -1,11 +1,11 @@
 import { advantageRoll, disadvantageRoll, rollArray, sumArray, parseAndRoll } from '../src/commands/dice'
 
 test('rolling an array of dice', () => {
-  jest.spyOn(global.Math, 'random').mockReturnValue(0.999)
+  vi.spyOn(global.Math, 'random').mockReturnValue(0.999)
   expect(rollArray(5, 6)).toHaveLength(5)
   expect(rollArray(3, 6)).toEqual([6, 6, 6])
   expect(rollArray(1, 10)).toEqual([10])
-  jest.spyOn(global.Math, 'random').mockRestore()
+  vi.spyOn(global.Math, 'random').mockRestore()
 })
 
 test('summing an array of dice', () => {
@@ -28,9 +28,9 @@ test('disadvantage rolls', () => {
 })
 
 test('dice parsing', () => {
-  jest.spyOn(global.Math, 'random').mockReturnValue(0.999)
+  vi.spyOn(global.Math, 'random').mockReturnValue(0.999)
   expect(parseAndRoll('d20')).toEqual([[20], 20])
   expect(parseAndRoll('2d6')).toEqual([[6, 6], 12])
   expect(parseAndRoll('5')).toEqual([[5], 5])
-  jest.spyOn(global.Math, 'random').mockRestore()
+  vi.spyOn(global.Math, 'random').mockRestore()
 })

@@ -1,10 +1,10 @@
 import { Client, Message } from '../command'
 import { incrementArcadeCredits } from '../arcade'
 import { queryHelper } from '../database'
-import { GuildMember, MessageActionRow, MessageButton, MessageEmbed, MessageOptions } from 'discord.js'
-import { AllHtmlEntities } from 'html-entities'
+import { GuildMember, MessageActionRow, MessageButton, MessageEditOptions, MessageEmbed, MessageOptions } from 'discord.js'
+import { decode } from 'html-entities'
 import fetch from 'node-fetch'
-import { APIInteractionGuildMember } from 'discord-api-types'
+import { APIInteractionGuildMember } from 'discord-api-types/v9'
 
 type Question = {
   answers: string[]
@@ -20,7 +20,6 @@ function memberName (member: GuessMember) {
   return member instanceof GuildMember ? member.displayName : member.user.username
 }
 
-const entities = new AllHtmlEntities()
 const categories = {
   science: [17, 17, 17, 18, 19, 27, 28, 30],
   entertainment: [10, 11, 12, 13, 14, 15, 16, 29, 31, 32],
@@ -62,7 +61,7 @@ async function incrementStatScore (client: Client, userid: string, category: str
  */
 async function getQuestionData (category: number): Promise<Question> {
   const resp = await fetch(`https://opentdb.com/api.php?amount=1&category=${category}&type=multiple`)
-  const json = await resp.json()
+  const json = await resp.json() as any
   const info = json.results[0]
 
   const data = {} as any
@@ -71,8 +70,8 @@ async function getQuestionData (category: number): Promise<Question> {
   data.correct = Math.floor(Math.random() * Math.floor(4))
   data.answers.splice(data.correct, 0, info.correct_answer)
 
-  data.question = entities.decode(info.question)
-  data.answers = data.answers.map(entities.decode)
+  data.question = decode(info.question)
+  data.answers = data.answers.map(decode)
   data.category = info.category
   data.difficulty = info.difficulty.charAt(0).toUpperCase() + info.difficulty.slice(1)
   return data
@@ -176,11 +175,11 @@ export default {
 
       guesses.set(i.member, guess)
       await i.deferUpdate()
-      await gameMsg.edit(buildTriviaEmbed(question, guesses, true))
+      await gameMsg.edit(buildTriviaEmbed(question, guesses, true) as MessageEditOptions)
     })
 
     collector.on('end', async () => {
-      await gameMsg.edit(buildTriviaEmbed(question, guesses, false))
+      await gameMsg.edit(buildTriviaEmbed(question, guesses, false) as MessageEditOptions)
       await message.channel.send(`The correct answer is: ${question.answers[question.correct]}`)
       await checkWinners(client, message, guesses, question)
     })

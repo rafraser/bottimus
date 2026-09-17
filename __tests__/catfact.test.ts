@@ -2,8 +2,8 @@ import command from '../src/commands/catfact'
 import { MockClient, MockMessage } from '../__mocks__'
 import fetch from 'node-fetch'
 
-jest.mock('node-fetch')
-jest.mocked(fetch).mockImplementation((): Promise<any> => {
+vi.mock('node-fetch')
+vi.mocked(fetch).mockImplementation((): Promise<any> => {
   return Promise.resolve({
     json () {
       return Promise.resolve({ fact: 'Cats have four legs.' })

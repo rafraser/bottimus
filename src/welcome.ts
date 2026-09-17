@@ -9,7 +9,7 @@ export async function loadWelcomes () {
   const welcomers = new Map()
   const welcomerDirectory = path.resolve(__dirname, 'welcome')
   if (!fs.existsSync(welcomerDirectory)) {
-    return
+    return welcomers
   }
 
   const files = await readdirAsync(welcomerDirectory)

@@ -138,7 +138,7 @@ export default class BottimusClient extends Client {
         incrementCommandsProcessed(command.name)
         command.execute(this, message, args)
       } catch (err) {
-        message.channel.send(err.message)
+        message.channel.send((err as Error).message)
       }
     }
 
