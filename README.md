@@ -20,7 +20,6 @@ Originally, Bottimus was created to help with event planning and other managemen
 ### Miscellaneous
 
 - !catfact
-- !numberfact
 - !8ball
 - !dice
 
@@ -49,4 +48,12 @@ Build the Typescript project & then boot Bottimus:
 ```bash
 npm run build
 npm run serve
+```
+
+### Testing
+
+Run the test suite:
+
+```
+npm test
 ```

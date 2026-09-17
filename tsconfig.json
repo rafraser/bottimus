@@ -6,15 +6,12 @@
         "allowSyntheticDefaultImports": true,
         "target": "es2019",
         "noImplicitAny": true,
-        "moduleResolution": "node",
+        "strictNullChecks": false,
+        "moduleResolution": "bundler",
+        "skipLibCheck": true,
         "sourceMap": true,
-        "outDir": "dist",
-        "baseUrl": ".",
-        "paths": {
-            "*": [
-                "node_modules/*"
-            ]
-        }
+        "rootDir": "src",
+        "outDir": "dist"
     },
     "include": [
         "src/**/*"

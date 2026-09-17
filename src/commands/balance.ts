@@ -20,7 +20,7 @@ export default {
         message.channel.send(`No coins! Go play some games and earn some ${coin}`)
       }
     } catch (e) {
-      message.channel.send(e.message)
+      message.channel.send((e as Error).message)
     }
   }
 }

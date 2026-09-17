@@ -15,7 +15,7 @@ export async function loadUpdaters (): Promise<Updater[]> {
   const updaters = [] as Updater[]
   const updaterDirectory = path.resolve(__dirname, 'updaters')
   if (!fs.existsSync(updaterDirectory)) {
-    return
+    return updaters
   }
 
   const files = await readdirAsync(updaterDirectory)

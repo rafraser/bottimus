@@ -9,7 +9,7 @@ function defaultHelpEmbed (client: Client, message: Message) {
     .setDescription('For more help on a specific command, type `!help [command]`')
     .addField('🎮 Games', '`!hangman` `!mine` `!trivia` `!typeracer`', true)
     .addField(`${coin} Gambling`, '`!balance` `!dailyspin` `!inventory` `!prize` `!roulette` `!scratchcard`', true)
-    .addField('🎲 Fun', '`!8ball` `!catfact` `!dice` `!numberfact`', true)
+    .addField('🎲 Fun', '`!8ball` `!catfact` `!dice`', true)
     .addField('ℹ️ Statistics', '`!arcadestats` `!triviascores` `!triviastats` `!user`')
   return embed
 }

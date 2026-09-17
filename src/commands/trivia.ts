@@ -2,10 +2,8 @@ import { Client, Message } from '../command'
 import { incrementArcadeCredits } from '../arcade'
 import { queryHelper } from '../database'
 import { MessageEmbed, MessageReaction } from 'discord.js'
-import { AllHtmlEntities } from 'html-entities'
+import { decode } from 'html-entities'
 import fetch from 'node-fetch'
-
-const entities = new AllHtmlEntities()
 const arrayOfLetters = ['A', 'B', 'C', 'D']
 const emojiToNum = { '🇦': 0, '🇧': 1, '🇨': 2, '🇩': 3 } as { [emoji: string]: number }
 
@@ -43,9 +41,9 @@ async function getQuestionData (category: number) {
   data.answers.splice(data.correct, 0, info.correct_answer)
 
   // Format the question and answers
-  data.question = entities.decode(info.question)
+  data.question = decode(info.question)
   for (let i = 0; i < 4; i++) {
-    data.answers[i] = entities.decode(data.answers[i])
+    data.answers[i] = decode(data.answers[i])
   }
 
   data.category = info.category
