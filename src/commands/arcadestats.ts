@@ -1,7 +1,7 @@
 import { Client, Message } from '../command'
 import { GuildMember, MessageEmbed } from 'discord.js'
 import { queryHelper } from '../database'
-import { sendLazyTabbedEmbed } from '../pagination'
+import { sendLazySelectEmbed } from '../pagination'
 
 // Calculate the totals across all trivia categories
 function calculateTriviaTotals (results: any[]) {
@@ -53,6 +53,11 @@ function fetchRouletteStatistics (id: string): Promise<any[]> {
 // Retrieve Pachinko statistics for a given ID from the database
 function fetchPachinkoStatistics (id: string): Promise<any[]> {
   return queryHelper('SELECT number, winnings, ROUND(winnings/number, 2) AS average FROM arcade_pachinko WHERE discordid = ?;', [id])
+}
+
+// Retrieve Bombs statistics for a given ID from the database, broken down by difficulty
+function fetchBombsStatistics (id: string): Promise<any[]> {
+  return queryHelper('SELECT difficulty, number, winnings, bet_total FROM arcade_bombs WHERE discordid = ?;', [id])
 }
 
 // Keep the embed functions in an object for modular lookup
@@ -247,20 +252,39 @@ embedFunctions.pachinko = async function (user: GuildMember): Promise<MessageEmb
   }
 }
 
-// Generate a nice embed for a help page
-embedFunctions.help = async function (user: GuildMember): Promise<MessageEmbed> {
+// Generate a nice embed for Bombs information
+embedFunctions.bombs = async function (user: GuildMember): Promise<MessageEmbed> {
+  const results = await fetchBombsStatistics(user.id)
+  const username = user.displayName
+
+  if (!results || results.length < 1) {
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`💣 Bombs - ${username}`)
+      .setDescription('No data found.')
+  } else {
+    const number = results.reduce((sum, r) => sum + r.number, 0)
+    const winnings = results.reduce((sum, r) => sum + r.winnings, 0)
+    const betTotal = results.reduce((sum, r) => sum + r.bet_total, 0)
+    const byDifficulty = results.map(r => `${r.difficulty[0].toUpperCase()}${r.difficulty.slice(1)}: ${r.number}`).join('\n')
+
+    return new MessageEmbed()
+      .setColor('#4cd137')
+      .setTitle(`💣 Bombs - ${username}`)
+      .addField('Games Played', byDifficulty, true)
+      .addField('Total Winnings', `${winnings}`, true)
+      .addField('Profit', `${winnings - betTotal}`, true)
+      .addField('Average Income', `${Math.round((winnings / number) * 100) / 100}`, true)
+  }
+}
+
+// Generate a simple landing embed shown before a category is picked
+embedFunctions.overview = async function (user: GuildMember): Promise<MessageEmbed> {
   return new MessageEmbed()
     .setColor('#4cd137')
-    .setTitle('ℹ️ Help')
-    .setDescription('Select a tab to view statistics:')
-    .addField('🚷', 'Hangman', true)
-    .addField('⛏️', 'Mining', true)
-    .addField('🎰', 'Pachinko', true)
-    .addField('🔮', 'Prizes', true)
-    .addField('💰', 'Roulette', true)
-    .addField('💸', 'Scratchcards', true)
-    .addField('❓', 'Trivia', true)
-    .addField('🏎', 'Typeracer', true)
+    .setTitle(`🎮 Arcade Stats - ${user.displayName}`)
+    .setDescription('Select a category below to view detailed statistics.')
+    .setThumbnail(user.displayAvatarURL())
 }
 
 export default {
@@ -273,16 +297,17 @@ export default {
     const user = await client.findUser(message, args, true)
 
     const pages = {
-      ℹ️: embedFunctions.help(user),
-      '🚷': embedFunctions.hangman(user),
-      '⛏️': embedFunctions.mining(user),
-      '🎰': embedFunctions.pachinko(user),
-      '🔮': embedFunctions.prizes(user),
-      '💰': embedFunctions.roulette(user),
-      '💸': embedFunctions.scratchcard(user),
-      '❓': embedFunctions.trivia(user),
-      '🏎': embedFunctions.typeracer(user)
+      overview: { label: 'Overview', emoji: 'ℹ️', embed: embedFunctions.overview(user) },
+      bombs: { label: 'Bombs', emoji: '💣', embed: embedFunctions.bombs(user) },
+      hangman: { label: 'Hangman', emoji: '🚷', embed: embedFunctions.hangman(user) },
+      mining: { label: 'Mining', emoji: '⛏️', embed: embedFunctions.mining(user) },
+      pachinko: { label: 'Pachinko', emoji: '🎰', embed: embedFunctions.pachinko(user) },
+      prizes: { label: 'Prizes', emoji: '🔮', embed: embedFunctions.prizes(user) },
+      roulette: { label: 'Roulette', emoji: '💰', embed: embedFunctions.roulette(user) },
+      scratchcard: { label: 'Scratchcards', emoji: '💸', embed: embedFunctions.scratchcard(user) },
+      trivia: { label: 'Trivia', emoji: '❓', embed: embedFunctions.trivia(user) },
+      typeracer: { label: 'Type Racer', emoji: '🏎', embed: embedFunctions.typeracer(user) }
     }
-    await sendLazyTabbedEmbed(message, pages)
+    await sendLazySelectEmbed(message, pages, 'Select a category')
   }
 }
