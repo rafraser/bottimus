@@ -4,6 +4,11 @@ import math
 from event_categories import COLORS
 
 
+def _text_size(draw, text, font):
+    left, top, right, bottom = draw.textbbox((0, 0), text, font=font)
+    return right - left, bottom - top
+
+
 def generate_frame(offset: int = 0, color: str = "yellow"):
     """Generate a single frame for a sunburst award
 
@@ -68,11 +73,11 @@ def render_award(
 
         draw = ImageDraw.Draw(img)
         if toptext is not None:
-            tw, th = draw.textsize(toptext, font=font)
+            tw, th = _text_size(draw, toptext, font)
             draw.text(((512 - tw) / 2, 48 - (th / 2)), toptext, font=font, fill=textcolor)
 
         if bottomtext is not None:
-            tw, th = draw.textsize(bottomtext, font=font)
+            tw, th = _text_size(draw, bottomtext, font)
             draw.text(
                 ((512 - tw) / 2, 512 - 48 - (th / 2)),
                 bottomtext,
