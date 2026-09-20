@@ -3,6 +3,12 @@ import math
 import random
 import argparse
 
+
+def _text_size(draw, text, font):
+    left, top, right, bottom = draw.textbbox((0, 0), text, font=font)
+    return right - left, bottom - top
+
+
 ball = Image.open("./img/gacha/" + str(random.randint(1, 6)) + ".png").resize((192, 192), Image.NEAREST)
 
 # List of colors
@@ -80,13 +86,13 @@ def render_prize(frame, background, prize, color, toptext, bottomtext):
 
     if toptext is not None:
         draw = ImageDraw.Draw(img)
-        tw, th = draw.textsize(toptext, font=font)
+        tw, th = _text_size(draw, toptext, font)
         draw.text(((512 - tw) / 2, 48 - (th / 2)), toptext, font=font, fill=textcolor)
 
         # If the bottom text is too large, adjust to use a smaller font
-        tw, th = draw.textsize(bottomtext, font=font)
+        tw, th = _text_size(draw, bottomtext, font)
         if tw > 480:
-            tw, th = draw.textsize(bottomtext, font=font_smaller)
+            tw, th = _text_size(draw, bottomtext, font_smaller)
             draw.text(
                 ((512 - tw) / 2, 512 - 48 - (th / 2)),
                 bottomtext,
