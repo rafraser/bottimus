@@ -138,7 +138,8 @@ def renderInventory(items):
             inventory.paste(renderSquare(p, amount < 1), (126 * xx, 126 * yy))
 
             if amount > 0:
-                tw, th = draw.textsize(str(amount), font=font)
+                left, top, right, bottom = draw.textbbox((0, 0), str(amount), font=font)
+                tw, th = right - left, bottom - top
                 draw.text(
                     (126 * xx + 114 - tw, 126 * yy + 114 - th),
                     str(amount),
