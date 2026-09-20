@@ -6,7 +6,7 @@ import { ButtonInteraction, GuildMember, MessageActionRow, MessageAttachment, Me
 const BALL_COST = 250
 const MAX_BALLS_PER_USER = 5
 const NUM_SLOTS = 5
-const COLLECT_TIME = 60000
+const COLLECT_TIME = 30000
 const REVEAL_DELAY = 12500
 
 type Bin = { size: number, value: number, color: string }
